@@ -34,7 +34,7 @@ Instructions for installing or using them in your development environment are li
 | make             | [GNU Make Documentation](https://www.gnu.org/software/make/) |
 | ccache           | [ccache README](https://ccache.dev/)        |
 | glm              | [glm GitHub](https://github.com/g-truc/glm) |
-| libgif           | [giflib GitHub](https://github.com/lecram/giflib) |
+| giflib           | [giflib GitHub](https://github.com/lecram/giflib) |
 | glew             | [GLEW Documentation](http://glew.sourceforge.net/) |
 | glfw3            | [GLFW Documentation](https://www.glfw.org/) |
 | freetype2        | [Freetype Documentation](https://freetype.org/) |
