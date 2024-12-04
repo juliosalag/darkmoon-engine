@@ -24,7 +24,23 @@ Some features included in version 2.0:
 
 The goal for DarkMoon Engine is to be **multiplatform**, supporting operating systems such as **Windows** and **Linux**. Currently, the engine is only functional on **Linux** due to some platform-specific optimizations and dependencies.
 
-## Installation and development
+## Dependencies
+
+DarkMoon Engine requires the following libraries to build and run.  
+Instructions for installing or using them in your development environment are linked below.
+
+| Dependency       | Documentation                                |
+| ---------------- | -------------------------------------------- |
+| make             | [GNU Make Documentation](https://www.gnu.org/software/make/) |
+| ccache           | [ccache README](https://ccache.dev/)        |
+| glm              | [glm GitHub](https://github.com/g-truc/glm) |
+| libgif           | [giflib GitHub](https://github.com/lecram/giflib) |
+| glew             | [GLEW Documentation](http://glew.sourceforge.net/) |
+| glfw3            | [GLFW Documentation](https://www.glfw.org/) |
+| freetype2        | [Freetype Documentation](https://freetype.org/) |
+| assimp           | [Assimp Documentation](https://github.com/assimp/assimp) |
+
+## Installation and deployment
 
 Clone the repository.
 ```sh
@@ -33,5 +49,5 @@ git clone https://github.com/juliosalag/darkmoon-engine.git
 
 Run makefile.
 ```sh
-make
+make engine
 ```
