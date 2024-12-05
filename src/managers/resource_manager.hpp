@@ -3,7 +3,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include <resource.hpp>
+#include "../resources/resource.hpp"
 
 struct ResourceInfo {
     std::unique_ptr<Resource> resource;
@@ -26,13 +26,13 @@ public:
     template<typename T, typename... Args>
     T* loadResource(const char* filePath, Args&&... args) {
 
-        // Search is the resource is already loaded
+        // Check if the resource is already loaded
 
         for(auto& pair : m_resources)
             if(pair.second.filePath == filePath && pair.second.fileType == typeid(T).hash_code())
                 return getResource<T>(pair.first);
 
-        // Load new resource
+        // Load a new resource if it is not already loaded
 
         auto resource = std::make_unique<T>(nextID, std::forward<Args>(args)...);
         if(resource->load(filePath)) {
@@ -51,6 +51,8 @@ public:
         auto it = m_resources.find(id);
         if(it != m_resources.end())
             return static_cast<T*>(it->second.resource.get());
+
+        return nullptr;            
     }
 
     void unloadResource(const std::size_t& id) {
