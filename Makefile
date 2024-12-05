@@ -6,10 +6,6 @@ OBJ		 := obj
 ASSETS   := assets
 
 CC 		 := g++
-ifeq ($(filter clang+,$(MAKECMDGOALS)),clang+)
-	CC	 := clang+
-endif
-	
 CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -Isrc/
 LIBS     := 
 
