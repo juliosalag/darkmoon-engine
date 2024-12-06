@@ -4,4 +4,8 @@
 
 int main() {
     std::cout << "Hello world\n";
+
+    DarkMoonEngine dm;
+
+    dm.m_resourceManager.loadResource<ResourceTexture>("../assets/defaultTexture.png");
 }

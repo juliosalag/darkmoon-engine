@@ -4,15 +4,7 @@
 #include <unordered_map>
 
 #include "../resources/resource.hpp"
-
-struct ResourceInfo {
-    std::unique_ptr<Resource> resource;
-    std::string filePath;
-    std::size_t fileType;
-
-    ResourceInfo(std::unique_ptr<Resource> r, const std::string& fPath, std::size_t fType)
-        : resource(std::move(r)), filePath(fPath), fileType(fType) {};
-};
+#include "../resources/resource_texture.hpp"
 
 struct ResourceManager {
 public:
@@ -29,16 +21,17 @@ public:
         // Check if the resource is already loaded
 
         for(auto& pair : m_resources)
-            if(pair.second.filePath == filePath && pair.second.fileType == typeid(T).hash_code())
+            if(pair.second->getFilePath() == filePath && 
+               pair.second->getFileType() == typeid(T).hash_code())
                 return getResource<T>(pair.first);
 
         // Load a new resource if it is not already loaded
 
-        auto resource = std::make_unique<T>(nextID, std::forward<Args>(args)...);
-        if(resource->load(filePath)) {
+        auto resource = std::make_unique<T>(nextID, typeid(T).hash_code(), filePath, std::forward<Args>(args)...);
+        if(resource->isLoaded()) {
             nextID++;
             auto rawPtr = resource.get();
-            m_resources[nextID] = ResourceInfo(std::move(resource), filePath, typeid(T).hash_code());
+            m_resources[nextID] = std::move(resource);
 
             return rawPtr; 
         }
@@ -50,7 +43,7 @@ public:
     T* getResource(const std::size_t& id) {
         auto it = m_resources.find(id);
         if(it != m_resources.end())
-            return static_cast<T*>(it->second.resource.get());
+            return static_cast<T*>(it->second.get());
 
         return nullptr;            
     }
@@ -67,5 +60,5 @@ private:
     ResourceManager() = default;
 
     inline static std::size_t nextID{ 0 };
-    std::unordered_map<std::size_t, ResourceInfo> m_resources;
+    std::unordered_map<std::size_t, std::unique_ptr<Resource>> m_resources;
 };

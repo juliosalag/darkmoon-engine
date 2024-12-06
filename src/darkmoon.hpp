@@ -4,9 +4,9 @@
 
 struct DarkMoonEngine{
 public:
-    DarkMoonEngine();
-    ~DarkMoonEngine();
+    DarkMoonEngine() {};
+    ~DarkMoonEngine() {};
 
-private:
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
+private:
 };
