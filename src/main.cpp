@@ -1,11 +1,18 @@
-#include <iostream>
-
 #include <darkmoon.hpp>
 
 int main() {
-    std::cout << "Hello world\n";
-
     DarkMoonEngine dm;
+    
+    if(dm.initWindow(800, 600, "DarkMoon Engine") ){
+        while(!dm.windowShouldClose()) {
+            dm.beginDrawing();
 
-    dm.m_resourceManager.loadResource<ResourceTexture>("../assets/defaultTexture.png");
+
+            dm.endDrawing();
+        }
+
+        dm.closeWindow();
+    }
+
+    return 0;
 }

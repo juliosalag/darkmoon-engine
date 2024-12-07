@@ -7,7 +7,7 @@ ASSETS   := assets
 
 CC 		 := g++
 CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -Isrc/
-LIBS     := 
+LIBS     := -lglfw -lGLEW -lGLU -lGL
 
 # comment
 
