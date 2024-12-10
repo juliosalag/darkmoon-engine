@@ -7,7 +7,7 @@ bool WindowManager::initWindow(int width, int height, const char* title) {
     // glfw: initialize and configure
     // -----------------------------
     if(!glfwInit()){
-        std::cout << "[ERROR] Initializing GLFW\n";
+        std::cerr << "[ERROR] Failed to initialize GLFW\n";
 
         return false;
     }
@@ -19,7 +19,7 @@ bool WindowManager::initWindow(int width, int height, const char* title) {
     // ---------------------
     m_window = glfwCreateWindow(m_width, m_height, title, nullptr, nullptr); // glfwGetPrimaryMonitor()
     if(!m_window){
-        std::cout << "[ERROR] Creating window\n";
+        std::cerr << "[ERROR] Failed to create GLFW window\n";
         glfwTerminate();
 
         return false;
@@ -27,25 +27,17 @@ bool WindowManager::initWindow(int width, int height, const char* title) {
 
     glfwMakeContextCurrent(m_window);
 
-    // CALLBACK
-
-    // GLAD
-
-    // glew: initialize  and configure
-    // -------------------------------
-    if(glewInit() != GLEW_OK){
-        std::cout << "[ERROR] Initializing GLEW\n";
-        glfwTerminate();
-
-        return false;
-    }
-    if(!glfwExtensionSupported("GL_ARB_vertex_array_object") || !GLEW_VERSION_3_3){
-        std::cout << "[ERROR] OpenGL 3.3 and GL_ARB_vertex_array_object are required\n";
+    // glad: load OpenGL functions pointers
+    // ------------------------------------
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "[ERROR] Failed to initialize GLAD\n";
+        glfwDestroyWindow(m_window);
         glfwTerminate();
 
         return false;
     }
 
+    // Configure OpenGL
     glViewport(0, 0, m_width, m_height);
 
     return true;
