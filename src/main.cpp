@@ -7,6 +7,7 @@ int main() {
         while(!dm.windowShouldClose()) {
             dm.beginDrawing();
 
+            dm.clearBackground(GRAY);
 
             dm.endDrawing();
         }

@@ -8,7 +8,7 @@ public:
     DarkMoonEngine() {};
     ~DarkMoonEngine() {};
 
-    // Initializes the window, sets up GLFW, GLEW, and OpenGL context
+    // Initializes the window, sets up GLFW, GLAD, GLEW, and OpenGL context // TODO commentary
     bool initWindow(int width, int height, const char* title);
     // Closes the window and terminates GLFW
     void closeWindow();
@@ -19,6 +19,9 @@ public:
     void beginDrawing();
     // Swaps buffers and polls window events
     void endDrawing();
+
+    // Set background color
+    void clearBackground(Color color);
 
 private:
     WindowManager& m_windowManager = WindowManager::getInstance();

@@ -19,3 +19,7 @@ void DarkMoonEngine::beginDrawing(){
 void DarkMoonEngine::endDrawing(){
     m_windowManager.endDrawing();
 }
+
+void DarkMoonEngine::clearBackground(Color color){
+    m_windowManager.clearBackground(color);
+}
