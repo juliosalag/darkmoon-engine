@@ -1,29 +1,31 @@
 #pragma once
 
-#include "./managers/window_manager.hpp"
+#include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "./managers/resource_manager.hpp"
+#include "./utils/color.hpp"
 
 struct DarkMoonEngine{
 public:
     DarkMoonEngine() {};
-    ~DarkMoonEngine() {};
+    ~DarkMoonEngine() { glfwTerminate(); };
 
-    // Initializes the window, sets up GLFW, GLAD, GLEW, and OpenGL context // TODO commentary
-    bool initWindow(int width, int height, const char* title);
-    // Closes the window and terminates GLFW
-    void closeWindow();
-    // Returns whether the window should close
-    bool windowShouldClose();
+    bool InitWindow(int width, int height, const char* title);
+    void CloseWindow();
+    bool WindowShouldClose();
 
-    // Sets up the projection matrix for 2D drawing
-    void beginDrawing();
-    // Swaps buffers and polls window events
-    void endDrawing();
+    // Create Window
+    // Get/Set Active Window
 
-    // Set background color
-    void clearBackground(Color color);
+    // Functions of Window
+
+    void BeginDrawing();
+    void EndDrawing();
+    void ClearBackground(Color color);
 
 private:
-    WindowManager& m_windowManager = WindowManager::getInstance();
+    GLFWwindow* m_activeWindow {};
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
 };
