@@ -28,12 +28,37 @@ public:
     void SetFullscreen();
     void SetBorderless();
     void SetWindowed();
+    // void SetWindowMode();
+
+    // Size
+    // Framebuffer
+    // Pos
+    // Title
+    // Icon
+    // Monitor --> monitor_guide.html
+    // Iconification
+    // Maximization
+    // Visibility
+    // Input Focus
+    // Transparency ?
+
+    // ATTRIBUTTES
+
+    // Buffer Swapping --> Render
 
     WindowMode GetWindowMode(){ return m_activeWindow.mode; };
+
+    // ---------------- //
+    // Render Functions //
+    // ---------------- //
 
     void BeginDrawing();
     void EndDrawing();
     void ClearBackground(Color color);
+
+    // --------------- //
+    // Input Functions // --> input_guide.html
+    // --------------- //
 
     int IsKeyPressed(int key){ return glfwGetKey(m_activeWindow.window, key) == GLFW_PRESS; };
 

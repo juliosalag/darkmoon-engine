@@ -15,6 +15,5 @@ struct Window{
 
     GLFWwindow* window {};
     WindowMode mode {};
-
     int windowedX {}, windowedY {}, windowedWidth {}, windowedHeight {};
 };
