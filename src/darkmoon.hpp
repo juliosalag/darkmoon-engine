@@ -28,26 +28,32 @@ public:
     void SetFullscreen();
     void SetBorderless();
     void SetWindowed();
-    // void SetWindowMode();
+    void SetWindowMode(WindowMode mode);
+    WindowMode GetWindowMode(){ return m_activeWindow.mode; };
 
-    // Size
-    // Framebuffer
-    // Pos
-    // Title
-    // Icon
+    void SetWindowSize(int width, int height);
+    int GetWindowWidth();
+    int GetWindowHeight();
+
+    void SetWindowPosition(int x, int y);
+    int GetWindowPositionX();
+    int GetWindowPositionY();
+
+    void SetWindowTitle(const char* title);
+    // const char* GetWindowTitle(); // ADDED IN 3.4, I ALREADY USE 3.3
+
     void SetWindowIcon(const char* iconPath);
-    // Monitor --> monitor_guide.html
-    // Iconification
-    // Maximization
-    // Visibility
-    // Input Focus
+    
+    // Monitor --> monitor_guide.html  (SET | GET | GETS)
+    // Iconification  (ICONIFY | RESTORE)
+    // Visibility (HIDE | SHOW)
+    // Input Focus (FOCUS)
     // Transparency ?
 
     // ATTRIBUTTES
 
     // Buffer Swapping --> Render
 
-    WindowMode GetWindowMode(){ return m_activeWindow.mode; };
 
     // ---------------- //
     // Render Functions //

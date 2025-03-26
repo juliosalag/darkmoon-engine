@@ -103,7 +103,76 @@ void DarkMoonEngine::SetWindowed(){
     m_activeWindow.mode = WindowMode::Windowed;
 }
 
+void DarkMoonEngine::SetWindowMode(WindowMode mode){
+    switch (mode){
+    case WindowMode::Borderless :
+        SetBorderless();
+        break;
+    case WindowMode::Fullscreen :
+        SetFullscreen();
+        break;
+    case WindowMode::Windowed :
+        SetWindowed();
+        break;
+
+    default:
+        break;
+    }
+}
+
 // --- //
+
+void DarkMoonEngine::SetWindowSize(int width, int height){
+    if(m_activeWindow.mode == WindowMode::Windowed)
+        glfwSetWindowSize(m_activeWindow.window, width, height);
+}
+
+int DarkMoonEngine::GetWindowWidth(){
+    int width, height;
+    glfwGetWindowSize(m_activeWindow.window, &width, &height);
+
+    return width;
+}
+
+int DarkMoonEngine::GetWindowHeight(){
+    int width, height;
+    glfwGetWindowSize(m_activeWindow.window, &width, &height);
+
+    return height;
+}
+
+// --- //
+
+void DarkMoonEngine::SetWindowPosition(int x, int y){
+    if(m_activeWindow.mode == WindowMode::Windowed)
+        glfwSetWindowPos(m_activeWindow.window, x, y);    
+}
+
+int DarkMoonEngine::GetWindowPositionX(){
+    int xpos, ypos;
+    glfwGetWindowPos(m_activeWindow.window, &xpos, &ypos);
+
+    return xpos;
+}
+
+int DarkMoonEngine::GetWindowPositionY(){
+    int xpos, ypos;
+    glfwGetWindowPos(m_activeWindow.window, &xpos, &ypos);
+
+    return ypos;
+}
+
+// --- //
+
+void DarkMoonEngine::SetWindowTitle(const char* title){
+    glfwSetWindowTitle(m_activeWindow.window, title);
+}
+
+/*
+const char* DarkMoonEngine::GetWindowTitle(){
+    return glfwGetWindowTitle(m_activeWindow.window);
+}
+*/
 
 void DarkMoonEngine::SetWindowIcon(const char* iconPath){
     GLFWimage images[1];
