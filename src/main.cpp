@@ -5,10 +5,16 @@ int main() {
 
     if(dm.InitWindow(800, 600, "DarkMoon Engine")){
         while(!dm.WindowShouldClose()){
+
+            // Prueba: Pantalla Completa / Ventana
+            if(dm.IsKeyPressed(GLFW_KEY_9))
+                dm.SetFullscreen();
+            else if(dm.IsKeyPressed(GLFW_KEY_0))
+                dm.SetWindowed();
+
+            // Prueba: Render
             dm.BeginDrawing();
-
             dm.ClearBackground(GRAY);
-
             dm.EndDrawing();
         }
         dm.CloseWindow();

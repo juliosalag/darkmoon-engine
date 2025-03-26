@@ -22,14 +22,17 @@ bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
     // Create window GLFW //
     // ------------------ // 
 
-    m_activeWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if(!m_activeWindow){
+    m_activeWindow.window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if(!m_activeWindow.window){
         std::cerr << "[ERROR] Failed to create GLFW window\n";
         glfwTerminate();
 
         return false;
     } 
-    glfwMakeContextCurrent(m_activeWindow);
+    glfwMakeContextCurrent(m_activeWindow.window);
+
+    glfwGetWindowPos(m_activeWindow.window, &m_activeWindow.windowedX, &m_activeWindow.windowedY);
+    glfwGetWindowSize(m_activeWindow.window, &m_activeWindow.windowedWidth, &m_activeWindow.windowedHeight);
 
     std::cout << "[OK] GLFW window created successfully\n";
 
@@ -39,8 +42,8 @@ bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "[ERROR] Failed to initialize GLAD\n";
-        if(m_activeWindow)
-            glfwDestroyWindow(m_activeWindow);
+        if(m_activeWindow.window)
+            glfwDestroyWindow(m_activeWindow.window);
         glfwTerminate();
 
         return false;
@@ -57,12 +60,38 @@ bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
 }
 
 void DarkMoonEngine::CloseWindow(){
-    if(m_activeWindow)
-        glfwDestroyWindow(m_activeWindow);
+    if(m_activeWindow.window)
+        glfwDestroyWindow(m_activeWindow.window);
 }
 
 bool DarkMoonEngine::WindowShouldClose(){
-    return m_activeWindow && glfwWindowShouldClose(m_activeWindow);
+    return m_activeWindow.window && glfwWindowShouldClose(m_activeWindow.window);
+}
+
+void DarkMoonEngine::SetFullscreen(){
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+    glfwSetWindowMonitor(m_activeWindow.window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, mode->refreshRate);
+    
+    m_activeWindow.mode = WindowMode::Fullscreen;
+}
+
+void DarkMoonEngine::SetBorderless(){
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+    glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
+    glfwSetWindowMonitor(m_activeWindow.window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+
+    m_activeWindow.mode = WindowMode::Borderless;
+}
+
+void DarkMoonEngine::SetWindowed(){
+    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+    glfwSetWindowMonitor(m_activeWindow.window, NULL, m_activeWindow.windowedX, m_activeWindow.windowedY, m_activeWindow.windowedWidth, m_activeWindow.windowedHeight, 0);
+
+    m_activeWindow.mode = WindowMode::Windowed;
 }
 
 // Render System //
@@ -72,13 +101,13 @@ void DarkMoonEngine::BeginDrawing(){
     glLoadIdentity();
 
     int width, height;
-    glfwGetWindowSize(m_activeWindow, &width, &height);
+    glfwGetWindowSize(m_activeWindow.window, &width, &height);
 
     glOrtho(0, width, 0, height, -1, 1);
 }
 
 void DarkMoonEngine::EndDrawing(){
-    glfwSwapBuffers(m_activeWindow);
+    glfwSwapBuffers(m_activeWindow.window);
     glfwPollEvents();
 }
 
