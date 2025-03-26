@@ -4,6 +4,10 @@ int main() {
     DarkMoonEngine dm;
 
     if(dm.InitWindow(800, 600, "DarkMoon Engine")){
+
+        dm.SetWindowIcon("./assets/defaultTexture.png");
+
+
         while(!dm.WindowShouldClose()){
 
             // Prueba: Pantalla Completa / Ventana

@@ -35,6 +35,7 @@ public:
     // Pos
     // Title
     // Icon
+    void SetWindowIcon(const char* iconPath);
     // Monitor --> monitor_guide.html
     // Iconification
     // Maximization

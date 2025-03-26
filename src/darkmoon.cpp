@@ -1,5 +1,13 @@
 #include "darkmoon.hpp"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "../libs/stb_image.h"
+
+#pragma GCC diagnostic pop
+
 // Window //
 
 bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
@@ -30,6 +38,7 @@ bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
         return false;
     } 
     glfwMakeContextCurrent(m_activeWindow.window);
+    glfwSetFramebufferSizeCallback(m_activeWindow.window, m_activeWindow.framebuffer_size_callback);
 
     glfwGetWindowPos(m_activeWindow.window, &m_activeWindow.windowedX, &m_activeWindow.windowedY);
     glfwGetWindowSize(m_activeWindow.window, &m_activeWindow.windowedWidth, &m_activeWindow.windowedHeight);
@@ -92,6 +101,17 @@ void DarkMoonEngine::SetWindowed(){
     glfwSetWindowMonitor(m_activeWindow.window, NULL, m_activeWindow.windowedX, m_activeWindow.windowedY, m_activeWindow.windowedWidth, m_activeWindow.windowedHeight, 0);
 
     m_activeWindow.mode = WindowMode::Windowed;
+}
+
+// --- //
+
+void DarkMoonEngine::SetWindowIcon(const char* iconPath){
+    GLFWimage images[1];
+    images[0].pixels = stbi_load(iconPath, &images[0].width, &images[0].height, 0, 4);
+
+    glfwSetWindowIcon(m_activeWindow.window, 1, images),
+
+    stbi_image_free(images[0].pixels);    
 }
 
 // Render System //
