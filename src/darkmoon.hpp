@@ -19,52 +19,71 @@ public:
 
     // Init GLFW, create window, load OpenGL functions pointers and configure OpenGL
     bool InitWindow(int width, int height, const char* title);
-    // Destroy and close window
+    // Destroy the window and close it
     void CloseWindow();
-    // Return if window should close
+    // Return whether the window should close
     bool WindowShouldClose();
 
     // Create Window
     // Get/Set Active Window
 
+    // Set the window to fullscreen mode
     void SetFullscreen();
+    // Set the window to borderless mode
     void SetBorderless();
+    // Set the window to windowed mode
     void SetWindowed();
+    // Set the window mode (Fullscreen, Borderless and Windowed)
     void SetWindowMode(WindowMode mode);
+    // Get the current window mode
     WindowMode GetWindowMode(){ return m_activeWindow.mode; };
 
+    // Set the window size
     void SetWindowSize(int width, int height);
+    // Get the window width
     int GetWindowWidth();
+    // Get the window height
     int GetWindowHeight();
 
+    // Set the window position on the screen
     void SetWindowPosition(int x, int y);
+    // Get the window's X position
     int GetWindowPositionX();
+    // Get the window's Y position
     int GetWindowPositionY();
 
+    // Set the window title
     void SetWindowTitle(const char* title);
     // const char* GetWindowTitle(); // ADDED IN 3.4, I ALREADY USE 3.3
 
+    // Set the window icon from the specified file path
     void SetWindowIcon(const char* iconPath);
     
-    // Monitor --> monitor_guide.html  (SET | GET | GETS)
+    // Set the active monitor for the window
     void SetActiveMonitor(Monitor monitor);
+    // Get the currently active monitor
     Monitor GetActiveMonitor() { return m_activeMonitor; };
+    // Get a list of all available monitors
     std::vector<Monitor> GetAllAvailableMonitors();
 
-    // Iconification  (ICONIFY | MAXIMIZE | RESTORE)
+    // Iconify the window (minimize it)
     void IconifyWindow();
+    // Maximife the window
     void MaximizeWindow();
+    // Restore the window to its previous size and state
     void RestoreWindow();
-    //bool IsWindowIconify();
 
-    // Visibility (HIDE | SHOW)
+    // Hide the window from view
     void HideWindow();
+    // Show the window
     void ShowWindow();
 
-    // Input Focus (FOCUS)
+    // Focus on the window (bring it to the front)
     void FocusWindow();
-    // Transparency ?
+
+    // Set the window opacity (0.0 to 1.0)
     void SetWindowOpacity(float opacity);
+    // Get the current window opacity level
     float GetWindowOpacity();
 
     // ATTRIBUTTES
