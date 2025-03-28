@@ -64,6 +64,8 @@ bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
     // ---------------- //
 
     glViewport(0, 0, width, height);
+    m_activeMonitor.monitor = glfwGetPrimaryMonitor();
+    m_activeMonitor.name = glfwGetMonitorName(m_activeMonitor.monitor);
 
     return true;
 }
@@ -78,20 +80,20 @@ bool DarkMoonEngine::WindowShouldClose(){
 }
 
 void DarkMoonEngine::SetFullscreen(){
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    const GLFWvidmode* mode = glfwGetVideoMode(m_activeMonitor.monitor);
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    glfwSetWindowMonitor(m_activeWindow.window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, mode->refreshRate);
+    glfwSetWindowMonitor(m_activeWindow.window, m_activeMonitor.monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     
     m_activeWindow.mode = WindowMode::Fullscreen;
 }
 
 void DarkMoonEngine::SetBorderless(){
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    const GLFWvidmode* mode = glfwGetVideoMode(m_activeMonitor.monitor);
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
-    glfwSetWindowMonitor(m_activeWindow.window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+    glfwSetWindowMonitor(m_activeWindow.window, m_activeMonitor.monitor, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
 
     m_activeWindow.mode = WindowMode::Borderless;
 }
@@ -118,6 +120,28 @@ void DarkMoonEngine::SetWindowMode(WindowMode mode){
     default:
         break;
     }
+}
+
+// --- //
+
+void DarkMoonEngine::SetActiveMonitor(Monitor monitor){
+    m_activeMonitor = monitor;
+
+    if(m_activeWindow.mode == WindowMode::Fullscreen)
+        SetFullscreen();
+    else if(m_activeWindow.mode == WindowMode::Borderless)
+        SetBorderless();
+}
+
+std::vector<Monitor> DarkMoonEngine::GetAllAvailableMonitors(){
+    int count = 0;
+    GLFWmonitor** monitors = glfwGetMonitors(&count);
+
+    std::vector<Monitor> monitorList;
+    for (int i = 0; i < count; i++)
+        monitorList.push_back(Monitor(monitors[i]));
+
+    return monitorList;
 }
 
 // --- //
@@ -182,6 +206,40 @@ void DarkMoonEngine::SetWindowIcon(const char* iconPath){
 
     stbi_image_free(images[0].pixels);    
 }
+
+void DarkMoonEngine::IconifyWindow(){
+    glfwIconifyWindow(m_activeWindow.window);
+}
+
+void DarkMoonEngine::MaximizeWindow(){
+    glfwMaximizeWindow(m_activeWindow.window);
+}
+
+void DarkMoonEngine::RestoreWindow(){
+    glfwRestoreWindow(m_activeWindow.window);
+}
+
+void DarkMoonEngine::HideWindow(){
+    glfwHideWindow(m_activeWindow.window);
+}
+
+void DarkMoonEngine::ShowWindow(){
+    glfwShowWindow(m_activeWindow.window);
+}
+
+void DarkMoonEngine::FocusWindow(){
+    glfwFocusWindow(m_activeWindow.window);
+}
+
+void DarkMoonEngine::SetWindowOpacity(float opacity){
+    if(opacity >= 0.0f && opacity <= 1.0f)
+        glfwSetWindowOpacity(m_activeWindow.window, opacity);
+}
+
+float DarkMoonEngine::GetWindowOpacity(){
+    return glfwGetWindowOpacity(m_activeWindow.window);
+}
+
 
 // Render System //
 

@@ -7,7 +7,6 @@ int main() {
 
         dm.SetWindowIcon("./assets/defaultTexture.png");
 
-
         while(!dm.WindowShouldClose()){
 
             // Prueba: Pantalla Completa / Ventana
@@ -16,6 +15,12 @@ int main() {
             else if(dm.IsKeyPressed(GLFW_KEY_0))
                 dm.SetWindowed();
 
+            // Prueba: Opacidad
+            if(dm.IsKeyPressed(GLFW_KEY_7))
+                dm.SetWindowOpacity(dm.GetWindowOpacity() - 0.01f);
+            else if(dm.IsKeyPressed(GLFW_KEY_8))
+                dm.SetWindowOpacity(dm.GetWindowOpacity() + 0.01f);
+ 
             // Prueba: Render
             dm.BeginDrawing();
             dm.ClearBackground(GRAY);

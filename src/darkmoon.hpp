@@ -1,9 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "./managers/resource_manager.hpp"
 #include "./managers/window.hpp"
+#include "./managers/monitor.hpp"
 #include "./utils/color.hpp"
 
 struct DarkMoonEngine{
@@ -45,10 +47,25 @@ public:
     void SetWindowIcon(const char* iconPath);
     
     // Monitor --> monitor_guide.html  (SET | GET | GETS)
-    // Iconification  (ICONIFY | RESTORE)
+    void SetActiveMonitor(Monitor monitor);
+    Monitor GetActiveMonitor() { return m_activeMonitor; };
+    std::vector<Monitor> GetAllAvailableMonitors();
+
+    // Iconification  (ICONIFY | MAXIMIZE | RESTORE)
+    void IconifyWindow();
+    void MaximizeWindow();
+    void RestoreWindow();
+    //bool IsWindowIconify();
+
     // Visibility (HIDE | SHOW)
+    void HideWindow();
+    void ShowWindow();
+
     // Input Focus (FOCUS)
+    void FocusWindow();
     // Transparency ?
+    void SetWindowOpacity(float opacity);
+    float GetWindowOpacity();
 
     // ATTRIBUTTES
 
@@ -71,5 +88,6 @@ public:
 
 private:
     Window m_activeWindow {};
+    Monitor m_activeMonitor {};
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
 };
