@@ -1,14 +1,51 @@
 #include <darkmoon.hpp>
 
 int main() {
-    DarkMoonEngine dm;
+    DarkMoonEngine dm; // Init GLFW
 
-    if(dm.InitWindow(800, 600, "DarkMoon Engine")){
+    /*
+    Window w, w2 {}; // Excepcion
+
+    w.focus();
+    
+    while(!w.shouldClose() && !w.shouldClose()){
+
+        // Input
+
+        // Logic
+
+        BeginDrawing(w);
+        dm.drawPixel();
+        EndDrawing();
+
+        BeginDrawing(w2);
+        dm.drawPixel();
+        EndDrawing();
+    }
+    */
+
+    /*
+    Window w = dm.GetActiveWindow();
+
+    w.setBorderless(dm.GetActiveMonitor());
+
+    dm.SetActiveWindow(w);
+    dm.SetBorderless();
+
+    Window w2;
+
+    w2.Hide();
+    w2.Show();
+
+    dm.SetActiveWindow(w2);
+    */
+
+    if(dm.InitWindow(800, 600, "DarkMoon Engine")){ // Create and active
 
         dm.SetWindowIcon("./assets/defaultTexture.png");
 
         while(!dm.WindowShouldClose()){
-
+            
             // Prueba: Pantalla Completa / Ventana
             if(dm.IsKeyPressed(GLFW_KEY_9))
                 dm.SetFullscreen();
@@ -26,7 +63,6 @@ int main() {
             dm.ClearBackground(GRAY);
             dm.EndDrawing();
         }
-        dm.CloseWindow();
     }
 
 

@@ -6,9 +6,11 @@ SRC		 := src
 OBJ		 := obj
 ASSETS   := assets
 
+SANITIZE := -fsanitize=address,undefined
+
 CC 		 := g++
-CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -Isrc/ -Ilibs/glad/include
-LIBS     := -lglfw -lGLU -lGL
+CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -Isrc/ -Ilibs/glad/include $(SANITIZE)
+LIBS     := -lglfw -lGLU -lGL $(SANITIZE)
 
 # Source files and objects
 ALLCPP      := $(shell find $(SRC) -type f -iname *.cpp) libs/glad/src/glad.c

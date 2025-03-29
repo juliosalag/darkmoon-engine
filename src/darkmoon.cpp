@@ -57,6 +57,7 @@ bool DarkMoonEngine::InitWindow(int width, int height, const char* title){
 
         return false;
     }
+    
     std::cout << "[OK] GLAD initialization successful\n";
 
     // ---------------- //
@@ -239,7 +240,6 @@ void DarkMoonEngine::SetWindowOpacity(float opacity){
 float DarkMoonEngine::GetWindowOpacity(){
     return glfwGetWindowOpacity(m_activeWindow.window);
 }
-
 
 // Render System //
 
