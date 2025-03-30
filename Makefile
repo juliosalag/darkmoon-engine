@@ -6,7 +6,8 @@ SRC		 := src
 OBJ		 := obj
 ASSETS   := assets
 
-SANITIZE :=
+SANITIZE := 
+# -fsanitize=address,undefined
 
 CC 		 := g++
 CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -Isrc/ -Ilibs/glad/include $(SANITIZE)

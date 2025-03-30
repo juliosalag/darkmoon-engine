@@ -18,18 +18,22 @@ Window::Window(int width, int height, const char* title){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if(!window){
+    m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if(!m_window){
         std::cerr << "[ERROR] Failed to create GLFW window\n";
         glfwTerminate();
 
         // return false;
     } 
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwMakeContextCurrent(m_window);
+    glfwSetWindowUserPointer(m_window, this);
 
-    glfwGetWindowPos(window, &windowedX, &windowedY);
-    glfwGetWindowSize(window, &windowedWidth, &windowedHeight);
+    // Callbacks
+    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+    glfwSetKeyCallback(m_window, key_callback);
+
+    glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
+    glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
 
     std::cout << "[OK] GLFW window created successfully\n";
 
@@ -39,8 +43,8 @@ Window::Window(int width, int height, const char* title){
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "[ERROR] Failed to initialize GLAD\n";
-        if(window)
-            glfwDestroyWindow(window);
+        if(m_window)
+            glfwDestroyWindow(m_window);
         glfwTerminate();
 
         //return false;
@@ -56,16 +60,16 @@ Window::Window(int width, int height, const char* title){
 // ------- //
 
 void Window::BeginDrawing(){
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(m_window);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetWindowSize(m_window, &width, &height);
     glOrtho(0, width, 0, height, -1, 1);
 }
 
 void Window::EndDrawing(){
-    glfwSwapBuffers(window);
+    glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
@@ -74,29 +78,41 @@ void Window::EndDrawing(){
 // ------- //
 
 void Window::SetFullscreen(Monitor monitor){
+
+    if(m_mode == WindowMode::Windowed){
+        glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
+        glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
+    }
+
     const GLFWvidmode* mode = glfwGetVideoMode(monitor.monitor);
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    glfwSetWindowMonitor(window, monitor.monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    glfwSetWindowMonitor(m_window, monitor.monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     
-    this->mode = WindowMode::Fullscreen;
+    m_mode = WindowMode::Fullscreen;
 }
 
 void Window::SetBorderless(Monitor monitor){
+
+    if(m_mode == WindowMode::Windowed){
+        glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
+        glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
+    }
+
     const GLFWvidmode* mode = glfwGetVideoMode(monitor.monitor);
 
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
-    glfwSetWindowMonitor(window, monitor.monitor, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+    glfwSetWindowMonitor(m_window, monitor.monitor, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
 
-    this->mode = WindowMode::Borderless;
+    m_mode = WindowMode::Borderless;
 }
 
 void Window::SetWindowed(){
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-    glfwSetWindowMonitor(window, NULL, windowedX, windowedY, windowedWidth, windowedHeight, 0);
+    glfwSetWindowMonitor(m_window, NULL, m_windowedX, m_windowedY, m_windowedWidth, m_windowedHeight, 0);
 
-    mode = WindowMode::Windowed;
+    m_mode = WindowMode::Windowed;
 }
 
 void Window::SetWindowMode(WindowMode mode, Monitor monitor){
@@ -117,8 +133,11 @@ void Window::SetWindowMode(WindowMode mode, Monitor monitor){
 }
 
 void Window::SetSize(int width, int height){
-    if(mode == WindowMode::Windowed)
-        glfwSetWindowSize(window, width, height);
+    if(m_mode == WindowMode::Windowed){
+        m_windowedWidth = width;
+        m_windowedHeight = height;
+        glfwSetWindowSize(m_window, width, height);
+    }
 }
 
 void Window::SetSize(Vector2D size){
@@ -126,8 +145,11 @@ void Window::SetSize(Vector2D size){
 }
 
 void Window::SetPosition(int x, int y){
-    if(mode == WindowMode::Windowed)
-        glfwSetWindowPos(window, x, y);  
+    if(m_mode == WindowMode::Windowed){
+        m_windowedX = x;
+        m_windowedY = y;
+        glfwSetWindowPos(m_window, x, y);  
+    }
 }
 
 void Window::SetPosition(Vector2D position){
@@ -135,21 +157,21 @@ void Window::SetPosition(Vector2D position){
 }
 
 void Window::SetTitle(const char* title){
-    glfwSetWindowTitle(window, title);
+    glfwSetWindowTitle(m_window, title);
 }
 
 void Window::SetIcon(const char* iconPath){
     GLFWimage images[1];
     images[0].pixels = stbi_load(iconPath, &images[0].width, &images[0].height, 0, 4);
 
-    glfwSetWindowIcon(window, 1, images),
+    glfwSetWindowIcon(m_window, 1, images),
 
     stbi_image_free(images[0].pixels); 
 }
 
 void Window::SetOpacity(float opacity){
     if(opacity >= 0.0f && opacity <= 1.0f)
-        glfwSetWindowOpacity(window, opacity);
+        glfwSetWindowOpacity(m_window, opacity);
 }
 
 // ------- //
@@ -158,42 +180,42 @@ void Window::SetOpacity(float opacity){
 
 int Window::GetWidth(){
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetWindowSize(m_window, &width, &height);
     
     return width;
 }
 
 int Window::GetHeight(){
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetWindowSize(m_window, &width, &height);
     
     return height;
 }
 
 Vector2D Window::GetSize(){
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetWindowSize(m_window, &width, &height);
     
     return Vector2D{width, height};
 }
 
 int Window::GetPositionX(){
     int xpos, ypos;
-    glfwGetWindowPos(window, &xpos, &ypos);
+    glfwGetWindowPos(m_window, &xpos, &ypos);
 
     return xpos;
 }
 
 int Window::GetPositionY(){
     int xpos, ypos;
-    glfwGetWindowPos(window, &xpos, &ypos);
+    glfwGetWindowPos(m_window, &xpos, &ypos);
 
     return ypos;
 }
 
 Vector2D Window::GetPosition(){
     int xpos, ypos;
-    glfwGetWindowPos(window, &xpos, &ypos);
+    glfwGetWindowPos(m_window, &xpos, &ypos);
 
     return Vector2D{xpos, ypos};
 }
