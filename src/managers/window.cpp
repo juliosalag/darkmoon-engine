@@ -1,5 +1,4 @@
 #include "window.hpp"
-#include <iostream>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
@@ -31,6 +30,7 @@ Window::Window(int width, int height, const char* title){
     // Callbacks
     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
     glfwSetKeyCallback(m_window, key_callback);
+    glfwSetCharCallback(m_window, char_callback);
 
     glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
     glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
@@ -69,6 +69,8 @@ void Window::BeginDrawing(){
 }
 
 void Window::EndDrawing(){
+    UpdateInput();
+
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }

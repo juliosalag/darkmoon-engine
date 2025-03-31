@@ -1,9 +1,11 @@
 #pragma once
 
+#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "monitor.hpp"
+#include "./utils/keys.hpp"
 
 enum struct WindowMode{
     Windowed,
@@ -59,16 +61,14 @@ struct Window{
     // --------------- //
 
     // Keyboard input
-    /*
-        2 modes: key events and character events
 
-        glfwSetKeyCallback();
-        glfwSetCharCallback();
+    void SetExitKey(int key){ m_exitKey = key; };
+    char GetLastCharPressed(){ return static_cast<char>(m_input.lastChar); };
 
-        glfwGetKey();
-
-        SetExitKey();
-    */
+    bool IsKeyPressed(int key){ return (m_input.keysLast[key] == false && m_input.keys[key]); };
+    bool IsKeyReleased(int key){ return (m_input.keysLast[key] && m_input.keys[key] == false); };
+    bool IsKeyDown(int key){ return (m_input.keysLast[key] && m_input.keys[key]); };
+    bool IsKeyUp(int key){ return (m_input.keysLast[key] == false && m_input.keys[key] == false); };
     
     // Mouse input
     /*
@@ -144,6 +144,28 @@ struct Window{
     int GetExitKey(){ return m_exitKey; };
 
 private:
+
+    // ---------- //
+    // Properties //
+    // ---------- //
+
+    struct Input{
+        bool keys[GLFW_KEY_LAST] { false };
+        bool keysLast[GLFW_KEY_LAST] { false };
+        unsigned int lastChar {};
+    };
+
+    void UpdateInput(){
+        for(int i=0; i<GLFW_KEY_LAST; i++)
+            m_input.keysLast[i] = m_input.keys[i];
+    };
+
+    Input m_input {};
+    WindowMode m_mode {};
+    GLFWwindow* m_window {};
+    int m_windowedX {}, m_windowedY {}, m_windowedWidth {}, m_windowedHeight {};
+    int m_exitKey { KEY_ESCAPE };
+
     // --------- //
     // Callbacks //
     // --------- //
@@ -151,23 +173,29 @@ private:
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height) { 
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
         
-        if(win) 
+        if(win)
             glViewport(0, 0, width, height);
     }
 
     static void key_callback(GLFWwindow* window, int key, int, int action, int) {
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+        if(key >= 0){
+            if(action == GLFW_PRESS)
+                win->m_input.keys[key] = true;
+            else if(action == GLFW_RELEASE)
+                win->m_input.keys[key] = false; 
+        }
         
         if(key == win->GetExitKey() && action == GLFW_RELEASE)
             glfwSetWindowShouldClose(win->GetWindow(), GLFW_TRUE);
     }
 
-    // ---------- //
-    // Properties //
-    // ---------- //
+    static void char_callback(GLFWwindow* window, unsigned int codepoint) {
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        
+        win->m_input.lastChar = codepoint;
 
-    WindowMode m_mode {};
-    GLFWwindow* m_window {};
-    int m_windowedX {}, m_windowedY {}, m_windowedWidth {}, m_windowedHeight {};
-    int m_exitKey { GLFW_KEY_ESCAPE };
+        // std::cout << static_cast<char>(win->m_input.lastChar) << "\n";
+    }
 };

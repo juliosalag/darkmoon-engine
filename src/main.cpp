@@ -15,11 +15,24 @@ int main() {
 
         // Logic //
 
+        if(w.IsKeyPressed(KEY_A))
+            std::cout << "He pulsado A\n";
+        if(w.IsKeyReleased(KEY_A))
+            std::cout << "He soltado A\n";
+
         if(glfwGetKey(w.GetWindow(), GLFW_KEY_0) || glfwGetKey(w2.GetWindow(), GLFW_KEY_0))
             w2.Hide();
         else if(glfwGetKey(w.GetWindow(), GLFW_KEY_9) || glfwGetKey(w2.GetWindow(), GLFW_KEY_9))
             w2.Show();
         
+        static auto prueba = w.GetLastCharPressed();
+
+        if(prueba != w.GetLastCharPressed()){
+            prueba = w.GetLastCharPressed();
+            std::cout << prueba << "\n";
+        }
+
+
         // Render //
 
         w.BeginDrawing();
