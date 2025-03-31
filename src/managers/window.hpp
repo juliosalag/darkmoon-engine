@@ -20,7 +20,7 @@ struct Vector2D{
 struct Window{
     // Create window, load OpenGL functions pointers and configure OpenGL
     Window(int width, int height, const char* title);
-    ~Window() { Close(); };
+    ~Window(){ Close(); };
 
     // --------------- //
     // Basic Functions //
@@ -71,21 +71,33 @@ struct Window{
     bool IsKeyUp(int key){ return (m_input.keysLast[key] == false && m_input.keys[key] == false); };
     
     // Mouse input
-    /*
-        glfwSetCursorCallback();
-        glfwCreateCursor();
-        
-        glfwSetCursorEnterCallback();
 
-        glfwSetMouseButtonCallback();
-        glfwGetMouseButton();
+    // Set custom cursor (Normal size: 16 x 16 x 4)
+    void SetCustomCursor(const char* cursorPath);
+    void ResetCursor();
 
-        glfwGetCursorPos();
-            ...
+    int GetCursorPositionX();
+    int GetCursorPositionY();
+    Vector2D GetCursorPosition();
 
-        glfwSetScrollCallback();
-    */
+    void SetCursorPositionX(int xpos);
+    void SetCursorPositionY(int ypos);
+    void SetCursorPosition(Vector2D position);
     
+    bool IsCursorHover(){ return glfwGetWindowAttrib(m_window, GLFW_HOVERED); };
+
+    void DisableCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); };
+    void HideCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); };
+    void EnableCursor(){ glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); };
+
+    bool IsMouseButtonPressed(int button){ return (m_input.mouseButtonsLast[button] == false && m_input.mouseButtons[button]); };
+    bool IsMouseButtonReleased(int button){ return (m_input.mouseButtonsLast[button] && m_input.mouseButtons[button] == false); };
+    bool IsMouseButtonDown(int button){ return (m_input.mouseButtonsLast[button] && m_input.mouseButtons[button]); };
+    bool IsMouseButtonUp(int button){ return (m_input.mouseButtonsLast[button] == false && m_input.mouseButtons[button] == false); };
+    
+    int GetXoffsetScroll(){ return m_input.xoffset; };
+    int GetYoffsetScroll(){ return m_input.yoffset; };
+
     // Joystick input
     /*
         glfwSetJoystickCallback();
@@ -150,14 +162,15 @@ private:
     // ---------- //
 
     struct Input{
+        // Keyboard
         bool keys[GLFW_KEY_LAST] { false };
         bool keysLast[GLFW_KEY_LAST] { false };
         unsigned int lastChar {};
-    };
-
-    void UpdateInput(){
-        for(int i=0; i<GLFW_KEY_LAST; i++)
-            m_input.keysLast[i] = m_input.keys[i];
+        
+        // Mouse buttons
+        bool mouseButtons[GLFW_MOUSE_BUTTON_LAST] {false};
+        bool mouseButtonsLast[GLFW_MOUSE_BUTTON_LAST] {false};
+        int xoffset {}, yoffset {};
     };
 
     Input m_input {};
@@ -165,6 +178,21 @@ private:
     GLFWwindow* m_window {};
     int m_windowedX {}, m_windowedY {}, m_windowedWidth {}, m_windowedHeight {};
     int m_exitKey { KEY_ESCAPE };
+
+    // --------- //
+    // Functions //
+    // --------- //
+
+    void UpdateInput(){
+        for(int i=0; i<GLFW_KEY_LAST; i++)
+            m_input.keysLast[i] = m_input.keys[i];
+
+        for(int i=0; i<GLFW_MOUSE_BUTTON_LAST; i++)
+            m_input.mouseButtonsLast[i] = m_input.mouseButtons[i];
+
+        m_input.xoffset = 0;
+        m_input.yoffset = 0;
+    };
 
     // --------- //
     // Callbacks //
@@ -195,7 +223,23 @@ private:
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
         
         win->m_input.lastChar = codepoint;
+    }
 
-        // std::cout << static_cast<char>(win->m_input.lastChar) << "\n";
+    static void mouse_button_callback(GLFWwindow* window, int button, int action, int) {
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+        if(button >= 0){
+            if(action == GLFW_PRESS)
+                win->m_input.mouseButtons[button] = true;
+            else if(action == GLFW_RELEASE)
+                win->m_input.mouseButtons[button] = false;
+        }
+    }
+
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+        win->m_input.xoffset = static_cast<int>(xoffset);
+        win->m_input.yoffset = static_cast<int>(yoffset);
     }
 };

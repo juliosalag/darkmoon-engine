@@ -1,10 +1,5 @@
 # TODO
 
-## Window
-
-- Create, get and set active window 
-- Multiple Windows
-
 # 2D
 
 - Vector2D
@@ -28,7 +23,6 @@
 
 # Input
 
-- Keyboard
 - Mouse
 - Joystick
 - Gamepad mappings

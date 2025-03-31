@@ -31,6 +31,8 @@ Window::Window(int width, int height, const char* title){
     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
     glfwSetKeyCallback(m_window, key_callback);
     glfwSetCharCallback(m_window, char_callback);
+    glfwSetMouseButtonCallback(m_window, mouse_button_callback);
+    glfwSetScrollCallback(m_window, scroll_callback);
 
     glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
     glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
@@ -73,6 +75,64 @@ void Window::EndDrawing(){
 
     glfwSwapBuffers(m_window);
     glfwPollEvents();
+}
+
+// --------------- //
+// Input Functions //
+// --------------- //
+
+void Window::SetCustomCursor(const char* cursorPath){
+    int width, height, channels;
+    unsigned char* image = stbi_load(cursorPath, &width, &height, &channels, 0);
+
+    if(!image)
+        std::cerr << "[ERROR]: Loading cursor image: \"" << cursorPath << "\"\n";
+
+    GLFWimage glfw_img;
+    glfw_img.width = width;
+    glfw_img.height = height;
+    glfw_img.pixels = image;
+
+    glfwSetCursor(m_window, glfwCreateCursor(&glfw_img, 0, 0));  
+
+    stbi_image_free(image);
+}
+
+void Window::ResetCursor(){
+    glfwSetCursor(m_window, glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
+}
+
+int Window::GetCursorPositionX(){
+    double xpos, ypos;
+    glfwGetCursorPos(m_window, &xpos, &ypos);
+
+    return static_cast<int>(xpos);
+}
+
+int Window::GetCursorPositionY(){
+    double xpos, ypos;
+    glfwGetCursorPos(m_window, &xpos, &ypos);
+
+    return static_cast<int>(ypos);
+}
+
+Vector2D Window::GetCursorPosition(){
+    double xpos, ypos;
+    glfwGetCursorPos(m_window, &xpos, &ypos);
+
+    return {static_cast<int>(xpos), static_cast<int>(ypos)};
+}
+
+void Window::SetCursorPositionX(int xpos){
+    glfwSetCursorPos(m_window, static_cast<double>(xpos), GetCursorPositionY());
+}
+
+void Window::SetCursorPositionY(int ypos){
+    glfwSetCursorPos(m_window, GetCursorPositionX(), static_cast<double>(ypos));
+}
+
+void Window::SetCursorPosition(Vector2D position){
+    glfwSetCursorPos(m_window, static_cast<double>(position.x), static_cast<double>(position.y));
 }
 
 // ------- //
