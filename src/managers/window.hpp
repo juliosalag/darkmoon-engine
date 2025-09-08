@@ -21,7 +21,7 @@ struct Vector2D{
 
 struct Window{
     // Create window, load OpenGL functions pointers and configure OpenGL
-    Window(int width, int height, const char* title);
+    Window(int width, int height, const char* title, GLFWwindow* sharedContext = nullptr);
     ~Window(){ Close(); };
 
     // --------------- //

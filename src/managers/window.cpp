@@ -8,7 +8,7 @@
 
 #pragma GCC diagnostic pop
 
-Window::Window(int width, int height, const char* title){
+Window::Window(int width, int height, const char* title, GLFWwindow* sharedContext){
     // ------------------ // 
     // Create window GLFW //
     // ------------------ // 
@@ -17,7 +17,7 @@ Window::Window(int width, int height, const char* title){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    m_window = glfwCreateWindow(width, height, title, nullptr, sharedContext);
     if(!m_window){
         std::cerr << "[ERROR] Failed to create GLFW window\n";
         glfwTerminate();
