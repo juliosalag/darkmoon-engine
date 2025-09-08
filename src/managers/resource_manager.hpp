@@ -5,6 +5,7 @@
 
 #include "../resources/resource.hpp"
 #include "../resources/resource_texture.hpp"
+#include "../resources/resource_shader.hpp"
 
 struct ResourceManager {
 public:

@@ -33,6 +33,7 @@ Window::Window(int width, int height, const char* title){
     glfwSetCharCallback(m_window, char_callback);
     glfwSetMouseButtonCallback(m_window, mouse_button_callback);
     glfwSetScrollCallback(m_window, scroll_callback);
+    glfwSetWindowCloseCallback(m_window, window_close_callback);
 
     glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
     glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);

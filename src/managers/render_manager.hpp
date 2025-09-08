@@ -9,4 +9,6 @@ public:
 
 private:
     GLFWwindow* activeWindow{};
+    
+    // std::map<std::string, ResourceShader*> shaders;
 };

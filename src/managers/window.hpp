@@ -7,6 +7,8 @@
 #include "monitor.hpp"
 #include "./utils/keys.hpp"
 
+#include "resource_manager.hpp"
+
 enum struct WindowMode{
     Windowed,
     Borderless,
@@ -27,7 +29,10 @@ struct Window{
     // --------------- //
 
     // Destroy the window and close it
-    void Close(){ if(m_window) glfwDestroyWindow(m_window); };
+    void Close(){ 
+        m_resourceManager.unloadAllResources();
+        if(m_window) glfwDestroyWindow(m_window); 
+    };
     // Return whether the window should close
     bool ShouldClose(){ return m_window && glfwWindowShouldClose(m_window); };
     // Iconify the window (minimize it)
@@ -179,6 +184,8 @@ private:
     int m_windowedX {}, m_windowedY {}, m_windowedWidth {}, m_windowedHeight {};
     int m_exitKey { KEY_ESCAPE };
 
+    ResourceManager& m_resourceManager = ResourceManager::getInstance();
+
     // --------- //
     // Functions //
     // --------- //
@@ -215,8 +222,10 @@ private:
                 win->m_input.keys[key] = false; 
         }
         
-        if(key == win->GetExitKey() && action == GLFW_RELEASE)
+        if(key == win->GetExitKey() && action == GLFW_RELEASE){
+            win->m_resourceManager.unloadAllResources();
             glfwSetWindowShouldClose(win->GetWindow(), GLFW_TRUE);
+        }
     }
 
     static void char_callback(GLFWwindow* window, unsigned int codepoint) {
@@ -241,5 +250,10 @@ private:
 
         win->m_input.xoffset = static_cast<int>(xoffset);
         win->m_input.yoffset = static_cast<int>(yoffset);
+    }
+
+    static void window_close_callback(GLFWwindow* window){
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        win->m_resourceManager.unloadAllResources();
     }
 };

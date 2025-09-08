@@ -40,6 +40,14 @@ public:
 
     // int IsKeyPressed(int key){ return glfwGetKey(m_activeWindow.window, key) == GLFW_PRESS; };
 
+    // -------------------------- //
+    // Resource Manager Functions //
+    // -------------------------- //
+
+    ResourceShader* CreateShader(const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = ""){
+        return m_resourceManager.loadResource<ResourceShader>(vertexPath, fragmentPath, geometryPath);
+    }
+
 private:
     Monitor m_activeMonitor {};
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
