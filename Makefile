@@ -1,5 +1,5 @@
 # Main configuration
-APP 	 := Engine
+APP      := Engine
 
 MKDIR    := mkdir -p
 SRC		 := src
@@ -11,7 +11,13 @@ SANITIZE :=
 
 CC 		 := g++
 CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -Isrc/ -Ilibs/glad/include $(SANITIZE)
-LIBS     := -lglfw -lGLU -lGL $(SANITIZE)
+
+# Detect OS (Linux vs Windows MSYS2)
+ifeq ($(OS),Windows_NT)
+    LIBS := -lglfw3 -lopengl32 -lgdi32
+else
+    LIBS := -lglfw -lGLU -lGL $(SANITIZE)
+endif
 
 # Source files and objects
 ALLCPP      := $(shell find $(SRC) -type f -iname *.cpp) libs/glad/src/glad.c

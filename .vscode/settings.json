@@ -58,5 +58,11 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "makefile.configureOnOpen": false,
+
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}",
+        "--query-driver=C:/msys64/mingw64/bin/clang++.exe"
+    ]
 }

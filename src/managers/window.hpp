@@ -6,6 +6,8 @@
 
 #include "monitor.hpp"
 #include "./utils/keys.hpp"
+#include "./utils/color.hpp"
+#include "./utils/math.hpp"
 
 #include "resource_manager.hpp"
 
@@ -15,13 +17,10 @@ enum struct WindowMode{
     Fullscreen
 };
 
-struct Vector2D{
-    int x, y;
-};
-
 struct Window{
     // Create window, load OpenGL functions pointers and configure OpenGL
     Window(int width, int height, const char* title, GLFWwindow* sharedContext = nullptr);
+    Window() {};
     ~Window(){ Close(); };
 
     // --------------- //
@@ -58,8 +57,12 @@ struct Window{
 
     // Prepares the OpenGL context for rendering by setting up the projection matrix and defining the viewport size
     void BeginDrawing();
+    void BeginDrawing(Color color);
     // Swaps the buffers to display the rendered content and processes any pending events
     void EndDrawing();
+    // 
+    void ClearBackground(Color color);
+
 
     // --------------- //
     // Input Functions //

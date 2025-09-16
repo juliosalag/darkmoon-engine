@@ -1,92 +1,42 @@
 #include <darkmoon.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-void DrawLine(float vertices[], Color color, ResourceShader* shader){
-    
-    // Construct Line
-
-    GLuint VAO, VBO;
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    // VAO
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-
-    // Set uniform color in the shader
-    GLint colorUniform = glGetUniformLocation(shader->getIDShader(), "customColor");
-    glUseProgram(shader->getIDShader());
-    glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(color.r, color.g, color.b, color.a)));
-
-    // Set line width
-    glLineWidth(2);
-
-    // Draw the line
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0, 2);
-    glBindVertexArray(0);
-
-    // Reset line width
-    glLineWidth(1);
-
-    // Clean up resources
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-}
-
 int main() {
     DarkMoonEngine dm;
 
-    Window w = Window(600, 450, "Game");
-    w.SetPosition(10, 10);
+    auto w = dm.CreateInitWindow(600, 450, "Game");
+    w.SetPosition(30, 60);
 
-    auto shader = dm.CreateShader("assets/shaders/basicshader.vs", "assets/shaders/basicshader.fs");
-    
-    Window w2 = Window(300, 250, "Debug", w.GetWindow());
-    w2.SetPosition(10, 460);
+    // Create shaders here: after create w and before create w2
 
-    // Shader basico para las cosas 2D, con color basico y transformaciones
-    // Posibilidad de pasar shader personalizado por parametro, si no usara uno por defecto
+    auto w2 = dm.CreateSharedWindow(300, 450, "Debug");
+    w2.SetPosition(660, 60);
 
-    float vertices[] = {0.5, -0.5, 0.5, 0.5};
-    float vertices2[] = {1, 0, 0.5, 0.5};
-    float vertices3[] = {0, -0.7, 0, 0.5};
-    float vertices4[] = {0, 1, 0.9, 0.5};
-    float vertices5[] = {-1, 1, 0, 0};
+    w.Focus();
 
-    while(!w.ShouldClose()){
+    while(!w.ShouldClose() && !w2.ShouldClose()){
 
         // Logic //
 
         // Render //
 
-        w.BeginDrawing();
-        dm.ClearBackground(GRAY); // TODO: Change to window //
+        // Window 1 //
 
-        DrawLine(vertices, RED, shader);
-        DrawLine(vertices5, BLACK, shader);
+        dm.BeginDrawing(w, GRAY);
+
+        dm.DrawLine({300, 225}, {600, 450}, RED);
+        dm.DrawLine({0, 0}, {300, 225}, BLACK);
         
-        w.EndDrawing();
+        dm.EndDrawing(w);
+
+        // Window 2 //
         
-        w2.BeginDrawing();
-        dm.ClearBackground(BLACK);
+        dm.BeginDrawing(w2);
 
-        DrawLine(vertices2, GREEN, shader);
-        DrawLine(vertices3, BLUE, shader);
-        DrawLine(vertices4, WHITE, shader);
+        dm.DrawLine({150, 225}, {300, 225}, GREEN);
+        dm.DrawLine({150, 225}, {150, 350}, BLUE);
+        dm.DrawLine({150, 0}, {150, 225}, WHITE);
 
-        w2.EndDrawing();
+        dm.EndDrawing(w2);
 
     }
 

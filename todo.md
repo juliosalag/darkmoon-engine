@@ -2,10 +2,7 @@
 
 # 2D
 
-- Vector2D
-
 - Pixel
-- Line
 - Triangle
 - Rectangle
 - Circle

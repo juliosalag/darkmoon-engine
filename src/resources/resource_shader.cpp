@@ -13,6 +13,19 @@ ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, con
         :  std::cout << "[ERROR] Loading a shader (" << m_filePath << ")\n";
 }
 
+ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, const char* path, const std::string& vertexCode, const std::string& fragmentCode , const std::string& geometryCode) 
+    : Resource(idResource, fileType, path) {
+
+    m_vertexCode = vertexCode;
+    m_fragmentCode = fragmentCode;
+    m_geometryCode = geometryCode;
+
+    setup();
+
+    m_isLoaded ? std::cout << "[LOAD] Shader ID: " << m_idResource << " (" << m_filePath << ")\n"
+        :  std::cout << "[ERROR] Loading a shader (" << m_filePath << ")\n";
+}
+
 void ResourceShader::unload() {
 
     if(m_isLoaded) std::cout << "[UNLOAD] Shader ID: " << m_idResource << " (" << m_filePath << ")\n";
@@ -68,9 +81,16 @@ void ResourceShader::setup() { // TODO: Refactorizar el codigo //
         m_isLoaded = false;
     }
 
+    if(!m_vertexCode.empty()){
+        vertexCode = m_vertexCode;
+        fragmentCode = m_fragmentCode;
+        geometryCode = m_geometryCode;
+    }
+
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
     const char* gShaderCode = geometryCode.c_str();
+
 
     // Compile shaders //
 

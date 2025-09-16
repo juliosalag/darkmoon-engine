@@ -71,11 +71,21 @@ void Window::BeginDrawing(){
     glOrtho(0, width, 0, height, -1, 1);
 }
 
+void Window::BeginDrawing(Color color){
+    BeginDrawing();
+    ClearBackground(color);
+}
+
 void Window::EndDrawing(){
     UpdateInput();
 
     glfwSwapBuffers(m_window);
     glfwPollEvents();
+}
+
+void Window::ClearBackground(Color color){
+    glClearColor(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // --------------- //
