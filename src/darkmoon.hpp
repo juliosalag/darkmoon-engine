@@ -47,8 +47,8 @@ public:
     void EndDrawing(Window& window);
     void ClearBackground(Window& window, Color color);
 
-    void DrawPixel(Vector2D position, Color color, ResourceShader* shader = nullptr); // TODO
-    void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, ResourceShader* shader = nullptr);
+    void DrawPixel(Vector2D position, Color color, int size = 1, ResourceShader* shader = nullptr); // TODO
+    void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
     // - Triangle
     // - Rectangle
     // - Circle
@@ -57,18 +57,6 @@ public:
     // - Regular Polygon
     // - Poly Lines
     // - Splines
-
-    /*
-    void BeginDrawing();
-    void EndDrawing();
-    void ClearBackground(Color color);
-    */
-
-    // --------------- //
-    // Input Functions // --> input_guide.html
-    // --------------- //
-
-    // int IsKeyPressed(int key){ return glfwGetKey(m_activeWindow.window, key) == GLFW_PRESS; };
 
     // -------------------------- //
     // Resource Manager Functions //

@@ -1,3 +1,4 @@
+#include "managers/window.hpp"
 #include <darkmoon.hpp>
 
 int main() {
@@ -24,7 +25,9 @@ int main() {
         dm.BeginDrawing(w, GRAY);
 
         dm.DrawLine({300, 225}, {600, 450}, RED);
-        dm.DrawLine({0, 0}, {300, 225}, BLACK);
+        dm.DrawLine({0, 0}, {300, 225}, BLACK, 4);
+        dm.DrawPixel({310, 215}, WHITE, 5);
+        dm.DrawPixel({315, 225}, RED, 2);
         
         dm.EndDrawing(w);
 

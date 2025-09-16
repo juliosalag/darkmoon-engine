@@ -2,7 +2,6 @@
 
 # 2D
 
-- Pixel
 - Triangle
 - Rectangle
 - Circle

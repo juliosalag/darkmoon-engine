@@ -1,4 +1,5 @@
 #include "darkmoon.hpp"
+#include "glad/glad.h"
 #include "managers/window.hpp"
 
 DarkMoonEngine::DarkMoonEngine(){
@@ -61,17 +62,58 @@ void DarkMoonEngine::ClearBackground(Window& window, Color color){
     window.ClearBackground(color);
 }
 
-void DarkMoonEngine::DrawPixel(Vector2D /*position*/, Color /*color*/, ResourceShader* /*shader*/){
-    /*
+void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, ResourceShader* shader){
     auto activeShader = shader;
     
     if(!shader){
         activeShader = m_shaders["basic2D"];
     }
-    */
+    
+    // Construct Pixel
+
+    GLuint VAO, VBO;
+
+    float vertex[] = {
+        normalizeX(static_cast<float>(position.x)), 
+        normalizeY(static_cast<float>(position.y)),
+    };
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    // VAO
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+
+    // Set uniform color in the shader
+    GLint colorUniform = glGetUniformLocation(activeShader->getIDShader(), "customColor");
+    glUseProgram(activeShader->getIDShader());
+    glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(color.r, color.g, color.b, color.a)));
+
+    // Set pixel width
+    glPointSize(static_cast<GLfloat>(size));
+
+    // Draw the pixel
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_POINTS, 0, 1);
+    glBindVertexArray(0);
+
+    // Reset pixel width
+    glPointSize(1);
+
+    // Clean up resources
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }
 
-void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, ResourceShader* shader){
+void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width, ResourceShader* shader){
     auto activeShader = shader;
     
     if(!shader){
@@ -82,7 +124,7 @@ void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Colo
 
     GLuint VAO, VBO;
     
-    float vertices[] = {
+    float vertex[] = {
         normalizeX(static_cast<float>(startPosition.x)), 
         normalizeY(static_cast<float>(startPosition.y)), 
         normalizeX(static_cast<float>(endPosition.x)), 
@@ -97,7 +139,7 @@ void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Colo
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -110,7 +152,7 @@ void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Colo
     glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(color.r, color.g, color.b, color.a)));
 
     // Set line width
-    glLineWidth(2);
+    glLineWidth(static_cast<GLfloat>(width));
 
     // Draw the line
     glBindVertexArray(VAO);
