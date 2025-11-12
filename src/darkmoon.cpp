@@ -30,6 +30,8 @@ Window& DarkMoonEngine::CreateInitWindow(int width, int height, const char* titl
         LoadBasicShaders();
     }
 
+    FocusWindow(*m_initWindow);
+
     return *m_initWindow;
 }
 
@@ -37,7 +39,15 @@ Window& DarkMoonEngine::CreateSharedWindow(int width, int height, const char* ti
     m_sharedWindows.push_back(std::make_unique<Window>(
         width, height, title, GetInitWindow().GetWindow()
     ));
+
+    FocusWindow(*m_sharedWindows.back());
+
     return *m_sharedWindows.back();
+}
+
+void DarkMoonEngine::FocusWindow(Window& win){
+    m_activeWindow = &win;
+    win.Focus();
 }
 
 // ---------------- //
@@ -60,6 +70,10 @@ void DarkMoonEngine::EndDrawing(Window& window){
 
 void DarkMoonEngine::ClearBackground(Window& window, Color color){
     window.ClearBackground(color);
+}
+
+Pixel DarkMoonEngine::CreatePixel(Vector2D position, Color color, int size, ResourceShader* shader){
+    return Pixel(position, color, size, m_activeWindow->GetWidth(), m_activeWindow->GetHeight(), m_shaders["basic2D"]);
 }
 
 void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, ResourceShader* shader){
