@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <iostream>
 #include <vector>
 #include <map>
@@ -11,6 +12,7 @@
 #include "resources/resource_shader.hpp"
 
 #include "./2D/pixel.hpp"
+#include "./2D/line.hpp"
 
 struct DarkMoonEngine{
 public:
@@ -49,9 +51,16 @@ public:
     void EndDrawing(Window& window);
     void ClearBackground(Window& window, Color color);
 
+    // Pixel //
+
     Pixel CreatePixel(Vector2D position, Color color, int size = 1, ResourceShader* shader = nullptr); 
     void DrawPixel(Vector2D position, Color color, int size = 1, ResourceShader* shader = nullptr);
+
+    // Line //
+
+    Line CreateLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
     void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
+    
     // - Triangle
     // - Rectangle
     // - Circle

@@ -1,5 +1,6 @@
 #include "managers/window.hpp"
 #include "resources/resource_shader.hpp"
+#include "utils/color.hpp"
 #include <darkmoon.hpp>
 #include <iostream>
 
@@ -21,66 +22,33 @@ int main() {
     
     while(!w.ShouldClose() && !w2.ShouldClose()){
         
+        // ----- //
         // Logic //
+        // ----- //
+
         
+        
+        // ------ //
         // Render //
-        
+        // ------ //
         
         // Window 1 //
-        
-        //dm.BeginDrawing(w, GRAY);
-        
-        /*
-
-        const int N = 100000; // número de repeticiones
-
-        double total1 = 0.0;
-        double total2 = 0.0;
-
-        for (int i = 0; i < N; i++) {
-
-            // ------------------------------------------------------------------- //
-            auto start1 = std::chrono::high_resolution_clock::now();
-
-            static auto pixel = dm.CreatePixel({330, 225}, GREEN, 2);
-            pixel.Draw();
-
-            auto end1 = std::chrono::high_resolution_clock::now();
-            // ------------------------------------------------------------------- //
-            auto start2 = std::chrono::high_resolution_clock::now();
-
-            dm.DrawPixel({315, 225}, RED, 2);
-
-            auto end2 = std::chrono::high_resolution_clock::now();
-            // ------------------------------------------------------------------- //
-
-            std::chrono::duration<double, std::milli> elapsed1 = end1 - start1;
-            std::chrono::duration<double, std::milli> elapsed2 = end2 - start2;
-
-            total1 += elapsed1.count();
-            total2 += elapsed2.count();
-        }
-
-        // Promedio
-        double avg1 = total1 / N;
-        double avg2 = total2 / N;
-
-        std::cout << "Pixel 1: " << avg1 << " ms - ";
-        std::cout << "Pixel 2: " << avg2 << " ms\n";
-        */
-
-        /*
-
-        Pixel 1: 0.00486003 ms - Pixel 2: 0.00830631 ms
-
-        */
 
         dm.BeginDrawing(w, GRAY);
 
-        static auto pixel = dm.CreatePixel({330, 225}, GREEN, 2);
+        // Pixel //
+
+        static auto pixel = dm.CreatePixel({330, 225}, GREEN, 1);
         pixel.Draw();
 
         dm.DrawPixel({315, 225}, RED, 2);
+
+        // Line //
+
+        static auto line = dm.CreateLine({520, 220}, {560, 220}, GREEN, 1);
+        line.Draw();
+
+        dm.DrawLine({320, 220}, {360, 220}, WHITE, 2);
 
         dm.EndDrawing(w);
 

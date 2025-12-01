@@ -9,7 +9,7 @@ ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, con
 
     setup();
 
-    m_isLoaded ? std::cout << "[LOAD] Shader ID: " << m_idResource << " (" << m_filePath << ")\n"
+    m_isLoaded ? std::cout << "[LOAD] Shader ID: " << m_idResource << /*" (" << m_filePath << ")\n"*/ "\n"
         :  std::cout << "[ERROR] Loading a shader (" << m_filePath << ")\n";
 }
 
@@ -22,13 +22,13 @@ ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, con
 
     setup();
 
-    m_isLoaded ? std::cout << "[LOAD] Shader ID: " << m_idResource << " (" << m_filePath << ")\n"
+    m_isLoaded ? std::cout << "[LOAD] Shader ID: " << m_idResource << /*" (" << m_filePath << ")\n"*/ "\n"
         :  std::cout << "[ERROR] Loading a shader (" << m_filePath << ")\n";
 }
 
 void ResourceShader::unload() {
 
-    if(m_isLoaded) std::cout << "[UNLOAD] Shader ID: " << m_idResource << " (" << m_filePath << ")\n";
+    if(m_isLoaded) std::cout << "[UNLOAD] Shader ID: " << m_idResource << /*" (" << m_filePath << ")\n"*/ "\n";
 
     if (glIsProgram(m_idShader)) {
         glDeleteProgram(m_idShader);
