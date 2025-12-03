@@ -24,18 +24,21 @@ std::cout << "---------------------------------\n";
 // Window Functions //
 // ---------------- //
 
-Window& DarkMoonEngine::CreateInitWindow(int width, int height, const char* title){
+/*
+Window* DarkMoonEngine::CreateInitWindow(int width, int height, const char* title){
     if(!m_initWindow){
-        m_initWindow.emplace(width, height, title);
+        m_initWindow = Window(width, height, title);
         LoadBasicShaders();
     }
 
     FocusWindow(*m_initWindow);
 
-    return *m_initWindow;
+    return m_initWindow;
 }
+*/
 
-Window& DarkMoonEngine::CreateSharedWindow(int width, int height, const char* title){
+/*
+Window* DarkMoonEngine::CreateSharedWindow(int width, int height, const char* title){
     m_sharedWindows.push_back(std::make_unique<Window>(
         width, height, title, GetInitWindow().GetWindow()
     ));
@@ -44,6 +47,7 @@ Window& DarkMoonEngine::CreateSharedWindow(int width, int height, const char* ti
 
     return *m_sharedWindows.back();
 }
+*/
 
 void DarkMoonEngine::FocusWindow(Window& win){
     m_activeWindow = &win;

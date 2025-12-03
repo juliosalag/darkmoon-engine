@@ -77,10 +77,7 @@ void Window::BeginDrawing(Color color){
 }
 
 void Window::EndDrawing(){
-    UpdateInput();
-
     glfwSwapBuffers(m_window);
-    glfwPollEvents();
 }
 
 void Window::ClearBackground(Color color){
@@ -91,6 +88,11 @@ void Window::ClearBackground(Color color){
 // --------------- //
 // Input Functions //
 // --------------- //
+
+void Window::PollEvents(){
+    UpdateInput();
+    glfwPollEvents();
+}
 
 void Window::SetCustomCursor(const char* cursorPath){
     int width, height, channels;

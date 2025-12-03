@@ -23,9 +23,10 @@ public:
     // Window Functions //
     // ---------------- //
 
-    Window& CreateInitWindow(int width, int height, const char* title);
-    Window& CreateSharedWindow(int width, int height, const char* title);
-    Window& GetInitWindow() { return *m_initWindow; };
+    //Window* CreateInitWindow(int width, int height, const char* title);
+    //Window* CreateSharedWindow(int width, int height, const char* title);
+
+    Window* GetActiveWindow() { return m_activeWindow; };
 
     void FocusWindow(Window& win);
 
@@ -60,7 +61,7 @@ public:
 
     Line CreateLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
     void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
-    
+
     // - Triangle
     // - Rectangle
     // - Circle
@@ -91,9 +92,7 @@ public:
     float normalizeY(float y) { return -((y / static_cast<float>(m_activeWindow->GetHeight())) * 2 - 1); };
 
 private:
-    Window* m_activeWindow {}; // TODO (Focus)
-    std::optional<Window> m_initWindow {};
-    std::vector<std::unique_ptr<Window>> m_sharedWindows;
+    Window* m_activeWindow {};
 
     Monitor m_activeMonitor {};
     ResourceManager& m_resourceManager = ResourceManager::getInstance();

@@ -68,6 +68,8 @@ struct Window{
     // Input Functions //
     // --------------- //
 
+    void PollEvents();
+
     // Keyboard input
 
     void SetExitKey(int key){ m_exitKey = key; };
