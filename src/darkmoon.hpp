@@ -54,12 +54,10 @@ public:
 
     // Pixel //
 
-    Pixel CreatePixel(Vector2D position, Color color, int size = 1, ResourceShader* shader = nullptr); 
     void DrawPixel(Vector2D position, Color color, int size = 1, ResourceShader* shader = nullptr);
 
     // Line //
 
-    Line CreateLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
     void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
 
     // - Triangle

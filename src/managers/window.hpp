@@ -49,7 +49,10 @@ struct Window{
         glfwShowWindow(m_window); 
     };
     // Focus on the window (bring it to the front)
-    void Focus(){ glfwFocusWindow(m_window); };
+    void Focus(){ 
+        glfwMakeContextCurrent(m_window);
+        glfwFocusWindow(m_window); 
+    };
 
     // ------- //
     // Drawing //

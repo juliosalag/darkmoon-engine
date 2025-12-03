@@ -24,31 +24,6 @@ std::cout << "---------------------------------\n";
 // Window Functions //
 // ---------------- //
 
-/*
-Window* DarkMoonEngine::CreateInitWindow(int width, int height, const char* title){
-    if(!m_initWindow){
-        m_initWindow = Window(width, height, title);
-        LoadBasicShaders();
-    }
-
-    FocusWindow(*m_initWindow);
-
-    return m_initWindow;
-}
-*/
-
-/*
-Window* DarkMoonEngine::CreateSharedWindow(int width, int height, const char* title){
-    m_sharedWindows.push_back(std::make_unique<Window>(
-        width, height, title, GetInitWindow().GetWindow()
-    ));
-
-    FocusWindow(*m_sharedWindows.back());
-
-    return *m_sharedWindows.back();
-}
-*/
-
 void DarkMoonEngine::FocusWindow(Window& win){
     m_activeWindow = &win;
     win.Focus();
@@ -78,24 +53,16 @@ void DarkMoonEngine::ClearBackground(Window& window, Color color){
 
 // Pixel //
 
-Pixel DarkMoonEngine::CreatePixel(Vector2D position, Color color, int size, ResourceShader* shader){
-    return Pixel(position, color, size, m_activeWindow->GetWidth(), m_activeWindow->GetHeight(), shader != nullptr ? shader : m_shaders["basic2D"]);
-}
-
 void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, ResourceShader* shader){
-    auto pixel = CreatePixel(position, color, size, shader);
+    auto pixel = Pixel(position, color, size, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     pixel.Draw();
     pixel.Delete();
 }
 
 // Line //
 
-Line DarkMoonEngine::CreateLine(Vector2D startPosition, Vector2D endPosition, Color color, int width, ResourceShader* shader){
-    return Line(startPosition, endPosition, color, width, m_activeWindow->GetWidth(), m_activeWindow->GetHeight(), shader != nullptr ? shader : m_shaders["basic2D"]);
-}
-
 void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width, ResourceShader* shader){
-    auto line = CreateLine(startPosition, endPosition, color, width, shader);
+    auto line = Line(startPosition, endPosition, color, width, m_activeWindow->GetWidth(), m_activeWindow->GetHeight(), shader != nullptr ? shader : m_shaders["basic2D"]);
     line.Draw();
     line.Delete();
 }

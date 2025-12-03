@@ -6,6 +6,7 @@
 #include "../utils/math.hpp"
 #include "../utils/color.hpp"
 #include "../resources/resource_shader.hpp"
+#include "../managers/window.hpp"
 
 struct Pixel {
 private:
@@ -14,15 +15,15 @@ private:
     Color m_color { BLACK };
     int m_size { 1 };
     ResourceShader* m_shader {};
-    int m_windowWidth {}, m_windowHeight {};
+    Window* m_window {};
 
 public:
-    Pixel(Vector2D position, Color color, int size, int windowWidth, int windowHeight, ResourceShader* shader)
-        : m_position(position), m_color(color), m_size(size), m_shader(shader), m_windowWidth(windowWidth), m_windowHeight(windowHeight)
+    Pixel(Vector2D position, Color color, int size, Window* window, ResourceShader* shader)
+        : m_position(position), m_color(color), m_size(size), m_shader(shader), m_window(window)
     {
         float vertex[] = {
-            (static_cast<float>(m_position.x) / static_cast<float>(m_windowWidth)) * 2 - 1,
-            -((static_cast<float>(m_position.y) / static_cast<float>(m_windowHeight)) * 2 - 1)
+            (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
         };
 
         glGenVertexArrays(1, &m_VAO);
@@ -61,14 +62,12 @@ public:
     // Setters //
     // ------- //
 
-    void SetPosition(Vector2D position, Vector2D windowSize) {
-        m_windowWidth = windowSize.x;
-        m_windowHeight = windowSize.y;
+    void SetPosition(Vector2D position) {
         m_position = position;
 
         float vertex[] = {
-            (static_cast<float>(m_position.x) / static_cast<float>(m_windowWidth)) * 2 - 1,
-            -((static_cast<float>(m_position.y) / static_cast<float>(m_windowHeight)) * 2 - 1)
+            (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
         };
 
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

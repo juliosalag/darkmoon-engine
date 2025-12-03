@@ -28,58 +28,89 @@ int main() {
     //w2.SetPosition(660, 60);
     
     dm.FocusWindow(w);
-
+    
     // Initialize
-    static auto pixel = dm.CreatePixel({330, 225}, GREEN, 1);
-    static auto line = dm.CreateLine({520, 220}, {560, 220}, GREEN, 1);
+    //auto pixel = Pixel({330, 225}, GREEN, 1, w, dm.GetBasicShader2D());
+    //auto line = dm.CreateLine({520, 220}, {560, 220}, GREEN, 1);
+    
+    static auto pixel = Pixel({330, 225}, GREEN, 1, &w, dm.GetBasicShader2D());
 
+    dm.FocusWindow(w2);
+
+    static auto pixel2 = Pixel({130, 225}, GREEN, 1, &w2, dm.GetBasicShader2D());
+
+    dm.FocusWindow(w);
+    
     
     while(!w.ShouldClose()&& !w2.ShouldClose()){
         
         // ----- //
         // Logic //
         // ----- //
-
+        
         w.PollEvents();
         
         //std::cout << pixel.GetPosition().x << " - " << pixel.GetPosition().y << "\n";
         
-        if(w.IsKeyPressed(KEY_W)){
-            std::cout << "W\n";
-            //pixel.SetPosition({pixel.GetPosition().x, pixel.GetPosition().y - 1}, w.GetSize());
+        if(w.IsKeyDown(KEY_W)){
+            //std::cout << "W\n";
+            pixel.SetPosition({pixel.GetPosition().x, pixel.GetPosition().y - 1});
         }
-
         
-        if(w.IsKeyPressed(KEY_S)){
-            std::cout << "S\n";
-            //pixel.SetPosition({pixel.GetPosition().x, pixel.GetPosition().y + 1}, w.GetSize());
+        if(w.IsKeyDown(KEY_S)){
+            //std::cout << "S\n";
+            pixel.SetPosition({pixel.GetPosition().x, pixel.GetPosition().y + 1});
         } 
-
-        if(w.IsKeyPressed(KEY_A)){
-            std::cout << "A\n";
-            //pixel.SetPosition({pixel.GetPosition().x - 1, pixel.GetPosition().y}, w.GetSize());
+        
+        if(w.IsKeyDown(KEY_A)){
+            //std::cout << "A\n";
+            pixel.SetPosition({pixel.GetPosition().x - 1, pixel.GetPosition().y});
         } 
-
-        if(w.IsKeyPressed(KEY_D)){
-            std::cout << "D\n";
-            //pixel.SetPosition({pixel.GetPosition().x + 1, pixel.GetPosition().y}, w.GetSize());
+        
+        if(w.IsKeyDown(KEY_D)){
+            //std::cout << "D\n";
+            pixel.SetPosition({pixel.GetPosition().x + 1, pixel.GetPosition().y});
         } 
+        
+        // --------------- //
 
-
+        w2.PollEvents();
+        
+        if(w2.IsKeyDown(KEY_W)){
+            //std::cout << "W\n";
+            pixel2.SetPosition({pixel2.GetPosition().x, pixel2.GetPosition().y - 1});
+        }
+        
+        if(w2.IsKeyDown(KEY_S)){
+            //std::cout << "S\n";
+            pixel2.SetPosition({pixel2.GetPosition().x, pixel2.GetPosition().y + 1});
+        } 
+        
+        if(w2.IsKeyDown(KEY_A)){
+            //std::cout << "A\n";
+            pixel2.SetPosition({pixel2.GetPosition().x - 1, pixel2.GetPosition().y});
+        } 
+        
+        if(w2.IsKeyDown(KEY_D)){
+            //std::cout << "D\n";
+            pixel2.SetPosition({pixel2.GetPosition().x + 1, pixel2.GetPosition().y});
+        } 
+        
         // ------ //
         // Render //
         // ------ //
         
         // Window 1 //
-
+        
         dm.BeginDrawing(w, GRAY);
-
+        
         /*
         // Pixel //
+        */
         pixel.Draw();
-        
+
         dm.DrawPixel({315, 225}, RED, 2);
-        
+        /*
         // Line //
         
         line.Draw();
@@ -90,7 +121,10 @@ int main() {
 
         // Window 2 //
         
-        dm.BeginDrawing(w2);
+        dm.BeginDrawing(w2, BLACK);
+
+        pixel2.Draw();
+
         dm.EndDrawing(w2);
     }
 
