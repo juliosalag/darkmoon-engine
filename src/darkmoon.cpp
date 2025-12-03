@@ -62,9 +62,23 @@ void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, Resourc
 // Line //
 
 void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width, ResourceShader* shader){
-    auto line = Line(startPosition, endPosition, color, width, m_activeWindow->GetWidth(), m_activeWindow->GetHeight(), shader != nullptr ? shader : m_shaders["basic2D"]);
+    auto line = Line(startPosition, endPosition, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     line.Draw();
     line.Delete();
+}
+
+// Triangle //
+
+void DarkMoonEngine::DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, ResourceShader* shader){
+    auto triangle = Triangle(vertexA, vertexB, vertexC, color, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
+    triangle.Draw();
+    triangle.Delete();
+}
+
+void DarkMoonEngine::DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, ResourceShader* shader){
+    auto triangle_lines = TriangleLines(vertexA, vertexB, vertexC, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
+    triangle_lines.Draw();
+    triangle_lines.Delete();
 }
 
 // -------------------------- //

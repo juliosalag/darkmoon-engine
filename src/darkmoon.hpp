@@ -11,8 +11,9 @@
 #include "./managers/monitor.hpp"
 #include "resources/resource_shader.hpp"
 
-#include "./2D/pixel.hpp"
-#include "./2D/line.hpp"
+#include "./2D/2D.hpp"
+
+#include "utils/math.hpp"
 
 struct DarkMoonEngine{
 public:
@@ -60,14 +61,22 @@ public:
 
     void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
 
+    // Triangle //
+
+    void DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, ResourceShader* shader = nullptr);
+    void DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width = 1, ResourceShader* shader = nullptr);
+
     // - Triangle
-    // - Rectangle
-    // - Circle
+    // - Rectangle / Rounded
+    // - Circle / Sector
     // - Ellipse
     // - Ring
     // - Regular Polygon
     // - Poly Lines
     // - Splines
+    // - Bezier
+
+    // Trans Matrix
 
     // -------------------------- //
     // Resource Manager Functions //

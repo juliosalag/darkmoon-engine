@@ -45,10 +45,13 @@ public:
     }
 
     void Draw() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glUseProgram(m_shader->getIDShader());
 
         GLint colorUniform = glGetUniformLocation(m_shader->getIDShader(), "customColor");
-        glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r, m_color.g, m_color.b, m_color.a)));
+        glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r/255.f, m_color.g/255.f, m_color.b/255.f, m_color.a/255.f)));
 
         glPointSize(static_cast<GLfloat>(m_size));
         glBindVertexArray(m_VAO);
@@ -56,6 +59,7 @@ public:
         glBindVertexArray(0);
 
         glPointSize(1);
+        glDisable(GL_BLEND);
     }
 
     // ------- //

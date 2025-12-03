@@ -1,0 +1,102 @@
+#pragma once
+
+#include "../utils/color.hpp"
+#include "../resources/resource_shader.hpp"
+#include "./line.hpp"
+#include "utils/math.hpp"
+
+struct Triangle {
+private:
+    GLuint m_VAO {}, m_VBO {}, m_EBO {};
+    Vector2D m_vertexA {}, m_vertexB {},m_vertexC {};
+    Color m_color { BLACK };
+    ResourceShader* m_shader {};
+    Window* m_window {};
+
+public:
+    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, ResourceShader* shader)
+        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_color(color), m_shader(shader), m_window(window) 
+    {
+        float vertex[] = {
+            (static_cast<float>(m_vertexA.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_vertexA.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            (static_cast<float>(m_vertexB.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_vertexB.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            (static_cast<float>(m_vertexC.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_vertexC.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+        };
+        GLuint indices[] = { 0, 1, 2 };
+        
+        glGenVertexArrays(1, &m_VAO);
+        glGenBuffers(1, &m_VBO);
+        glGenBuffers(1, &m_EBO);
+
+        glBindVertexArray(m_VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    };
+
+    ~Triangle(){ Delete(); };
+
+    void Delete(){
+        glDeleteVertexArrays(1, &m_VAO);
+        glDeleteBuffers(1, &m_VBO);
+        glDeleteBuffers(1, &m_EBO);
+    };
+
+    void Draw(){
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glUseProgram(m_shader->getIDShader());
+
+        GLint colorUniform = glGetUniformLocation(m_shader->getIDShader(), "customColor");
+        glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r/255.f, m_color.g/255.f, m_color.b/255.f, m_color.a/255.f)));
+
+        glBindVertexArray(m_VAO);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        glDisable(GL_BLEND);
+    }
+};
+
+struct TriangleLines {
+private:
+    Line m_edgeAB, m_edgeBC, m_edgeCA; 
+
+public: 
+
+    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, ResourceShader* shader)
+        : m_edgeAB(vertexA, vertexB, color, width, window, shader), 
+          m_edgeBC(vertexB, vertexC, color, width, window, shader), 
+          m_edgeCA(vertexC, vertexA, color, width, window, shader) { };
+
+    ~TriangleLines(){ Delete(); };
+
+    void Delete(){
+        m_edgeAB.Delete();
+        m_edgeBC.Delete();
+        m_edgeCA.Delete();
+    }
+
+    void Draw(){
+        m_edgeAB.Draw();
+        m_edgeBC.Draw();
+        m_edgeCA.Draw();
+    }
+
+    Line* GetEdgeAB(){ return &m_edgeAB; };
+    Line* GetEdgeBC(){ return &m_edgeBC; };
+    Line* GetEdgeCA(){ return &m_edgeCA; };
+};

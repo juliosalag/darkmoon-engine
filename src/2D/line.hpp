@@ -6,6 +6,7 @@
 #include "../utils/math.hpp"
 #include "../utils/color.hpp"
 #include "../resources/resource_shader.hpp"
+#include "../managers/window.hpp"
 
 struct Line {
 private:
@@ -14,17 +15,17 @@ private:
     Color m_color { BLACK };
     int m_width { 1 };
     ResourceShader* m_shader {};
-    int m_windowWidth {}, m_windowHeight {};
+    Window* m_window {};
 
 public:
-    Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, int windowWidth, int windowHeight, ResourceShader* shader)
-        : m_startPosition(startPosition), m_endPosition(endPosition), m_color(color), m_width(width), m_shader(shader), m_windowWidth(windowWidth), m_windowHeight(windowHeight)
+    Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, ResourceShader* shader)
+        : m_startPosition(startPosition), m_endPosition(endPosition), m_color(color), m_width(width), m_shader(shader), m_window(window)
     {
         float vertex[] = {
-            (static_cast<float>(m_startPosition.x) / static_cast<float>(m_windowWidth)) * 2 - 1,
-            -((static_cast<float>(m_startPosition.y) / static_cast<float>(m_windowHeight)) * 2 - 1),
-            (static_cast<float>(m_endPosition.x) / static_cast<float>(m_windowWidth)) * 2 - 1,
-            -((static_cast<float>(m_endPosition.y) / static_cast<float>(m_windowHeight)) * 2 - 1)
+            (static_cast<float>(m_startPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_startPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            (static_cast<float>(m_endPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_endPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
         };
 
         glGenVertexArrays(1, &m_VAO);
@@ -46,10 +47,13 @@ public:
     }
 
     void Draw() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glUseProgram(m_shader->getIDShader());
 
         GLint colorUniform = glGetUniformLocation(m_shader->getIDShader(), "customColor");
-        glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r, m_color.g, m_color.b, m_color.a)));
+        glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r/255.f, m_color.g/255.f, m_color.b/255.f, m_color.a/255.f)));
 
         glLineWidth(static_cast<GLfloat>(m_width));
         glBindVertexArray(m_VAO);
@@ -57,23 +61,22 @@ public:
         glBindVertexArray(0);
 
         glLineWidth(1);
+        glDisable(GL_BLEND);
     }
 
     // ------- //
     // Setters //
     // ------- //
 
-    void SetPosition(Vector2D startPosition, Vector2D endPosition, Vector2D windowSize) {
-        m_windowWidth = windowSize.x;
-        m_windowHeight = windowSize.y;
+    void SetPosition(Vector2D startPosition, Vector2D endPosition) {
         m_startPosition = startPosition;
         m_endPosition = endPosition;
 
         float vertex[] = {
-            (static_cast<float>(m_startPosition.x) / static_cast<float>(m_windowWidth)) * 2 - 1,
-            -((static_cast<float>(m_startPosition.y) / static_cast<float>(m_windowHeight)) * 2 - 1),
-            (static_cast<float>(m_endPosition.x) / static_cast<float>(m_windowWidth)) * 2 - 1,
-            -((static_cast<float>(m_endPosition.y) / static_cast<float>(m_windowHeight)) * 2 - 1)
+            (static_cast<float>(m_startPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_startPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            (static_cast<float>(m_endPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_endPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
         };
 
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
