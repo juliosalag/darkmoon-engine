@@ -25,7 +25,7 @@ int main() {
     //auto pixel = Pixel({330, 225}, GREEN, 1, w, dm.GetBasicShader2D());
     //auto line = dm.CreateLine({520, 220}, {560, 220}, GREEN, 1);
     
-    static auto pixel = Pixel({330, 225}, GREEN, 1, &w, dm.GetBasicShader2D());
+    static auto pixel = Pixel({330, 225}, RED, 4, &w, dm.GetBasicShader2D());
     static auto line = Line({520, 220}, {560, 220}, GREEN, 1, &w, dm.GetBasicShader2D());
     static auto triangle_lines = TriangleLines({400, 0}, {120, 30}, {30, 220}, RED, 1, &w, dm.GetBasicShader2D());
 
@@ -101,11 +101,13 @@ int main() {
         /*
         // Pixel //
         */
-        pixel.Draw();
         line.Draw();
         dm.DrawTriangle({0, 0}, {120, 30}, {30, 220}, {163, 73, 164, 255});
         triangle_lines.Draw();
-
+        
+        dm.DrawRectangle({200, 200}, {400, 200}, {200, 400}, {400, 400}, {0, 255, 255, 255});
+        dm.DrawRectangleLines({200, 200}, {400, 200}, {200, 400}, {400, 400}, {0, 0, 255, 255}, 1);
+        
         dm.DrawPixel({315, 225}, RED, 2);
         /*
         // Line //
@@ -114,6 +116,7 @@ int main() {
         
         dm.DrawLine({320, 220}, {360, 220}, WHITE, 2);
         */
+        pixel.Draw();
 
         dm.EndDrawing(w);
 

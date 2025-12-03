@@ -1,4 +1,6 @@
 #include "darkmoon.hpp"
+#include "2D/rectangle.hpp"
+#include "2D/triangle.hpp"
 #include "glad/glad.h"
 #include "managers/window.hpp"
 
@@ -79,6 +81,20 @@ void DarkMoonEngine::DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vecto
     auto triangle_lines = TriangleLines(vertexA, vertexB, vertexC, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     triangle_lines.Draw();
     triangle_lines.Delete();
+}
+
+// Rectangle //
+
+void DarkMoonEngine::DrawRectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, ResourceShader* shader){
+    auto rectangle = Rectangle(vertexA, vertexB, vertexC, vertexD, color, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
+    rectangle.Draw();
+    rectangle.Delete();
+}
+
+void DarkMoonEngine::DrawRectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width, ResourceShader* shader){
+    auto rectangle_lines = RectangleLines(vertexA, vertexB, vertexC, vertexD, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
+    rectangle_lines.Draw();
+    rectangle_lines.Delete();
 }
 
 // -------------------------- //

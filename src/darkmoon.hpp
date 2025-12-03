@@ -66,7 +66,11 @@ public:
     void DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, ResourceShader* shader = nullptr);
     void DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width = 1, ResourceShader* shader = nullptr);
 
-    // - Triangle
+    // Rectangle //
+
+    void DrawRectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, ResourceShader* shader = nullptr);
+    void DrawRectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width = 1, ResourceShader* shader = nullptr);
+
     // - Rectangle / Rounded
     // - Circle / Sector
     // - Ellipse

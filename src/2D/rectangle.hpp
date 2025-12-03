@@ -5,17 +5,17 @@
 #include "./line.hpp"
 #include "utils/math.hpp"
 
-struct Triangle {
+struct Rectangle {
 private:
     GLuint m_VAO {}, m_VBO {}, m_EBO {};
-    Vector2D m_vertexA {}, m_vertexB {},m_vertexC {};
+    Vector2D m_vertexA {}, m_vertexB {}, m_vertexC {}, m_vertexD {};
     Color m_color { BLACK };
     ResourceShader* m_shader {};
     Window* m_window {};
 
 public:
-    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, ResourceShader* shader)
-        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_color(color), m_shader(shader), m_window(window) 
+    Rectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, Window* window, ResourceShader* shader)
+        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_vertexD(vertexD), m_color(color), m_shader(shader), m_window(window)
     {
         float vertex[] = {
             (static_cast<float>(m_vertexA.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
@@ -24,9 +24,17 @@ public:
             -((static_cast<float>(m_vertexB.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
             (static_cast<float>(m_vertexC.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
             -((static_cast<float>(m_vertexC.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            (static_cast<float>(m_vertexD.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
+            -((static_cast<float>(m_vertexD.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
         };
-        GLuint index[] = { 0, 1, 2 };
-        
+        GLuint index[] = { 0, 1, 2, 1, 2, 3 };
+
+        // 
+        // A --- B 
+        // |     |
+        // C --- D
+        //
+
         glGenVertexArrays(1, &m_VAO);
         glGenBuffers(1, &m_VBO);
         glGenBuffers(1, &m_EBO);
@@ -46,13 +54,13 @@ public:
         glBindVertexArray(0);
     };
 
-    ~Triangle(){ Delete(); };
+    ~Rectangle(){ Delete(); };
 
-    void Delete(){
+    void Delete() {
         glDeleteVertexArrays(1, &m_VAO);
         glDeleteBuffers(1, &m_VBO);
         glDeleteBuffers(1, &m_EBO);
-    };
+    }
 
     void Draw(){
         glEnable(GL_BLEND);
@@ -64,39 +72,43 @@ public:
         glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r/255.f, m_color.g/255.f, m_color.b/255.f, m_color.a/255.f)));
 
         glBindVertexArray(m_VAO);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         glDisable(GL_BLEND);
     }
+
 };
 
-struct TriangleLines {
+struct RectangleLines {
 private:
-    Line m_edgeAB, m_edgeBC, m_edgeCA; 
+    Line m_edgeAB, m_edgeBD, m_edgeCD, m_edgeCA; 
 
-public: 
+public:
+    RectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width, Window* window, ResourceShader* shader)
+        : m_edgeAB(vertexA, vertexB, color, width, window, shader),
+          m_edgeBD(vertexB, vertexD, color, width, window, shader),
+          m_edgeCD(vertexC, vertexD, color, width, window, shader),
+          m_edgeCA(vertexC, vertexA, color, width, window, shader) {};
 
-    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, ResourceShader* shader)
-        : m_edgeAB(vertexA, vertexB, color, width, window, shader), 
-          m_edgeBC(vertexB, vertexC, color, width, window, shader), 
-          m_edgeCA(vertexC, vertexA, color, width, window, shader) { };
-
-    ~TriangleLines(){ Delete(); };
+    ~RectangleLines(){ Delete(); };
 
     void Delete(){
         m_edgeAB.Delete();
-        m_edgeBC.Delete();
+        m_edgeBD.Delete();
+        m_edgeCD.Delete();
         m_edgeCA.Delete();
     }
 
     void Draw(){
         m_edgeAB.Draw();
-        m_edgeBC.Draw();
+        m_edgeBD.Draw();
+        m_edgeCD.Draw();
         m_edgeCA.Draw();
     }
 
     Line* GetEdgeAB(){ return &m_edgeAB; };
-    Line* GetEdgeBC(){ return &m_edgeBC; };
+    Line* GetEdgeBD(){ return &m_edgeBD; };
+    Line* GetEdgeCD(){ return &m_edgeCD; };
     Line* GetEdgeCA(){ return &m_edgeCA; };
 };
