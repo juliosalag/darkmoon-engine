@@ -29,31 +29,49 @@ public:
         : m_position(position), m_scale(scale), m_rotation(rotation), m_shader(shader == nullptr ? window->GetBasicTextureShader2D() : shader), m_window(window)
     {
         m_resourceTexture = m_RM.loadResource<ResourceTexture>(texturePath);
+
+        // Transformation Matrix // TODO
     
+        float posX = static_cast<float>(m_position.x);
+        float posY = static_cast<float>(m_position.y);
+
+        float winW = static_cast<float>(m_window->GetWidth());
+        float winH = static_cast<float>(m_window->GetHeight());
+
+        float texW = static_cast<float>(m_resourceTexture->getWitdh());
+        float texH = static_cast<float>(m_resourceTexture->getHeight());
+
+        float scaleX = static_cast<float>(m_scale.x);
+        float scaleY = static_cast<float>(m_scale.y);
+
+        float x0 = (posX / winW) * 2.f - 1.f;
+        float y0 = -((posY / winH) * 2.f - 1.f);
+
+        float x1 = ((posX + texW * scaleX) / winW) * 2.f - 1.f;
+        float y1 = -(((posY + texH * scaleY) / winH) * 2.f - 1.f);
+
         float vertex[] = {
-            // Positions
-            (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-            // Color
+            // Top-Left
+            x0, y0,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            // Texture coords
-            0.0f, 0.0f,
-            // ---------------- //
-            (static_cast<float>(m_position.x + m_resourceTexture->getWitdh() * static_cast<float>(m_scale.x)) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            0.f, 0.f,
+
+            // Top-Right
+            x1, y0,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            1.0f, 0.0f,
-            // ---------------- //
-            (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y + m_resourceTexture->getHeight() * static_cast<float>(m_scale.y)) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            1.f, 0.f,
+
+            // Bottom-Left
+            x0, y1,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            0.0f, 1.0f,
-            // ---------------- //
-            (static_cast<float>(m_position.x + m_resourceTexture->getWitdh() * static_cast<float>(m_scale.x)) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y + m_resourceTexture->getHeight() * static_cast<float>(m_scale.y)) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            0.f, 1.f,
+
+            // Bottom-Right
+            x1, y1,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            1.0f, 1.0f,
+            1.f, 1.f,
         };
+
         GLuint index[] = { 0, 1, 2, 1, 2, 3 };
 
         glGenVertexArrays(1, &m_VAO);
@@ -110,29 +128,44 @@ public:
     void SetPosition(Vector2D position) {
         m_position = position;
 
+        float posX = static_cast<float>(m_position.x);
+        float posY = static_cast<float>(m_position.y);
+
+        float winW = static_cast<float>(m_window->GetWidth());
+        float winH = static_cast<float>(m_window->GetHeight());
+
+        float texW = static_cast<float>(m_resourceTexture->getWitdh());
+        float texH = static_cast<float>(m_resourceTexture->getHeight());
+
+        float scaleX = static_cast<float>(m_scale.x);
+        float scaleY = static_cast<float>(m_scale.y);
+
+        float x0 = (posX / winW) * 2.f - 1.f;
+        float y0 = -((posY / winH) * 2.f - 1.f);
+
+        float x1 = ((posX + texW * scaleX) / winW) * 2.f - 1.f;
+        float y1 = -(((posY + texH * scaleY) / winH) * 2.f - 1.f);
+
         float vertex[] = {
-            // Positions
-            (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-            // Color
+            // Top-Left
+            x0, y0,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            // Texture coords
-            0.0f, 0.0f,
-            // ---------------- //
-            (static_cast<float>(m_position.x + m_resourceTexture->getWitdh() * static_cast<float>(m_scale.x)) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            0.f, 0.f,
+
+            // Top-Right
+            x1, y0,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            1.0f, 0.0f,
-            // ---------------- //
-            (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y + m_resourceTexture->getHeight() * static_cast<float>(m_scale.y)) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            1.f, 0.f,
+
+            // Bottom-Left
+            x0, y1,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            0.0f, 1.0f,
-            // ---------------- //
-            (static_cast<float>(m_position.x + m_resourceTexture->getWitdh() * static_cast<float>(m_scale.x)) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_position.y + m_resourceTexture->getHeight() * static_cast<float>(m_scale.y)) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
+            0.f, 1.f,
+
+            // Bottom-Right
+            x1, y1,
             m_color.r/255.f, m_color.g/255.f, m_color.b/255.f,
-            1.0f, 1.0f,
+            1.f, 1.f,
         };
 
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
