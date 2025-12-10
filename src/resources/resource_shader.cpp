@@ -1,6 +1,6 @@
 #include "resource_shader.hpp"
 
-ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, const char* vertexPath, const char* fragmentPath, const char* geometryPath) 
+Shader::Shader(std::size_t idResource, std::size_t fileType, const char* vertexPath, const char* fragmentPath, const char* geometryPath) 
     : Resource(idResource, fileType, (std::string(vertexPath) + fragmentPath + geometryPath).c_str()) {
 
     m_vertexPath = vertexPath;
@@ -13,7 +13,7 @@ ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, con
         :  std::cout << "[ERROR] Loading a shader (" << m_filePath << ")\n";
 }
 
-ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, const char* path, const std::string& vertexCode, const std::string& fragmentCode , const std::string& geometryCode) 
+Shader::Shader(std::size_t idResource, std::size_t fileType, const char* path, const std::string& vertexCode, const std::string& fragmentCode , const std::string& geometryCode) 
     : Resource(idResource, fileType, path) {
 
     m_vertexCode = vertexCode;
@@ -26,7 +26,7 @@ ResourceShader::ResourceShader(std::size_t idResource, std::size_t fileType, con
         :  std::cout << "[ERROR] Loading a shader (" << m_filePath << ")\n";
 }
 
-void ResourceShader::unload() {
+void Shader::unload() {
 
     if(m_isLoaded) std::cout << "[UNLOAD] Shader ID: " << m_idResource << /*" (" << m_filePath << ")\n"*/ "\n";
 
@@ -36,7 +36,7 @@ void ResourceShader::unload() {
     m_isLoaded = false;
 }
 
-void ResourceShader::setup() { // TODO: Refactorizar el codigo //
+void Shader::setup() { // TODO: Refactorizar el codigo //
 
     m_isLoaded = true;
 

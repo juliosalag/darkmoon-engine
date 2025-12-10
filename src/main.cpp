@@ -25,13 +25,15 @@ int main() {
     //auto pixel = Pixel({330, 225}, GREEN, 1, w, dm.GetBasicShader2D());
     //auto line = dm.CreateLine({520, 220}, {560, 220}, GREEN, 1);
     
-    static auto pixel = Pixel({330, 225}, RED, 4, &w, dm.GetBasicShader2D());
-    static auto line = Line({520, 220}, {560, 220}, GREEN, 1, &w, dm.GetBasicShader2D());
-    static auto triangle_lines = TriangleLines({400, 0}, {120, 30}, {30, 220}, RED, 1, &w, dm.GetBasicShader2D());
+    auto pixel = Pixel({330, 225}, RED, 4, &w, dm.GetBasicShader2D());
+    auto line = Line({520, 220}, {560, 220}, GREEN, 1, &w, dm.GetBasicShader2D());
+    auto triangle_lines = TriangleLines({400, 0}, {120, 30}, {30, 220}, RED, 1, &w, dm.GetBasicShader2D());
+
+    auto texture = Texture({0, 0}, {1, 1}, 0, "./assets/defaultTexture.png", &w, dm.GetBasicShader2D());
 
     dm.FocusWindow(w2);
 
-    static auto pixel2 = Pixel({130, 225}, GREEN, 1, &w2, dm.GetBasicShader2D());
+    auto pixel2 = Pixel({130, 225}, GREEN, 1, &w2, dm.GetBasicShader2D());
 
     dm.FocusWindow(w);
     

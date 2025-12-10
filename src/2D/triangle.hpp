@@ -2,7 +2,7 @@
 
 #include "../utils/color.hpp"
 #include "../resources/resource_shader.hpp"
-#include "./line.hpp"
+#include "./basic/line.hpp"
 #include "utils/math.hpp"
 
 struct Triangle {
@@ -10,11 +10,11 @@ private:
     GLuint m_VAO {}, m_VBO {}, m_EBO {};
     Vector2D m_vertexA {}, m_vertexB {},m_vertexC {};
     Color m_color { BLACK };
-    ResourceShader* m_shader {};
+    Shader* m_shader {};
     Window* m_window {};
 
 public:
-    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, ResourceShader* shader)
+    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, Shader* shader)
         : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_color(color), m_shader(shader), m_window(window) 
     {
         float vertex[] = {
@@ -77,7 +77,7 @@ private:
 
 public: 
 
-    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, ResourceShader* shader)
+    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, Shader* shader)
         : m_edgeAB(vertexA, vertexB, color, width, window, shader), 
           m_edgeBC(vertexB, vertexC, color, width, window, shader), 
           m_edgeCA(vertexC, vertexA, color, width, window, shader) { };

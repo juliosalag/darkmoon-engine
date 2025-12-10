@@ -8,11 +8,11 @@
 
 #include "resource.hpp"
 
-struct ResourceShader : public Resource {
+struct Shader : public Resource {
 public:
-    ResourceShader(std::size_t id, std::size_t fileType, const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = "");
-    ResourceShader(std::size_t id, std::size_t fileType, const char* path, const std::string& vertexCode = "", const std::string& fragmentCode  = "", const std::string& geometryCode = "");
-    ~ResourceShader(){ unload(); }; 
+    Shader(std::size_t id, std::size_t fileType, const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = "");
+    Shader(std::size_t id, std::size_t fileType, const char* path, const std::string& vertexCode = "", const std::string& fragmentCode  = "", const std::string& geometryCode = "");
+    ~Shader(){ unload(); }; 
 
     void use();
     void unload() override;

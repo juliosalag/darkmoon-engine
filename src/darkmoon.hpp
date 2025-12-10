@@ -9,7 +9,6 @@
 #include "./managers/resource_manager.hpp"
 #include "./managers/window.hpp"
 #include "./managers/monitor.hpp"
-#include "resources/resource_shader.hpp"
 
 #include "./2D/2D.hpp"
 
@@ -55,21 +54,21 @@ public:
 
     // Pixel //
 
-    void DrawPixel(Vector2D position, Color color, int size = 1, ResourceShader* shader = nullptr);
+    void DrawPixel(Vector2D position, Color color, int size = 1, Shader* shader = nullptr);
 
     // Line //
 
-    void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, ResourceShader* shader = nullptr);
+    void DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width = 1, Shader* shader = nullptr);
 
     // Triangle //
 
-    void DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, ResourceShader* shader = nullptr);
-    void DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width = 1, ResourceShader* shader = nullptr);
+    void DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Shader* shader = nullptr);
+    void DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width = 1, Shader* shader = nullptr);
 
     // Rectangle //
 
-    void DrawRectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, ResourceShader* shader = nullptr);
-    void DrawRectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width = 1, ResourceShader* shader = nullptr);
+    void DrawRectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, Shader* shader = nullptr);
+    void DrawRectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width = 1, Shader* shader = nullptr);
 
     // - Rectangle / Rounded
     // - Circle / Sector
@@ -80,23 +79,57 @@ public:
     // - Splines
     // - Bezier
 
-    // Trans Matrix
+    // Texture //
+
+    
+
+    // Textures / AnimatedTextures / Gifs
+    // Text
+
+    // TextBox / Aligned
+    // Button
+    // Checkbox
+    // Slider
+    // OptionSlider
+    // Interactive TextBox 
+
+    // Trans Matrix (Traslacion, Rotacion y Escalado)
+    
+    // MENU DEBUG // 
+
+    // TODO, Comment code
+
+    // ECS //
+
+    // SoundManager //
+
+    // To linux, To Web //
 
     // -------------------------- //
     // Resource Manager Functions //
     // -------------------------- //
 
-    ResourceShader* CreateShader(const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = ""){
-        return m_resourceManager.loadResource<ResourceShader>(vertexPath, fragmentPath, geometryPath);
+    // Shader //
+
+    Shader* CreateShader(const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = ""){
+        return m_resourceManager.loadResource<Shader>(vertexPath, fragmentPath, geometryPath);
     }
 
-    ResourceShader* CreateShader(const std::string& vertexCode = "", const std::string& fragmentCode  = "", const std::string& geometryCode = ""){
-        return m_resourceManager.loadResource<ResourceShader>((vertexCode + fragmentCode + geometryCode).c_str(), vertexCode, fragmentCode, geometryCode);
+    Shader* CreateShader(const std::string& vertexCode = "", const std::string& fragmentCode  = "", const std::string& geometryCode = ""){
+        return m_resourceManager.loadResource<Shader>((vertexCode + fragmentCode + geometryCode).c_str(), vertexCode, fragmentCode, geometryCode);
     }
 
     void LoadBasicShaders();
 
-    ResourceShader* GetBasicShader2D(){ return m_shaders["basic2D"]; };
+    Shader* GetBasicShader2D(){ return m_shaders["basic2D"]; };
+
+    // Texture //
+
+    //Texture* LoadTexture(const char* texturePath){
+    //    return m_resourceManager.loadResource<Texture>(texturePath);
+    //}
+
+    // Font //
 
     // Normalize coords in window (0/1 to width/height)
     float normalizeX(float x) { return (x / static_cast<float>(m_activeWindow->GetWidth())) * 2 - 1; };
@@ -107,5 +140,5 @@ private:
 
     Monitor m_activeMonitor {};
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
-    std::map<std::string, ResourceShader*> m_shaders;
+    std::map<std::string, Shader*> m_shaders;
 };

@@ -55,7 +55,7 @@ void DarkMoonEngine::ClearBackground(Window& window, Color color){
 
 // Pixel //
 
-void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, ResourceShader* shader){
+void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, Shader* shader){
     auto pixel = Pixel(position, color, size, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     pixel.Draw();
     pixel.Delete();
@@ -63,7 +63,7 @@ void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, Resourc
 
 // Line //
 
-void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width, ResourceShader* shader){
+void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Color color, int width, Shader* shader){
     auto line = Line(startPosition, endPosition, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     line.Draw();
     line.Delete();
@@ -71,13 +71,13 @@ void DarkMoonEngine::DrawLine(Vector2D startPosition, Vector2D endPosition, Colo
 
 // Triangle //
 
-void DarkMoonEngine::DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, ResourceShader* shader){
+void DarkMoonEngine::DrawTriangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Shader* shader){
     auto triangle = Triangle(vertexA, vertexB, vertexC, color, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     triangle.Draw();
     triangle.Delete();
 }
 
-void DarkMoonEngine::DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, ResourceShader* shader){
+void DarkMoonEngine::DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Shader* shader){
     auto triangle_lines = TriangleLines(vertexA, vertexB, vertexC, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     triangle_lines.Draw();
     triangle_lines.Delete();
@@ -85,13 +85,13 @@ void DarkMoonEngine::DrawTriangleLines(Vector2D vertexA, Vector2D vertexB, Vecto
 
 // Rectangle //
 
-void DarkMoonEngine::DrawRectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, ResourceShader* shader){
+void DarkMoonEngine::DrawRectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, Shader* shader){
     auto rectangle = Rectangle(vertexA, vertexB, vertexC, vertexD, color, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     rectangle.Draw();
     rectangle.Delete();
 }
 
-void DarkMoonEngine::DrawRectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width, ResourceShader* shader){
+void DarkMoonEngine::DrawRectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width, Shader* shader){
     auto rectangle_lines = RectangleLines(vertexA, vertexB, vertexC, vertexD, color, width, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
     rectangle_lines.Draw();
     rectangle_lines.Delete();

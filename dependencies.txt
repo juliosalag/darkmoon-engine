@@ -1,6 +1,0 @@
-make
-ccache
-g++
-glm
-glew
-glfw3
