@@ -12,12 +12,16 @@
 
 #include "./2D/2D.hpp"
 
+#include "utils/keys.hpp"
 #include "utils/math.hpp"
 
 struct DarkMoonEngine{
 public:
     DarkMoonEngine();
-    ~DarkMoonEngine() { glfwTerminate(); };
+    ~DarkMoonEngine() { 
+        m_resourceManager.unloadAllResources();
+        glfwTerminate(); 
+    };
 
     // ---------------- //
     // Window Functions //
@@ -54,7 +58,7 @@ public:
 
     // Pixel //
 
-    void DrawPixel(Vector2D position, Color color, int size = 1, Shader* shader = nullptr);
+    void DrawPixel(Vector2D position, Color color, Window* window, int size = 1, Shader* shader = nullptr);
 
     // Line //
 

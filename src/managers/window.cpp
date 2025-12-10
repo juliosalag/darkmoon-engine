@@ -77,6 +77,7 @@ void Window::BeginDrawing(Color color){
 }
 
 void Window::EndDrawing(){
+    PollEvents();
     glfwSwapBuffers(m_window);
 }
 

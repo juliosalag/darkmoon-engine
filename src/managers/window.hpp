@@ -29,8 +29,9 @@ struct Window{
 
     // Destroy the window and close it
     void Close(){ 
-        m_resourceManager.unloadAllResources();
-        if(m_window) glfwDestroyWindow(m_window); 
+        //m_resourceManager.unloadAllResources();
+        glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+        //if(m_window) glfwDestroyWindow(m_window); 
     };
     // Return whether the window should close
     bool ShouldClose(){ return m_window && glfwWindowShouldClose(m_window); };

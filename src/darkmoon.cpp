@@ -55,8 +55,8 @@ void DarkMoonEngine::ClearBackground(Window& window, Color color){
 
 // Pixel //
 
-void DarkMoonEngine::DrawPixel(Vector2D position, Color color, int size, Shader* shader){
-    auto pixel = Pixel(position, color, size, m_activeWindow, shader != nullptr ? shader : m_shaders["basic2D"]);
+void DarkMoonEngine::DrawPixel(Vector2D position, Color color, Window* window, int size, Shader* shader){
+    auto pixel = Pixel(position, color, size, window, shader != nullptr ? shader : m_shaders["basic2D"]);
     pixel.Draw();
     pixel.Delete();
 }
