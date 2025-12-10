@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -19,7 +20,7 @@ enum struct WindowMode{
 
 struct Window{
     // Create window, load OpenGL functions pointers and configure OpenGL
-    Window(int width, int height, const char* title, GLFWwindow* sharedContext = nullptr);
+    Window(int width, int height, const char* title, Window* sharedContext = nullptr);
     Window() {};
     ~Window(){ Close(); };
 
@@ -64,9 +65,25 @@ struct Window{
     void BeginDrawing(Color color);
     // Swaps the buffers to display the rendered content and processes any pending events
     void EndDrawing();
-    // 
+    // Clear background with color
     void ClearBackground(Color color);
 
+    // Instant Draw // TODO
+
+    // ------- //
+    // Shaders //
+    // ------- //
+
+    Shader* CreateShader(const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = ""){
+        return m_resourceManager.loadResource<Shader>(vertexPath, fragmentPath, geometryPath);
+    }
+
+    Shader* CreateShader(const std::string& vertexCode = "", const std::string& fragmentCode  = "", const std::string& geometryCode = ""){
+        return m_resourceManager.loadResource<Shader>((vertexCode + fragmentCode + geometryCode).c_str(), vertexCode, fragmentCode, geometryCode);
+    }
+
+    Shader* GetBasicShader2D(){ return m_shaders["basic2D"]; };
+    Shader* GetBasicTextureShader2D(){ return m_shaders["basicTexture2D"]; };
 
     // --------------- //
     // Input Functions //
@@ -194,6 +211,11 @@ private:
     int m_exitKey { KEY_ESCAPE };
 
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
+    
+    // Shaders
+    std::map<std::string, Shader*> m_shaders;
+
+    void LoadBasicShaders();
 
     // --------- //
     // Functions //

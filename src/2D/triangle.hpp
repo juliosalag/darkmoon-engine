@@ -14,8 +14,8 @@ private:
     Window* m_window {};
 
 public:
-    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, Shader* shader)
-        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_color(color), m_shader(shader), m_window(window) 
+    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, Shader* shader = nullptr)
+        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_color(color), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window) 
     {
         float vertex[] = {
             (static_cast<float>(m_vertexA.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
@@ -77,7 +77,7 @@ private:
 
 public: 
 
-    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, Shader* shader)
+    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, Shader* shader = nullptr)
         : m_edgeAB(vertexA, vertexB, color, width, window, shader), 
           m_edgeBC(vertexB, vertexC, color, width, window, shader), 
           m_edgeCA(vertexC, vertexA, color, width, window, shader) { };

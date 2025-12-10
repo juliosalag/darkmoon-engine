@@ -1,44 +1,66 @@
-#include "2D/basic/pixel.hpp"
-#include <darkmoon.hpp>
+#include "darkmoon.hpp"
+#include "utils/keys.hpp"
 
 int main() {
 
     DarkMoonEngine dm;
 
-    auto w = Window(400, 300, "Prueba");
+    auto w1 = Window(600, 500, "Prueba");
+    w1.SetPosition(30, 60);
 
-    const std::string basicVertex = R"(
-        #version 330 core
-        layout (location = 0) in vec3 aPos;
-
-        void main(){
-            gl_Position = vec4(aPos, 1.0);
-        }
-    )";
-
-    const std::string basicFragment = R"(
-        #version 330 core
-        out vec4 FragColor;
-        uniform vec4 customColor;
-
-        void main(){
-            FragColor = customColor;
-        }
-    )";
-
-    auto shader = dm.CreateShader(basicVertex, basicFragment);
-    auto pixel = Pixel({20, 20}, GREEN, 2, &w, shader);
-
-    w.SetPosition(30, 60);
+    auto w2 = Window(300, 450, "Debug", &w1);
+    w2.SetPosition(660, 60);
     
-    while(!w.ShouldClose()){
+    w1.Focus();
+    
+    // Initialize in W1
+    
+    auto pixel0 = Pixel({10, 10}, RED, 2, &w1);
+    auto pixel = Pixel({330, 225}, RED, 4, &w1);
+    auto line = Line({520, 220}, {560, 220}, GREEN, 1, &w1);
+    auto triangle_lines = TriangleLines({400, 0}, {120, 30}, {30, 220}, RED, 1, &w1);
+
+    // Fantasmico
+    auto texture = Texture({10, 10}, {4, 4}, 0, "./assets/fantasmico.png", &w1);
+
+    //auto texture = Texture({0, 0}, {1, 1}, 0, "./assets/defaultTexture.png", &w1, shader);
+
+    w2.Focus();
+
+    auto pixel2 = Pixel({130, 225}, GREEN, 2, &w2);
+
+    w1.Focus();
+    
+    while(!w1.ShouldClose() && !w2.ShouldClose()){
+
+        w1.Focus();
+
+        if(w1.IsKeyDown(KEY_W))
+            texture.SetPosition({texture.GetPosition().x, texture.GetPosition().y - 2});
+        if(w1.IsKeyDown(KEY_S))
+            texture.SetPosition({texture.GetPosition().x, texture.GetPosition().y + 2});
+        if(w1.IsKeyDown(KEY_A))
+            texture.SetPosition({texture.GetPosition().x - 2, texture.GetPosition().y});
+        if(w1.IsKeyDown(KEY_D))
+            texture.SetPosition({texture.GetPosition().x + 2, texture.GetPosition().y});
         
-        w.BeginDrawing(GRAY);
+        w1.BeginDrawing(GRAY);
 
-        dm.DrawPixel({10, 10}, RED, &w, 3, shader);
+        texture.Draw();
+        pixel0.Draw();
         pixel.Draw();
+        line.Draw();
+        triangle_lines.Draw();
 
-        w.EndDrawing();
+        w1.EndDrawing();
+
+        // ------------- //
+
+        w2.BeginDrawing(BLACK);
+
+        pixel2.Draw();
+
+        w2.EndDrawing();
     }
 
     return 0;

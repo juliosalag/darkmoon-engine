@@ -1,7 +1,7 @@
 #include "pixel.hpp"
 
 Pixel::Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader)
-    : m_position(position), m_color(color), m_size(size), m_shader(shader), m_window(window)
+    : m_position(position), m_color(color), m_size(size), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
 {
     float vertex[] = {
         (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,

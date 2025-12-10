@@ -18,7 +18,7 @@ private:
     Window* m_window {};
 
 public:
-    Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader);
+    Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader = nullptr);
     ~Line();
 
     // Delete VAO and VBO buffers

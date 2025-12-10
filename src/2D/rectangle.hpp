@@ -14,8 +14,8 @@ private:
     Window* m_window {};
 
 public:
-    Rectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, Window* window, Shader* shader)
-        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_vertexD(vertexD), m_color(color), m_shader(shader), m_window(window)
+    Rectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, Window* window, Shader* shader = nullptr)
+        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_vertexD(vertexD), m_color(color), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
     {
         float vertex[] = {
             (static_cast<float>(m_vertexA.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
@@ -85,7 +85,7 @@ private:
     Line m_edgeAB, m_edgeBD, m_edgeCD, m_edgeCA; 
 
 public:
-    RectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width, Window* window, Shader* shader)
+    RectangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, int width, Window* window, Shader* shader = nullptr)
         : m_edgeAB(vertexA, vertexB, color, width, window, shader),
           m_edgeBD(vertexB, vertexD, color, width, window, shader),
           m_edgeCD(vertexC, vertexD, color, width, window, shader),
