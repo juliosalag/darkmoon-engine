@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/game/src/**",
+                "${workspaceFolder}/darkmoon/src/**",
+                "${workspaceFolder}/darkmoon/libs/glad/include"
             ],
             "defines": [
                 "_DEBUG",

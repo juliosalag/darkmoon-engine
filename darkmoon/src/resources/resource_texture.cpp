@@ -1,4 +1,4 @@
-#include "../../libs/stb_image.h"
+#include "../libs/stb_image.h"
 
 #include "resource_texture.hpp"
 

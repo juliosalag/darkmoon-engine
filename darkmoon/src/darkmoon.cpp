@@ -1,14 +1,14 @@
 #include "darkmoon.hpp"
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 DarkMoonEngine::DarkMoonEngine(){
     // ----------------------------- //
     // Initialize and configure GLFW //
     // ----------------------------- //
 
-std::cout << "---------------------------------\n";
-std::cout << "| DarkMoon Engine - Version 2.0 |\n";
-std::cout << "---------------------------------\n";
+    std::cout << "---------------------------------\n";
+    std::cout << "| DarkMoon Engine - Version 2.0 |\n";
+    std::cout << "---------------------------------\n";
 
     if(!glfwInit()){
         std::cerr << "[ERROR] Failed to initialize GLFW\n";
