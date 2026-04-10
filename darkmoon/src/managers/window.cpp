@@ -8,7 +8,7 @@
 
 #pragma GCC diagnostic pop
 
-Window::Window(int width, int height, const char* title, GLFWwindow* sharedContext){
+Window::Window(int width, int height, const char* title, Window* sharedContext){
     // ------------------ // 
     // Create window GLFW //
     // ------------------ // 
@@ -17,7 +17,7 @@ Window::Window(int width, int height, const char* title, GLFWwindow* sharedConte
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    m_window = glfwCreateWindow(width, height, title, nullptr, sharedContext);
+    m_window = glfwCreateWindow(width, height, title, nullptr, sharedContext == nullptr ? nullptr : sharedContext->GetWindow());
     if(!m_window){
         std::cerr << "[ERROR] Failed to create GLFW window\n";
         glfwTerminate();
@@ -56,6 +56,11 @@ Window::Window(int width, int height, const char* title, GLFWwindow* sharedConte
     std::cout << "[OK] GLAD initialization successful\n";
 
     glViewport(0, 0, width, height);
+
+    if(sharedContext == nullptr)
+        LoadBasicShaders();
+    else
+        m_shaders = sharedContext->m_shaders;
 }
 
 // ------- //
@@ -77,6 +82,7 @@ void Window::BeginDrawing(Color color){
 }
 
 void Window::EndDrawing(){
+    PollEvents();
     glfwSwapBuffers(m_window);
 }
 
@@ -293,4 +299,69 @@ Vector2D Window::GetPosition(){
     glfwGetWindowPos(m_window, &xpos, &ypos);
 
     return Vector2D{xpos, ypos};
+}
+
+// ------- //
+// Shaders //
+// ------- //
+
+void Window::LoadBasicShaders(){
+
+    // Basic Shader 2D //
+
+    const std::string basicVertex = R"(
+        #version 330 core
+        layout (location = 0) in vec3 aPos;
+
+        void main(){
+            gl_Position = vec4(aPos, 1.0);
+        }
+    )";
+
+    const std::string basicFragment = R"(
+        #version 330 core
+        out vec4 FragColor;
+        uniform vec4 customColor;
+
+        void main(){
+            FragColor = customColor;
+        }
+    )";
+
+    m_shaders["basic2D"] = CreateShader(basicVertex, basicFragment);
+
+    // Basic Shader Texture 2D //
+
+    const std::string basicTextureVertex = R"(
+        #version 330 core
+        layout (location = 0) in vec3 aPos;
+        layout (location = 1) in vec3 aColor;
+        layout (location = 2) in vec3 aTextCoord;
+
+        out vec3 ourColor;
+        out vec2 TextCoord;
+
+        void main()
+        {
+        gl_Position = vec4(aPos, 1.0f);
+        ourColor = aColor;
+        TextCoord = vec2(aTextCoord.x, aTextCoord.y);
+        }
+    )";
+
+    const std::string basicTextureFragment = R"(
+        #version 330 core
+
+        out vec4 FragColor;
+        in vec3 ourColor;
+        in vec2 TextCoord;
+        uniform sampler2D texture1;
+
+        void main()
+        {
+        FragColor = texture(texture1, TextCoord) * vec4(ourColor, 1.0);
+        }
+    )";
+
+    m_shaders["basicTexture2D"] = CreateShader(basicTextureVertex, basicTextureFragment);
 }

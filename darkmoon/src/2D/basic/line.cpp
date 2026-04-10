@@ -1,7 +1,7 @@
 #include "line.hpp"
 
 Line::Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader)
-    : m_startPosition(startPosition), m_endPosition(endPosition), m_color(color), m_width(width), m_shader(shader), m_window(window)
+    : m_startPosition(startPosition), m_endPosition(endPosition), m_color(color), m_width(width), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
 {
     float vertex[] = {
         (static_cast<float>(m_startPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,

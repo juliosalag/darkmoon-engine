@@ -12,9 +12,15 @@ public:
 
     void unload() override;
 
+    int getWitdh(){ return m_width; }
+    int getHeight(){ return m_height; }
+    int getnrChannels(){ return m_nrChannels; }
+
+    GLuint getIDTexture(){ return m_idTexture; }
+
 private:
     GLuint m_idTexture {};
     int m_width {}, m_height {}, m_nrChannels {};
 
-    void setup() override;
+    void setup() override {};
 };

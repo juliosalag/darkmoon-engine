@@ -64,5 +64,7 @@
     "clangd.arguments": [
         "--compile-commands-dir=${workspaceFolder}",
         "--query-driver=C:/msys64/mingw64/bin/clang++.exe"
-    ]
+    ],
+    "C_Cpp.default.compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+    "C_Cpp.errorSquiggles": "enabled"
 }

@@ -18,7 +18,7 @@ private:
     Window* m_window {};
 
 public:
-    Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader);
+    Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader = nullptr);
     ~Pixel();
 
     // Delete VAO and VBO buffers
