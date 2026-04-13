@@ -364,4 +364,35 @@ void Window::LoadBasicShaders(){
     )";
 
     m_shaders["basicTexture2D"] = CreateShader(basicTextureVertex, basicTextureFragment);
+
+    // Basic Shader Font 2D 
+
+    const std::string basicFontVertex = R"(
+        #version 330 core
+        layout(location = 0) in vec2 aPos;
+        layout(location = 1) in vec2 aUV;
+
+        out vec2 vUV;
+
+        void main() {
+            gl_Position = vec4(aPos, 0.0, 1.0);
+            vUV = aUV;
+        }
+    )";
+
+    const std::string basicFontFragment = R"(
+        #version 330 core
+        in vec2 vUV;
+        out vec4 fragColor;
+
+        uniform sampler2D uAtlas;
+        uniform vec4      customColor;
+
+        void main() {
+            float alpha = texture(uAtlas, vUV).r;
+            fragColor   = vec4(customColor.rgb, customColor.a * alpha);
+        }
+    )";
+
+    m_shaders["basicFont2D"] = CreateShader(basicFontVertex, basicFontFragment);
 }

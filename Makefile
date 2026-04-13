@@ -10,6 +10,8 @@ endif
 
 .PHONY: clean engine game run
 
+all: engine run
+
 engine:
 	$(MAKE) -C $(ENGINE)
 	cp $(ENGINE)/lib$(ENGINE).$(EXT) $(GAME)/

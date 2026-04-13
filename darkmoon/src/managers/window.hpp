@@ -84,6 +84,7 @@ struct Window{
 
     Shader* GetBasicShader2D(){ return m_shaders["basic2D"]; };
     Shader* GetBasicTextureShader2D(){ return m_shaders["basicTexture2D"]; };
+    Shader* GetBasicFontShader2D(){ return m_shaders["basicFont2D"]; };
 
     // --------------- //
     // Input Functions //
