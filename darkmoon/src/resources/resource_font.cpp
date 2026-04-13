@@ -35,9 +35,9 @@ ResourceFont::ResourceFont(std::size_t idResource, std::size_t fileType, const c
     stbtt_GetFontVMetrics(&fontInfo, &iAscent, &iDescent, &iLineGap);
 
     float scale = stbtt_ScaleForPixelHeight(&fontInfo, pixelHeight);
-    ascent  =  iAscent  * scale;
-    descent =  iDescent * scale;
-    lineGap =  iLineGap * scale;
+    ascent  =  static_cast<float>(iAscent)  * scale;
+    descent =  static_cast<float>(iDescent) * scale;
+    lineGap =  static_cast<float>(iLineGap) * scale;
 
     // 2. Generate bitmap atlas
     std::vector<unsigned char> bitmap(ATLAS_W * ATLAS_H, 0);
