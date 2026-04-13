@@ -15,8 +15,10 @@ private:
     GLuint m_VAO {}, m_VBO {};
 
     Vector2D m_position {};
+    std::string m_text {};
     Color m_color { WHITE };
     float m_pixelHeight { 32.f };
+    float m_scale { 1.0f };
 
     Window* m_window {};
     Shader* m_shader {};
@@ -28,15 +30,23 @@ private:
     float toNDC_Y(float py) const;
 
 public:
-    Text(Vector2D position, const char* fontPath, float pixelHeight, Window* window, Shader* shader = nullptr);
+    Text(Vector2D position, const std::string& text, const char* fontPath, Window* window, float pixelHeight = 32.f, Shader* shader = nullptr);
     ~Text() { Unload(); }
 
-    void Draw(const std::string& text);
+    void Draw();
     void Unload();
 
+    void SetText(const std::string& text) { m_text = text; }
+    std::string GetText() const { return m_text; }
+
+    void SetScale(float scale) { m_scale = scale; }
+    float GetScale() const { return m_scale; }
+
     void SetPosition(Vector2D position) { m_position = position; }
-    void SetColor(Color color) { m_color = color; }
-    void SetPixelHeight(float h) { m_pixelHeight = h; }
     Vector2D GetPosition() const { return m_position; }
-    float MeasureText(const std::string& text) const;
+
+    void SetColor(Color color) { m_color = color; }
+
+    float MeasureText() const;
+    float GetTextHeight() const;
 };

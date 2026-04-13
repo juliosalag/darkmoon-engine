@@ -2,6 +2,8 @@
 
 # 2D
 
+- Font // Embedded Font
+
 - Triangle
 - Rectangle
 - Circle

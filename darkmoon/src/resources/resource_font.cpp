@@ -28,6 +28,17 @@ ResourceFont::ResourceFont(std::size_t idResource, std::size_t fileType, const c
         return;
     }
 
+    stbtt_fontinfo fontInfo;
+    stbtt_InitFont(&fontInfo, ttfBuffer.data(), 0);
+
+    int iAscent, iDescent, iLineGap;
+    stbtt_GetFontVMetrics(&fontInfo, &iAscent, &iDescent, &iLineGap);
+
+    float scale = stbtt_ScaleForPixelHeight(&fontInfo, pixelHeight);
+    ascent  =  iAscent  * scale;
+    descent =  iDescent * scale;
+    lineGap =  iLineGap * scale;
+
     // 2. Generate bitmap atlas
     std::vector<unsigned char> bitmap(ATLAS_W * ATLAS_H, 0);
     stbtt_bakedchar bakedChars[CHAR_COUNT];

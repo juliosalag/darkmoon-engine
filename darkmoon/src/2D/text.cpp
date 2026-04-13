@@ -1,11 +1,10 @@
 #include "text.hpp"
 
-Text::Text(Vector2D position, const char* fontPath, float pixelHeight, Window* window, Shader* shader)
-    : m_position(position), m_pixelHeight(pixelHeight), m_window(window), m_shader(shader == nullptr ? window->GetBasicFontShader2D() : shader)
+Text::Text(Vector2D position, const std::string& text, const char* fontPath, Window* window, float pixelHeight, Shader* shader)
+    : m_position(position), m_text(text), m_pixelHeight(pixelHeight), m_window(window), m_shader(shader == nullptr ? window->GetBasicFontShader2D() : shader)
 {
     m_resourceFont = m_RM.loadResource<ResourceFont>(fontPath, pixelHeight);
 
-    // VAO + VBO dinamic - 6 vertex × 4 floats (xy + uv), un quad por carácter
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
 
@@ -33,15 +32,15 @@ float Text::toNDC_Y(float py) const {
     return -((py / static_cast<float>(m_window->GetHeight())) * 2.f - 1.f);
 }
 
-void Text::Draw(const std::string& text) {
+void Text::Draw() {
     if (!m_resourceFont || !m_resourceFont->isLoaded()) return;
+    if (m_text.empty()) return;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(m_shader->getIDShader());
 
-    // Color uniform
     GLint colorUniform = glGetUniformLocation(m_shader->getIDShader(), "customColor");
     glUniform4f(colorUniform, m_color.r / 255.f, m_color.g / 255.f, m_color.b / 255.f, m_color.a / 255.f);
 
@@ -52,25 +51,24 @@ void Text::Draw(const std::string& text) {
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
     float cursorX = static_cast<float>(m_position.x);
-    float cursorY = static_cast<float>(m_position.y);
+    float cursorY = static_cast<float>(m_position.y) + m_resourceFont->ascent * m_scale;
 
-    for (char c : text) {
+    for (char c : m_text) {
         int idx = static_cast<int>(c) - ResourceFont::FIRST_CHAR;
         if (idx < 0 || idx >= ResourceFont::CHAR_COUNT) {
-            cursorX += m_pixelHeight * 0.3f;
+            cursorX += m_pixelHeight * 0.3f * m_scale;
             continue;
         }
 
         const GlyphInfo& g = m_resourceFont->glyphs[idx];
 
-        float px0 = cursorX + g.bearingX;
-        float py0 = cursorY + g.bearingY;
-        float px1 = px0     + g.width;
-        float py1 = py0     + g.height;
+        float px0 = cursorX + g.bearingX * m_scale;
+        float py0 = cursorY + g.bearingY * m_scale;
+        float px1 = px0     + g.width    * m_scale;
+        float py1 = py0     + g.height   * m_scale;
 
-        // Convert to NDC
-        float x0 = toNDC_X(px0),  y0 = toNDC_Y(py0);
-        float x1 = toNDC_X(px1),  y1 = toNDC_Y(py1);
+        float x0 = toNDC_X(px0), y0 = toNDC_Y(py0);
+        float x1 = toNDC_X(px1), y1 = toNDC_Y(py1);
 
         float verts[6][4] = {
             { x0, y0,  g.u0, g.v0 },
@@ -85,7 +83,7 @@ void Text::Draw(const std::string& text) {
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        cursorX += g.advance;
+        cursorX += g.advance * m_scale;
     }
 
     glBindVertexArray(0);
@@ -94,16 +92,21 @@ void Text::Draw(const std::string& text) {
     glDisable(GL_BLEND);
 }
 
-float Text::MeasureText(const std::string& text) const {
+float Text::MeasureText() const {
     float width = 0.f;
-    for (char c : text) {
+    for (char c : m_text) {
         int idx = static_cast<int>(c) - ResourceFont::FIRST_CHAR;
-        if (idx < 0 || idx >= ResourceFont::CHAR_COUNT){ 
-            width += m_pixelHeight * 0.3f; continue; 
+        if (idx < 0 || idx >= ResourceFont::CHAR_COUNT) {
+            width += m_pixelHeight * 0.3f * m_scale;
+            continue;
         }
-        width += m_resourceFont->glyphs[idx].advance;
+        width += m_resourceFont->glyphs[idx].advance * m_scale;
     }
     return width;
+}
+
+float Text::GetTextHeight() const {
+    return (m_resourceFont->ascent - m_resourceFont->descent) * m_scale;
 }
 
 void Text::Unload() {

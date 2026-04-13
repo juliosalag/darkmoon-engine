@@ -28,6 +28,10 @@ public:
     float pixelHeight { 32.0f };
     std::array<GlyphInfo, CHAR_COUNT> glyphs {};
 
+    float ascent  { 0.f };
+    float descent { 0.f };
+    float lineGap { 0.f };
+
 private:
     void setup() override {}
 };
