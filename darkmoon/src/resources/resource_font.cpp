@@ -8,14 +8,20 @@
 #include <fstream>
 #include <vector>
 
+static const int RANGES[][2] = {
+    { 0x0020, 0x007E },   // ASCII
+    { 0x00A0, 0x00FF },   // Latin-1 Supplement
+    { 0x0100, 0x017F },   // Latin Extended-A
+};
+
 ResourceFont::ResourceFont(std::size_t idResource, std::size_t fileType, const char* filePath, float pixelHeight)
     : Resource(idResource, fileType, filePath), pixelHeight(pixelHeight)
 {
-    // 1. Read file .ttf in memory
+    // 1. Read .ttf file into memory
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
-    if (!file.is_open()) { 
-        m_isLoaded = false;  
-        std::cout << "[ERROR] Could not open file \"" << filePath << "\"\n";
+    if (!file.is_open()) {
+        m_isLoaded = false;
+        std::cout << "[ERROR] ResourceFont: could not open file \"" << filePath << "\"\n";
         return;
     }
 
@@ -24,40 +30,57 @@ ResourceFont::ResourceFont(std::size_t idResource, std::size_t fileType, const c
     std::vector<unsigned char> ttfBuffer(size);
     if (!file.read(reinterpret_cast<char*>(ttfBuffer.data()), size)) {
         m_isLoaded = false;
-        std::cout << "[ERROR] Failed to read file \"" << filePath << "\"\n";
+        std::cout << "[ERROR] ResourceFont: failed to read file \"" << filePath << "\"\n";
         return;
     }
 
+    // 2. Extract font vertical metrics (ascent, descent, line gap)
     stbtt_fontinfo fontInfo;
     stbtt_InitFont(&fontInfo, ttfBuffer.data(), 0);
 
     int iAscent, iDescent, iLineGap;
     stbtt_GetFontVMetrics(&fontInfo, &iAscent, &iDescent, &iLineGap);
-
     float scale = stbtt_ScaleForPixelHeight(&fontInfo, pixelHeight);
-    ascent  =  static_cast<float>(iAscent)  * scale;
-    descent =  static_cast<float>(iDescent) * scale;
-    lineGap =  static_cast<float>(iLineGap) * scale;
 
-    // 2. Generate bitmap atlas
+    ascent = static_cast<float>(iAscent) * scale;
+    descent = static_cast<float>(iDescent) * scale;
+    lineGap = static_cast<float>(iLineGap) * scale;
+
+    // 3. Count total codepoints across all ranges
+    int totalGlyphs = 0;
+    for (auto& range : RANGES)
+        totalGlyphs += range[1] - range[0] + 1;
+
+    // 4. Allocate atlas bitmap and packed char buffer
     std::vector<unsigned char> bitmap(ATLAS_W * ATLAS_H, 0);
-    stbtt_bakedchar bakedChars[CHAR_COUNT];
+    std::vector<stbtt_packedchar> packedChars(totalGlyphs);
 
-    int result = stbtt_BakeFontBitmap(
-        ttfBuffer.data(), 0,
-        pixelHeight,
-        bitmap.data(), ATLAS_W, ATLAS_H,
-        FIRST_CHAR, CHAR_COUNT,
-        bakedChars
-    );
-
-    if (result == 0) {
+    stbtt_pack_context packCtx;
+    if (!stbtt_PackBegin(&packCtx, bitmap.data(), ATLAS_W, ATLAS_H, 0, 1, nullptr)) {
         m_isLoaded = false;
-        std::cout << "[ERROR] Atlas (" << ATLAS_W << "x" << ATLAS_H << ") too small for \"" << filePath << "\" at " << pixelHeight << "px — increase ATLAS_W/ATLAS_H\n";
+        std::cout << "[ERROR] ResourceFont: stbtt_PackBegin failed for \"" << filePath << "\"\n";
         return;
     }
 
-    // 3. Load atlas as OpenGL texture (one channel: GL_RED)
+    stbtt_PackSetOversampling(&packCtx, 1, 1);
+
+    // 5. Prepare each codepoint range into the atlas
+    int offset = 0;
+    for (auto& range : RANGES) {
+        int count = range[1] - range[0] + 1;
+        stbtt_pack_range pr;
+        pr.font_size = pixelHeight;
+        pr.first_unicode_codepoint_in_range = range[0];
+        pr.array_of_unicode_codepoints = nullptr;
+        pr.num_chars = count;
+        pr.chardata_for_range = packedChars.data() + offset;
+        stbtt_PackFontRanges(&packCtx, ttfBuffer.data(), 0, &pr, 1);
+        offset += count;
+    }
+
+    stbtt_PackEnd(&packCtx);
+
+    // 6. Upload atlas bitmap to GPU as a single-channel (GL_RED) texture
     glGenTextures(1, &atlasID);
     glBindTexture(GL_TEXTURE_2D, atlasID);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -68,33 +91,36 @@ ResourceFont::ResourceFont(std::size_t idResource, std::size_t fileType, const c
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // 4. Convert stbtt_bakedchar to GlyphInfo
-    for (int i = 0; i < CHAR_COUNT; ++i) {
-        const auto& bc = bakedChars[i];
-        auto& g = glyphs[i];
-
-        g.u0 = bc.x0 / (float)ATLAS_W;
-        g.v0 = bc.y0 / (float)ATLAS_H;
-        g.u1 = bc.x1 / (float)ATLAS_W;
-        g.v1 = bc.y1 / (float)ATLAS_H;
-
-        g.width    = (float)(bc.x1 - bc.x0);
-        g.height   = (float)(bc.y1 - bc.y0);
-        g.bearingX = bc.xoff;
-        g.bearingY = bc.yoff;
-        g.advance  = bc.xadvance;
+    // 7. Convert packedchar data to GlyphInfo and store in the codepoint map
+    offset = 0;
+    for (auto& range : RANGES) {
+        int count = range[1] - range[0] + 1;
+        for (int i = 0; i < count; ++i) {
+            const auto& pc = packedChars[offset + i];
+            GlyphInfo g;
+            g.u0 = pc.x0 / (float)ATLAS_W;
+            g.v0 = pc.y0 / (float)ATLAS_H;
+            g.u1 = pc.x1 / (float)ATLAS_W;
+            g.v1 = pc.y1 / (float)ATLAS_H;
+            g.width    = (float)(pc.x1 - pc.x0);
+            g.height   = (float)(pc.y1 - pc.y0);
+            g.bearingX = pc.xoff;
+            g.bearingY = pc.yoff;
+            g.advance  = pc.xadvance;
+            glyphs[range[0] + i] = g;
+        }
+        offset += count;
     }
 
-    std::cout << "[LOAD] Font: \"" << filePath << "\" | ID: " << atlasID << "\n";
     m_isLoaded = true;
+    std::cout << "[LOAD] ResourceFont: \"" << filePath << " | ID: " << atlasID << "\n";
 }
 
 void ResourceFont::unload() {
     if (atlasID) {
-        std::cout << "[UNLOAD] Font: \"" << getFilePath() << "\" | ID " << atlasID << "\n";
+        std::cout << "[UNLOAD] ResourceFont: \"" << getFilePath() << "\" | ID " << atlasID << "\n";
         glDeleteTextures(1, &atlasID);
         atlasID = 0;
     }
-
     m_isLoaded = false;
 }

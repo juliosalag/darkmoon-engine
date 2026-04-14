@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <array>
+#include <unordered_map>
 
 #include "resource.hpp"
 
@@ -26,11 +27,11 @@ public:
 
     GLuint atlasID { 0 };
     float pixelHeight { 32.0f };
-    std::array<GlyphInfo, CHAR_COUNT> glyphs {};
-
-    float ascent  { 0.f };
+    float ascent { 0.f };
     float descent { 0.f };
     float lineGap { 0.f };
+
+    std::unordered_map<int, GlyphInfo> glyphs {};
 
 private:
     void setup() override {}

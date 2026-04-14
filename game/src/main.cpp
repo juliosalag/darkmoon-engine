@@ -9,20 +9,19 @@ int main() {
 
     auto w2 = Window(300, 450, "Debug", &w1);
     w2.SetPosition(660, 60);
-    
-    w1.Focus();
 
-    // Load items in w1
+    // Load items in w2
 
     w2.Focus();
 
     Text label({ 0, 0 }, "Debug Menu", "./assets/roboto.ttf", &w2);
-    Text label2({ 20, 100 }, "Carlitas Ñ", "./assets/roboto.ttf", &w2);
+    Text label2({ 0, 100 }, "Carlitas Ñ", "./assets/roboto.ttf", &w2);
     label.SetColor(RED);
-
-    std::cout << "Tamano de Label: " << label.MeasureText() << "\n";
-
     label2.SetScale(0.5f);
+
+    //std::cout << "Tamano de Label: " << label.MeasureText() << "\n";
+
+    w1.Focus();
 
     while(!w1.ShouldClose() && !w2.ShouldClose()){
 

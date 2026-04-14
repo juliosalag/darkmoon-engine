@@ -1,5 +1,13 @@
 #include "text.hpp"
 
+static int nextCodepoint(const char*& s) {
+    unsigned char c = (unsigned char)*s++;
+    if (c < 0x80)  return c;
+    if (c < 0xE0) { int cp = (c & 0x1F) << 6;  cp |= (*s++ & 0x3F); return cp; }
+    if (c < 0xF0) { int cp = (c & 0x0F) << 12; cp |= (*s++ & 0x3F) << 6;  cp |= (*s++ & 0x3F); return cp; }
+                   { int cp = (c & 0x07) << 18; cp |= (*s++ & 0x3F) << 12; cp |= (*s++ & 0x3F) << 6; cp |= (*s++ & 0x3F); return cp; }
+}
+
 Text::Text(Vector2D position, const std::string& text, const char* fontPath, Window* window, float pixelHeight, Shader* shader)
     : m_position(position), m_text(text), m_pixelHeight(pixelHeight), m_window(window), m_shader(shader == nullptr ? window->GetBasicFontShader2D() : shader)
 {
@@ -12,11 +20,9 @@ Text::Text(Vector2D position, const std::string& text, const char* fontPath, Win
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
 
-    // xy
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // uv
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
@@ -53,14 +59,17 @@ void Text::Draw() {
     float cursorX = static_cast<float>(m_position.x);
     float cursorY = static_cast<float>(m_position.y) + m_resourceFont->ascent * m_scale;
 
-    for (char c : m_text) {
-        int idx = static_cast<int>(c) - ResourceFont::FIRST_CHAR;
-        if (idx < 0 || idx >= ResourceFont::CHAR_COUNT) {
+    const char* ptr = m_text.c_str();
+    while (*ptr) {
+        int codepoint = nextCodepoint(ptr);
+
+        auto it = m_resourceFont->glyphs.find(codepoint);
+        if (it == m_resourceFont->glyphs.end()) {
             cursorX += m_pixelHeight * 0.3f * m_scale;
             continue;
         }
 
-        const GlyphInfo& g = m_resourceFont->glyphs[idx];
+        const GlyphInfo& g = it->second;
 
         float px0 = cursorX + g.bearingX * m_scale;
         float py0 = cursorY + g.bearingY * m_scale;
@@ -94,13 +103,15 @@ void Text::Draw() {
 
 float Text::MeasureText() const {
     float width = 0.f;
-    for (char c : m_text) {
-        int idx = static_cast<int>(c) - ResourceFont::FIRST_CHAR;
-        if (idx < 0 || idx >= ResourceFont::CHAR_COUNT) {
+    const char* ptr = m_text.c_str();
+    while (*ptr) {
+        int codepoint = nextCodepoint(ptr);
+        auto it = m_resourceFont->glyphs.find(codepoint);
+        if (it == m_resourceFont->glyphs.end()) {
             width += m_pixelHeight * 0.3f * m_scale;
             continue;
         }
-        width += m_resourceFont->glyphs[idx].advance * m_scale;
+        width += it->second.advance * m_scale;
     }
     return width;
 }
