@@ -46,6 +46,7 @@ public:
     Vector2D GetPosition() const { return m_position; }
 
     void SetColor(Color color) { m_color = color; }
+    Color GetColor() { return m_color; }
 
     float MeasureText() const;
     float GetTextHeight() const;
