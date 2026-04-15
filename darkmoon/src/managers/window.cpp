@@ -44,16 +44,18 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
     // Load OpenGL functions pointers //
     // ------------------------------ //
 
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "[ERROR] Failed to initialize GLAD\n";
-        if(m_window)
-            glfwDestroyWindow(m_window);
-        glfwTerminate();
+    if (sharedContext == nullptr){
+        if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+            std::cerr << "[ERROR] Failed to initialize GLAD\n";
+            if(m_window)
+                glfwDestroyWindow(m_window);
+            glfwTerminate();
 
-        //return false;
+            //return false;
+        }
+        
+        std::cout << "[OK] GLAD initialization successful\n";
     }
-    
-    std::cout << "[OK] GLAD initialization successful\n";
 
     glViewport(0, 0, width, height);
 

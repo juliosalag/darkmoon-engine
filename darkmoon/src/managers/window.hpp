@@ -238,7 +238,10 @@ private:
     // --------- //
 
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height) { 
+        glfwMakeContextCurrent(window);
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+        //std::cout << width << " - " << height << "\n";
         
         if(win)
             glViewport(0, 0, width, height);
