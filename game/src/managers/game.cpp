@@ -1,37 +1,6 @@
 #include "game.hpp"
-
-#include <memory>
-
-struct Debug {
-    Debug(Window* w) : window(w){ 
-
-        // Title
-        text.push_back(std::make_unique<Text>(Vector2D{0 ,0 }, "Debug Menu", "./assets/roboto.ttf", window));
-
-        // Subtitle
-        auto subtitle = std::make_unique<Text>(Vector2D{ 0, 0 }, "Carlitas Ñ", "./assets/roboto.ttf", window);
-        subtitle->SetColor(GRAY);
-        subtitle->SetScale(0.5f);
-        text.push_back(std::move(subtitle));
-
-        //text.push_back(subtitle);
-        
-    };
-
-    void update() {
-        // Title
-        text.at(0)->SetPosition({(window->GetWidth() / 2) - static_cast<int>(text.at(0)->MeasureText() / 2), 10});
-
-        // Subtitle
-        text.at(1)->SetPosition({(window->GetWidth() / 2) - static_cast<int>(text.at(1)->MeasureText() / 2), 50});
-
-        // Draw text
-        for (auto& i: text){ i->Draw(); }
-    };
-
-    Window* window;
-    std::vector<std::unique_ptr<Text>> text;
-};
+#include "./managers/entity_manager.hpp"
+#include "./systems/render_system.hpp"
 
 void Game::run(){
     auto w1 = Window(600, 500, "Prueba");
@@ -40,8 +9,22 @@ void Game::run(){
     auto w2 = Window(300, 450, "Debug", &w1);
     w2.SetPosition(660, 60);
 
-    // Debug System
-    Debug debug(&w2);
+    EntityManager manager;
+    RenderSystem renderSystem;
+
+    // Title
+    auto* e1 = manager.createEntity();
+    e1->addRenderComponent({0, 0}, "Debug Menu", &w2);
+    auto& r1 = e1->renderComponent;
+    r1->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r1->text->MeasureText() / 2), 10});
+
+    // Subtitle
+    auto* e2 = manager.createEntity();
+    e2->addRenderComponent({0, 0}, "Carlitas Ñ", &w2);
+    auto& r2 = e2->renderComponent;
+    r2->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r2->text->MeasureText() / 2), 50});
+    r2->text->SetColor(GRAY);
+    r2->text->SetScale(0.5f);
 
     w1.Focus();
 
@@ -53,7 +36,12 @@ void Game::run(){
         // Draw debug window
         w2.BeginDrawing(BLACK);
 
-        debug.update();
+        // Update text
+        r1->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r1->text->MeasureText() / 2), 10});
+        r2->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r2->text->MeasureText() / 2), 50});
+
+        // Render System
+        renderSystem.render(manager);
         
         w2.EndDrawing();
 
