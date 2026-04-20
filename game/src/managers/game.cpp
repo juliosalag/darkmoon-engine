@@ -1,18 +1,35 @@
 #include "game.hpp"
 
+#include "./utils/memviewer.hpp"
 #include "./utils/slotmap.hpp"
 #include  <cstdio>
 
 struct NameComponent {
-    char const name[8];
+    char name[8] {};
 };
 
 void Game::run(){
 
     Slotmap<NameComponent, 4> names;
+    MemoryViewer MV{names};
 
-    std::cout << "Names " << names.size() << "\n";
-    std::cout << "Names " << names.size() << "\n";
+    NameComponent prueba = NameComponent{"cucu"};
+
+    [[maybe_unused]]auto key0 = names.push_back( NameComponent{"Prueba"} );
+    key0 = names.push_back( NameComponent{"Prueba"} );
+    key0 = names.push_back( NameComponent{"Prueba"} );
+    auto key = names.push_back(prueba);
+
+    MV.printMemory();
+
+    names.erase(key);
+
+    MV.printMemory();
+
+    key0 = names.push_back( NameComponent{"Nuevo"} );
+    
+    MV.printMemory();
+
 
     /*
     auto w1 = Window(600, 500, "Game");
