@@ -16,6 +16,17 @@ struct Slotmap{
 
     constexpr explicit Slotmap() noexcept { clear(); }
 
+    // Operator []
+    [[nodiscard]] data_type& operator[](key_type key) noexcept{
+        assert(is_valid(key));
+        return m_data[m_indices[key.id].id];
+    }
+
+    [[nodiscard]] data_type const& operator[](key_type key) const noexcept{
+        assert(is_valid(key));
+        return m_data[m_indices[key.id].id];
+    }
+
     // Add new value to slotmap
     [[nodiscard]] constexpr key_type push_back(data_type&& newVal){
         auto reservedID = allocate();

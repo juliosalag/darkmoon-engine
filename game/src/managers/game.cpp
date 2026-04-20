@@ -22,6 +22,7 @@ void Game::run(){
 
     MV.printMemory();
 
+    std::printf("Item: %s\n", names[key].name);
     names.erase(key);
     
     MV.printMemory();
