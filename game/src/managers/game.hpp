@@ -10,11 +10,14 @@ public:
     Game() = default;
     ~Game() = default;
 
+    using EM = EntityManager<GameCMPs, GameTAGs>;
+    using Entity = EM::Entity;
+
     void run();
 
 private:
     DarkMoonEngine m_darkmoon {};
 
-    EntityManager m_entityManager {};
-    RenderSystem m_renderSystem {};
+    EM m_em {};
+    RenderSystem m_renSys {};
 };

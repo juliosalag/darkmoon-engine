@@ -33,11 +33,11 @@ GLADDIR     := $(OBJ)/libs/glad/src
 # Derive every obj subdir that will be needed
 OBJSUBDIRS  := $(sort $(dir $(ALLCPPOBJ)))
 
-# Main rule → SHARED LIB
+# Main rule --> SHARED LIB
 $(TARGET): $(ALLCPPOBJ)
 	$(CC) -shared -o $@ $(ALLCPPOBJ) $(LIBS)
 
-# Compile .cpp → .o  (order-only dep ensures dir exists first)
+# Compile .cpp --> .o  (order-only dep ensures dir exists first)
 $(OBJ)/%.o: $(SRC)/%.cpp | $(OBJSUBDIRS)
 	$(CC) -c $< -o $@ $(CCFLAGS)
 

@@ -1,38 +1,33 @@
 #include "game.hpp"
 
-#include "./utils/memviewer.hpp"
-#include "./utils/slotmap.hpp"
 #include  <cstdio>
 
-struct NameComponent {
-    char name[8] {};
-};
+// #include "./utils/memviewer.hpp"
 
 void Game::run(){
 
-    Slotmap<NameComponent, 4> names;
-    MemoryViewer MV{names};
+    std::cout << "\n-----------------\n";
+    std::cout << " Create Entities" << "\n";
+    std::cout << "-----------------\n";
 
-    NameComponent prueba = NameComponent{"cucu"};
+    auto& player = m_em.newEntity();
+    m_em.addComponent<RenderComponent>(player, RenderComponent{});
 
-    [[maybe_unused]]auto key0 = names.push_back( NameComponent{"Prueba"} );
-    key0 = names.push_back( NameComponent{"Prueba"} );
-    key0 = names.push_back( NameComponent{"Prueba"} );
-    auto key = names.push_back(prueba);
-
-    MV.printMemory();
-
-    std::printf("Item: %s\n", names[key].name);
-    names.erase(key);
+    auto& enemy1 = m_em.newEntity();
+    m_em.addComponent<RenderComponent>(enemy1, RenderComponent{});
     
-    MV.printMemory();
+    auto& enemy2 = m_em.newEntity();
+    m_em.addComponent<RenderComponent>(enemy2, RenderComponent{});
 
-    std::printf("Full traversal\n");
-    //for(auto it = names.begin(); it != names.end(); it++){
-    for(auto const& cmp : names){
-        std::printf("Item: %s\n", cmp.name);
-    }
+    //std::cout << "Entidades vivas: " << m_em.aliveCount() << "\n";
+    //std::cout << "IDs: " << player.getID() << ", "    << enemy1.getID() << ", "    << enemy2.getID() << "\n";
 
+    using SYSCMPs = MP::TypeList<RenderComponent>;
+    using SYSTAGs = MP::TypeList<>;
+
+    m_em.forEach<SYSCMPs, SYSTAGs>([&](Entity& e, RenderComponent&){
+        std::cout  << "ID: "  << e.getID() << "\n";
+    });
 
     /*
     auto w1 = Window(600, 500, "Game");
@@ -40,9 +35,7 @@ void Game::run(){
 
     auto w2 = Window(300, 450, "Debug", &w1);
     w2.SetPosition(660, 60);
-    */
 
-    /*
     // Title
     auto* e1 = manager.createEntity();
     e1->addRenderComponent({0, 0}, "Debug Menu", &w2);
@@ -56,28 +49,26 @@ void Game::run(){
     r2->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r2->text->MeasureText() / 2), 50});
     r2->text->SetColor(GRAY);
     r2->text->SetScale(0.5f);
-    */
-
-    /*
+    
     w1.Focus();
-
+    
     while(!w1.ShouldClose() && !w2.ShouldClose()){
-
+        
         // Draw game window
         w1.BeginDrawing(GRAY); w1.EndDrawing();
         
         // Draw debug window
         w2.BeginDrawing(BLACK);
-
+        
         // Update text
         //r1->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r1->text->MeasureText() / 2), 10});
         //r2->text->SetPosition({(w2.GetWidth() / 2) - static_cast<int>(r2->text->MeasureText() / 2), 50});
-
+        
         // Render System
         //renderSystem.render(manager);
         
         w2.EndDrawing();
-
+        
     }
     */
 }

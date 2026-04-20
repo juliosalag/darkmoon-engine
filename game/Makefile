@@ -30,11 +30,11 @@ ALLOBJ     := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(ALLCPP))
 SUBDIRS    := $(shell find $(SRC) -type d)
 OBJSUBDIRS := $(patsubst $(SRC)%,$(OBJ)%,$(SUBDIRS))
 
-# Main rule → EXECUTABLE
+# Main rule --> EXECUTABLE
 $(TARGET): $(OBJSUBDIRS) $(ALLOBJ)
 	$(CC) -o $@ $(ALLOBJ) -L. -ldarkmoon $(LIBS) $(SANITIZE)
 
-# Compile .cpp → .o
+# Compile .cpp --> .o
 $(OBJ)/%.o: $(SRC)/%.cpp
 	$(CC) -c $< -o $@ $(CCFLAGS)
 
