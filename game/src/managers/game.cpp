@@ -23,12 +23,14 @@ void Game::run(){
     MV.printMemory();
 
     names.erase(key);
-
-    MV.printMemory();
-
-    key0 = names.push_back( NameComponent{"Nuevo"} );
     
     MV.printMemory();
+
+    std::printf("Full traversal\n");
+    //for(auto it = names.begin(); it != names.end(); it++){
+    for(auto const& cmp : names){
+        std::printf("Item: %s\n", cmp.name);
+    }
 
 
     /*

@@ -5,12 +5,14 @@
 #include <stdexcept>
 #include <cassert>
 
-template <typename T, std::size_t Capacity>
+template <typename T, std::size_t Capacity = 10, typename INDEXT = std::uint32_t>
 struct Slotmap{
     using data_type  = T;
-    using index_type = std::uint64_t;
+    using index_type = INDEXT;
     using gen_type   = index_type;
     using key_type   = struct { index_type id; gen_type gen; };
+    using iterator   = data_type*;
+    using const_iterator = data_type const*;
 
     constexpr explicit Slotmap() noexcept { clear(); }
 
@@ -53,23 +55,22 @@ struct Slotmap{
     // Clear slotmap
     constexpr void clear() noexcept { freelist_init(); };
 
+    [[nodiscard]] constexpr iterator begin() noexcept { return m_data.begin(); }
+    [[nodiscard]] constexpr iterator end()   noexcept { return m_data.begin() + m_size; }
+    [[nodiscard]] constexpr iterator cbegin() const noexcept { return m_data.begin(); }
+    [[nodiscard]] constexpr iterator cend()   const noexcept { return m_data.begin() + m_size; }
+
     // Getters
     [[nodiscard]] constexpr std::size_t size()     const noexcept { return m_size; }
     [[nodiscard]] constexpr std::size_t capacity() const noexcept { return Capacity; }
 
 private:
-    char const t1[8] = "#SIZE##";
     index_type m_size {};
-    char const t2[8] = "#FREEL#";
     index_type m_freelist {};
-    char const t3[8] = "#GENER#";
     gen_type   m_generation {};
 
-    char const t4[16] = "#INDEX#########";
     std::array<  key_type, Capacity> m_indices {};
-    char const t5[16] = "#DATA##########";
     std::array< data_type, Capacity> m_data {};
-    char const t6[16] = "#ERASE#########";
     std::array<index_type, Capacity> m_erase {};
 
     // Initialize m_indices and m_freelist
