@@ -11,7 +11,9 @@ static int nextCodepoint(const char*& s) {
 Text::Text(Vector2D position, const std::string& text, const char* fontPath, Window* window, float pixelHeight, Shader* shader)
     : m_position(position), m_text(text), m_pixelHeight(pixelHeight), m_window(window), m_shader(shader == nullptr ? window->GetBasicFontShader2D() : shader)
 {
-    m_resourceFont = m_RM.loadResource<ResourceFont>(fontPath, pixelHeight);
+    ResourceManager& RM = ResourceManager::getInstance();
+
+    m_resourceFont = RM.loadResource<ResourceFont>(fontPath, pixelHeight);
 
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);

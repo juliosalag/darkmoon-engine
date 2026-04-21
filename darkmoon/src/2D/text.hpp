@@ -24,12 +24,12 @@ private:
     Shader* m_shader {};
     ResourceFont* m_resourceFont {};
 
-    ResourceManager& m_RM = ResourceManager::getInstance();
-
     float toNDC_X(float px) const;
     float toNDC_Y(float py) const;
 
 public:
+    Text() = default;
+    
     Text(Vector2D position, const std::string& text, const char* fontPath, Window* window, float pixelHeight = 32.f, Shader* shader = nullptr);
     ~Text() { Unload(); }
 
