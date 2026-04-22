@@ -14,11 +14,13 @@ CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -fPIC \
 
 # Detect OS
 ifeq ($(OS),Windows_NT)
-    EXT    := exe
-    LIBS   := -lglfw3 -lopengl32 -lgdi32
+    EXT        := exe
+    LIBS       := -lglfw3 -lopengl32 -lgdi32
+    TRANSITIVE :=
 else
-    EXT    := out
-    LIBS   := -lglfw -lGLU -lGL $(SANITIZE)
+    EXT        := out
+    LIBS       :=
+    TRANSITIVE := -Wl,--copy-dt-needed-entries
 endif
 
 TARGET := $(GAME).$(EXT)
@@ -32,7 +34,7 @@ OBJSUBDIRS := $(patsubst $(SRC)%,$(OBJ)%,$(SUBDIRS))
 
 # Main rule --> EXECUTABLE
 $(TARGET): $(OBJSUBDIRS) $(ALLOBJ)
-	$(CC) -o $@ $(ALLOBJ) -L. -ldarkmoon $(LIBS) $(SANITIZE)
+	$(CC) -o $@ $(ALLOBJ) -L../darkmoon/ -ldarkmoon $(TRANSITIVE) $(LIBS) $(SANITIZE)
 
 # Compile .cpp --> .o
 $(OBJ)/%.o: $(SRC)/%.cpp
@@ -42,10 +44,14 @@ $(OBJ)/%.o: $(SRC)/%.cpp
 $(OBJSUBDIRS):
 	$(MKDIR) $(OBJSUBDIRS)
 
-.PHONY: clean dir
+.PHONY: clean dir run
 
 run: $(TARGET)
+ifeq ($(OS),Windows_NT)
 	./$(TARGET)
+else
+	LD_LIBRARY_PATH=../darkmoon/ ./$(TARGET)
+endif
 
 # Debug info
 dir:

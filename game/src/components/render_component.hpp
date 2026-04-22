@@ -4,19 +4,17 @@
 
 struct RenderComponent {
 
-    Vector2D position {};
-    Window* window {};
-    std::unique_ptr<Text> text {};
-    std::string font { "./assets/roboto.ttf" };
+    Color color {WHITE};
+    std::unique_ptr<Pixel> pixel {};
+
+    uint8_t size { 1 };
 
     RenderComponent() = default;
 
-    RenderComponent(Vector2D pos, const char* texto, Window* w) 
-        : position(pos), window(w)
+    RenderComponent(Color col, int siz, Window& w) 
+        : color(col), size(static_cast<uint8_t>(siz))
     {
-        text = std::make_unique<Text>(position, texto, font.c_str(), window);
-        
-        //text.SetText("Prueba");
-        text->SetColor(WHITE);
+        pixel = std::make_unique<Pixel>(Vector2D{}, color, size, &w);
+        pixel->SetSize(size);
     };
 };

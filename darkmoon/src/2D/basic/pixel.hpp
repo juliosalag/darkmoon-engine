@@ -18,6 +18,8 @@ private:
     Window* m_window {};
 
 public:
+    Pixel() = default;
+
     Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader = nullptr);
     ~Pixel();
 

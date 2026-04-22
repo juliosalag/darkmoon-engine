@@ -5,7 +5,10 @@
 #include "./utils/types.hpp"
 
 #include "./managers/entity_manager.hpp"
+
 #include "./systems/render_system.hpp"
+#include "./systems/physics_system.hpp"
+#include "./systems/debug_system.hpp"
 
 struct Game{
 public:
@@ -14,9 +17,12 @@ public:
 
     void run();
 
+    void CreateStars(int numStars, Window& w);
+
 private:
     DarkMoonEngine m_darkmoon {};
 
     EM m_em {};
     RenderSystem m_renderSystem {};
+    PhysicsSystem m_physicsSystem {};
 };

@@ -10,17 +10,12 @@ public:
 
     void update(EM& manager, Window& w) {
         manager.forEach<SYSCMPs, SYSTAGs>([&](Entity& e, RenderComponent& r){
-            //std::cout << e.getID() << "\n";
+            if(e.hasComponent<PhysicsComponent>())
+                r.pixel->SetPosition(manager.getComponent<PhysicsComponent>(e).position);
 
-            if(e.getID() == static_cast<size_t>(0)){
-                r.text->SetPosition({(w.GetWidth() / 2) - static_cast<int>(r.text->MeasureText() / 2), 10});
-                //std::cout << r.text->GetPosition().x << " | " << r.text->GetPosition().y << "\n";
-            }
-            else if(e.getID() == static_cast<size_t>(1)){
-                r.text->SetPosition({(w.GetWidth() / 2) - static_cast<int>(r.text->MeasureText() / 2), 50});
-            }
+            Pixel({w.GetWidth() / 2, w.GetHeight() / 2}, RED, 4, &w).Draw();
 
-            r.text->Draw();
+            r.pixel->Draw();
         });
     }
 

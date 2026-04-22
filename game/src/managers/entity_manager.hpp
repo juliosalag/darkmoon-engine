@@ -14,7 +14,7 @@ struct EntityManager {
 
     // Constants
 
-    static constexpr std::size_t MAX_ENTITIES { 100 };
+    static constexpr std::size_t MAX_ENTITIES { 200 };
     inline static std::size_t nextID { 0 };
 
     // Forward declaration
