@@ -14,6 +14,8 @@ private:
     Window* m_window {};
 
 public:
+    Rectangle() = default;
+
     Rectangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Vector2D vertexD, Color color, Window* window, Shader* shader = nullptr)
         : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_vertexD(vertexD), m_color(color), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
     {
@@ -55,6 +57,11 @@ public:
     };
 
     ~Rectangle(){ Delete(); };
+
+    Vector2D GetVertexA(){ return m_vertexA; }
+    Vector2D GetVertexB(){ return m_vertexB; }
+    Vector2D GetVertexC(){ return m_vertexC; }
+    Vector2D GetVertexD(){ return m_vertexD; }
 
     void Delete() {
         glDeleteVertexArrays(1, &m_VAO);

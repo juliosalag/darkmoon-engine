@@ -127,7 +127,7 @@ private:
 
         // Update array (data slot is not last, copy last here)
         if(dataID != m_size - 1){
-            m_data[dataID] = m_data[m_size - 1];
+            m_data[dataID] = std::move(m_data[m_size - 1]);
             m_erase[dataID] = m_erase[m_size - 1];
             m_indices[m_erase[dataID]].id = dataID;
         }

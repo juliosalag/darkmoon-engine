@@ -20,21 +20,29 @@ private:
 public:
     Pixel() = default;
 
+    // Constructor: initializes pixel data and OpenGL buffers
     Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader = nullptr);
+
+    // Destructor: cleans up GPU resources
     ~Pixel();
 
-    // Delete VAO and VBO buffers
+    // Deletes VAO and VBO buffers from GPU
     void Delete();
 
-    // Draw pixel
+    // Renders the pixel on screen
     void Draw();
 
     // ------- //
     // Setters //
     // ------- //
 
+    // Updates pixel position and GPU buffer data
     void SetPosition(Vector2D position);
+
+    // Sets pixel color
     void SetColor(Color color) { m_color = color; }
+
+    // Sets pixel size
     void SetSize(int size) { m_size = size; }
 
     // ------- //

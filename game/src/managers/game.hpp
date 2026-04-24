@@ -17,7 +17,9 @@ public:
 
     void run();
 
+    void CreateStar(Window& w);
     void CreateStars(int numStars, Window& w);
+    void DeleteRandomStar(Window& w);
 
 private:
     DarkMoonEngine m_darkmoon {};

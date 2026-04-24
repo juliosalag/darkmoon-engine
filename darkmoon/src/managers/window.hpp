@@ -52,9 +52,11 @@ struct Window{
     };
     // Focus on the window (bring it to the front)
     void Focus(){ 
-        glfwMakeContextCurrent(m_window);
         glfwFocusWindow(m_window); 
     };
+    void Current(){
+        glfwMakeContextCurrent(m_window);
+    }
 
     // ------- //
     // Drawing //

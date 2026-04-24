@@ -18,21 +18,31 @@ private:
     Window* m_window {};
 
 public:
+    Line() = default;
+
+    // Constructor: initializes line data and OpenGL buffers
     Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader = nullptr);
+
+    // Destructor: cleans up GPU resources
     ~Line();
 
-    // Delete VAO and VBO buffers
+    // Deletes VAO and VBO buffers from GPU
     void Delete();
 
-    // Draw line
+    // Renders the line on screen
     void Draw();
 
     // ------- //
     // Setters //
     // ------- //
 
+    // Updates both start and end positions and GPU buffer data
     void SetPosition(Vector2D startPosition, Vector2D endPosition);
+
+    // Sets line color
     void SetColor(Color color) { m_color = color; }
+
+    // Sets line width
     void SetWidth(int width) { m_width = width; }
 
     // ------- //

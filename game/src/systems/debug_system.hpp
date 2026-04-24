@@ -33,7 +33,7 @@ public:
 
         Line({0, 75}, {w.GetWidth(), 75}, GRAY, 1, &w).Draw();
 
-        int padding = 90;
+        int padding = 130;
 
         manager.forEach<SYSCMPs, SYSTAGs>([&](Entity& e, RenderComponent& , PhysicsComponent& p){
             Text txt = Text({20, padding}, "Entity ID " + std::to_string(e.getID()) + ": Position --> " + std::to_string(p.position.x) + " | " + std::to_string(p.position.y), "./assets/roboto.ttf", &w);

@@ -109,6 +109,15 @@ struct EntityManager {
         while (m_alive > 0) destroyEntity(0);
     }
 
+    void destroyEntityByID(std::size_t id) {
+        for (std::size_t i = 0; i < m_alive; ++i) {
+            if (m_entities[i].getID() == id) {
+                destroyEntity(i);
+                return;
+            }
+        }
+    }
+
     // Queries
     std::size_t aliveCount()   const noexcept { return m_alive; } 
     std::size_t freeEntities() const noexcept { return MAX_ENTITIES - m_alive; } 
@@ -153,6 +162,12 @@ struct EntityManager {
         getCMPStorage<CMP>().erase(key);
         
         e.m_cmp_mask &= static_cast<typename cmp_info::mask_type>(~cmp_info::template mask<CMP>());
+    }
+
+    template<typename TAG>
+    void destroyTag(Entity& e) {
+        if (e.template hasTag<TAG>())
+            e.tag_mask_ &= ~tag_info::template mask<TAG>();
     }
 
     // Iterator
