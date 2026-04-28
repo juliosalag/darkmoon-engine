@@ -1,14 +1,14 @@
 #pragma once
 
-#include <darkmoon.hpp>
+#include <darkmoon/darkmoon.hpp>
 
-#include "./utils/types.hpp"
+#include "../utils/types.hpp"
 
-#include "./managers/entity_manager.hpp"
+#include "../managers/entity_manager.hpp"
 
-#include "./systems/render_system.hpp"
-#include "./systems/physics_system.hpp"
-#include "./systems/debug_system.hpp"
+#include "../systems/render_system.hpp"
+#include "../systems/physics_system.hpp"
+#include "../systems/debug_system.hpp"
 
 struct Game{
 public:

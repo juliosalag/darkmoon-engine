@@ -1,6 +1,6 @@
 #pragma once
 
-#include<darkmoon.hpp>
+#include <darkmoon/utils/math.hpp>
 
 struct PhysicsComponent{
 

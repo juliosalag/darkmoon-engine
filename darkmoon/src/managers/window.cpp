@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include <darkmoon/managers/window.hpp>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"

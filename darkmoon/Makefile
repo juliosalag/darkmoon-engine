@@ -4,13 +4,16 @@ LIB      := darkmoon
 MKDIR    := mkdir -p
 SRC      := src
 OBJ      := obj
-ASSETS   := assets
+INCLUDE  := include
 
 SANITIZE :=
 # -fsanitize=address,undefined
 
 CC       := g++
-CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -fPIC -Isrc/ -Ilibs/glad/include $(SANITIZE)
+CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -fPIC \
+            -I$(INCLUDE)/ \
+            -Ilibs/glad/include \
+            $(SANITIZE)
 
 # Detect OS (Linux vs Windows MSYS2)
 ifeq ($(OS),Windows_NT)
@@ -24,28 +27,26 @@ endif
 TARGET := lib$(LIB).$(EXT)
 
 # Source files and objects
-ALLCPP      := $(shell find $(SRC) -type f -iname *.cpp) libs/glad/src/glad.c
-ALLCPPOBJ   := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(filter %.cpp,$(ALLCPP))) \
-               $(OBJ)/libs/glad/src/glad.o
-
-GLADDIR     := $(OBJ)/libs/glad/src
+ALLCPP    := $(shell find $(SRC) -type f -name "*.cpp") libs/glad/src/glad.c
+ALLCPPOBJ := $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(filter %.cpp,$(ALLCPP))) \
+             $(OBJ)/libs/glad/src/glad.o
 
 # Derive every obj subdir that will be needed
-OBJSUBDIRS  := $(sort $(dir $(ALLCPPOBJ)))
+OBJSUBDIRS := $(sort $(dir $(ALLCPPOBJ)))
 
 # Main rule --> SHARED LIB
 $(TARGET): $(ALLCPPOBJ)
 	$(CC) -shared -o $@ $(ALLCPPOBJ) $(LIBS)
 
-# Compile .cpp --> .o  (order-only dep ensures dir exists first)
+# Compile .cpp --> .o
 $(OBJ)/%.o: $(SRC)/%.cpp | $(OBJSUBDIRS)
 	$(CC) -c $< -o $@ $(CCFLAGS)
 
-# Compile glad.c  (same pattern)
+# Compile glad.c
 $(OBJ)/libs/glad/src/glad.o: libs/glad/src/glad.c | $(OBJSUBDIRS)
 	$(CC) -c $< -o $@ $(CCFLAGS)
 
-# Single rule creates ALL needed subdirs at once
+# Create all needed subdirs
 $(OBJSUBDIRS):
 	$(MKDIR) $@
 
@@ -53,7 +54,8 @@ $(OBJSUBDIRS):
 
 # Debug info
 dir:
-	$(info ASSETS:     $(ASSETS))
+	$(info SRC:        $(SRC))
+	$(info INCLUDE:    $(INCLUDE))
 	$(info ALLCPP:     $(ALLCPP))
 	$(info ALLCPPOBJ:  $(ALLCPPOBJ))
 	$(info OBJSUBDIRS: $(OBJSUBDIRS))

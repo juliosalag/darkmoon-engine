@@ -1,4 +1,4 @@
-#include "line.hpp"
+#include <darkmoon/2D/basic/line.hpp>
 
 Line::Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader)
     : m_startPosition(startPosition), m_endPosition(endPosition), m_color(color), m_width(width), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)

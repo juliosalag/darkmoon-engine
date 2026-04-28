@@ -1,4 +1,4 @@
-#include "resource_shader.hpp"
+#include <darkmoon/resources/resource_shader.hpp>
 
 Shader::Shader(std::size_t idResource, std::size_t fileType, const char* vertexPath, const char* fragmentPath, const char* geometryPath) 
     : Resource(idResource, fileType, (std::string(vertexPath) + fragmentPath + geometryPath).c_str()) {

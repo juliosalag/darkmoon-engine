@@ -1,4 +1,4 @@
-#include "resource_font.hpp"
+#include <darkmoon/resources/resource_font.hpp>
 
 #pragma GCC diagnostic ignored "-Wconversion"
 #define STB_TRUETYPE_IMPLEMENTATION

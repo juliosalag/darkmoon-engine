@@ -6,14 +6,14 @@
 #include <map>
 #include <optional>
 
-#include "./managers/resource_manager.hpp"
-#include "./managers/window.hpp"
-#include "./managers/monitor.hpp"
+#include <darkmoon/managers/resource_manager.hpp>
+#include <darkmoon/managers/window.hpp>
+#include <darkmoon/managers/monitor.hpp>
 
-#include "./2D/2D.hpp"
+#include <darkmoon/2D/2D.hpp>
 
-#include "utils/keys.hpp"
-#include "utils/math.hpp"
+#include <darkmoon/utils/keys.hpp>
+#include <darkmoon/utils/math.hpp>
 
 struct DarkMoonEngine{
 public:

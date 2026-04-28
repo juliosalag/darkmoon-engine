@@ -1,6 +1,6 @@
 #include "../libs/stb_image.h"
 
-#include "resource_texture.hpp"
+#include <darkmoon/resources/resource_texture.hpp>
 
 ResourceTexture::ResourceTexture(std::size_t idResource, std::size_t fileType, const char* filePath) 
     : Resource(idResource, fileType, filePath) {

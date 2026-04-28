@@ -6,9 +6,9 @@
 #include <GLFW/glfw3.h>
 
 #include "monitor.hpp"
-#include "./utils/keys.hpp"
-#include "./utils/color.hpp"
-#include "./utils/math.hpp"
+#include <darkmoon/utils/keys.hpp>
+#include <darkmoon/utils/color.hpp>
+#include <darkmoon/utils/math.hpp>
 
 #include "resource_manager.hpp"
 

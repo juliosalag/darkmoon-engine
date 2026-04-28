@@ -1,4 +1,4 @@
-#include "darkmoon.hpp"
+#include <darkmoon/engine.hpp>
 #include <glad/glad.h>
 
 DarkMoonEngine::DarkMoonEngine(){

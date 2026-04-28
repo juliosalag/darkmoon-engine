@@ -10,7 +10,7 @@ SANITIZE :=
 
 CC       := g++
 CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -fPIC \
-             -Isrc/ -I../darkmoon/src/ -I../darkmoon/libs/glad/include $(SANITIZE)
+             -Isrc/ -I../darkmoon/include -I../darkmoon/libs/glad/include $(SANITIZE)
 
 # Detect OS
 ifeq ($(OS),Windows_NT)

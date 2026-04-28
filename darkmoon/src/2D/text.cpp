@@ -1,4 +1,4 @@
-#include "text.hpp"
+#include <darkmoon/2D/text.hpp>
 
 static int nextCodepoint(const char*& s) {
     unsigned char c = (unsigned char)*s++;
