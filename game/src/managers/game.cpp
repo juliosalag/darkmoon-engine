@@ -78,7 +78,7 @@ void Game::run(){
     w2.SetPosition(660, 60);
 
     w1.Current();
-    //CreateStars(150, w1);
+    CreateStars(150, w1);
     
     w2.Current();
     DebugSystem db = DebugSystem(w2);
