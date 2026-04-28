@@ -1,10 +1,8 @@
 #pragma once
 
-#include <darkmoon/darkmoon.hpp>
+#include <darkmoon/graphics.hpp>
 
 #include "../utils/types.hpp"
-
-#include "../managers/entity_manager.hpp"
 
 #include "../systems/render_system.hpp"
 #include "../systems/physics_system.hpp"

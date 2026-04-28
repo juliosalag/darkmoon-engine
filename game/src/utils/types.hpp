@@ -1,7 +1,6 @@
 #pragma once
 
-#include "meta_program.hpp"
-#include "../managers/entity_manager.hpp"
+#include <darkmoon/ecs.hpp>
 
 // types.hpp: This is the file you edit when adding new component or new tag
 

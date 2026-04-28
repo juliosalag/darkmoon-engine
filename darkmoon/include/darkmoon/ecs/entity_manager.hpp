@@ -5,9 +5,9 @@
 #include <set>
 #include <cassert>
 
-#include "../utils/meta_program.hpp"
-#include "../utils/slotmap.hpp"
-#include "../utils/types.hpp"
+#include <darkmoon/ecs/meta_program.hpp>
+#include <darkmoon/utils/slotmap.hpp>
+//#include "../utils/types.hpp"
 
 template <typename CMPList, typename TAGList, std::size_t SlotCapacity = 350>
 struct EntityManager {
