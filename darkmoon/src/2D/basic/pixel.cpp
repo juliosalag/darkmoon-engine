@@ -1,11 +1,11 @@
 #include <darkmoon/2D/basic/pixel.hpp>
 
-Pixel::Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader)
+Pixel::Pixel(Vector2Df position, Color color, int size, Window* window, Shader* shader)
     : m_position(position), m_color(color), m_size(size), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
 {
     float vertex[] = {
-        (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-        -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
+        (m_position.x / static_cast<float>(m_window->GetWidth()))  * 2.0f - 1.0f,
+        -((m_position.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f)
     };
 
     glGenVertexArrays(1, &m_VAO);
@@ -13,7 +13,7 @@ Pixel::Pixel(Vector2D position, Color color, int size, Window* window, Shader* s
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
@@ -44,12 +44,12 @@ void Pixel::Draw() {
     glDisable(GL_BLEND);
 }
 
-void Pixel::SetPosition(Vector2D position) {
+void Pixel::SetPosition(Vector2Df position) {
     m_position = position;
 
     float vertex[] = {
-        (static_cast<float>(m_position.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-        -((static_cast<float>(m_position.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
+        (m_position.x / static_cast<float>(m_window->GetWidth()))  * 2.0f - 1.0f,
+        -((m_position.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f)
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

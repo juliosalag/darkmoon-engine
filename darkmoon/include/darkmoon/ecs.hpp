@@ -2,4 +2,6 @@
 
 #include "ecs/entity_manager.hpp"
 #include "ecs/meta_program.hpp"
-#include "utils/slotmap.hpp"
+#include "ecs/slotmap.hpp"
+
+#include "utils/memviewer.hpp"

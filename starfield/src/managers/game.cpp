@@ -70,7 +70,6 @@ private:
 };
 
 void Game::run(){
-
     auto w1 = Window(600, 500, "Game");
     w1.SetPosition(30, 60);
 

@@ -4,17 +4,18 @@
 #include <memory>
 #include <set>
 #include <cassert>
+#include <span>
 
 #include <darkmoon/ecs/meta_program.hpp>
-#include <darkmoon/utils/slotmap.hpp>
+#include <darkmoon/ecs/slotmap.hpp>
 //#include "../utils/types.hpp"
 
-template <typename CMPList, typename TAGList, std::size_t SlotCapacity = 350>
+template <typename CMPList, typename TAGList, std::size_t MaxEntities = 200, std::size_t SlotCapacity = 350>
 struct EntityManager {
 
     // Constants
 
-    static constexpr std::size_t MAX_ENTITIES { 200 };
+    static constexpr std::size_t MAX_ENTITIES { MaxEntities };
     inline static std::size_t nextID { 0 };
 
     // Forward declaration
@@ -42,7 +43,7 @@ struct EntityManager {
     // Entity
 
     struct Entity {
-        friend struct EntityManager<CMPList, TAGList, SlotCapacity>;
+        friend struct EntityManager<CMPList, TAGList, MaxEntities, SlotCapacity>;
 
         // TypeList<key_A, key_B, ...> --> tuple<key_A, key_B, ...>
         using keytype_list     = MP::forall_insert_template_t<to_keytype, CMPList>;
@@ -164,10 +165,17 @@ struct EntityManager {
         e.m_cmp_mask &= static_cast<typename cmp_info::mask_type>(~cmp_info::template mask<CMP>());
     }
 
+    template <typename TAG>
+    void addTag(Entity& e){
+        if (e.template hasTag<TAG>()) return;
+
+        e.template addTag<TAG>();
+    }
+
     template<typename TAG>
     void destroyTag(Entity& e) {
         if (e.template hasTag<TAG>())
-            e.tag_mask_ &= ~tag_info::template mask<TAG>();
+            e.m_tag_mask &= static_cast<typename tag_info::mask_type>(~tag_info::template mask<TAG>());
     }
 
     // Iterator

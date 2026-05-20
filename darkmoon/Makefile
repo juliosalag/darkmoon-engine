@@ -18,7 +18,7 @@ CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -fPIC \
 # Detect OS (Linux vs Windows MSYS2)
 ifeq ($(OS),Windows_NT)
     EXT   := dll
-    LIBS  := -lglfw3 -lopengl32 -lgdi32
+    LIBS  := -lglfw3 -lopengl32 -lgdi32 -lwinmm
 else
     EXT   := so
     LIBS  := -lglfw -lGLU -lGL $(SANITIZE)

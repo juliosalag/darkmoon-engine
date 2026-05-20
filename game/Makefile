@@ -15,7 +15,7 @@ CCFLAGS  := -g -std=c++2b -Wall -Wpedantic -Wextra -Wconversion -fPIC \
 # Detect OS
 ifeq ($(OS),Windows_NT)
     EXT        := exe
-    LIBS       := -lglfw3 -lopengl32 -lgdi32
+    LIBS       := -lglfw3 -lopengl32 -lgdi32 -lwinmm
     TRANSITIVE :=
 else
     EXT        := out

@@ -11,7 +11,7 @@
 struct Pixel {
 private:
     GLuint m_VAO {}, m_VBO {};
-    Vector2D m_position {};
+    Vector2Df m_position {};
     Color m_color { BLACK };
     int m_size { 1 };
     Shader* m_shader {};
@@ -21,7 +21,7 @@ public:
     Pixel() = default;
 
     // Constructor: initializes pixel data and OpenGL buffers
-    Pixel(Vector2D position, Color color, int size, Window* window, Shader* shader = nullptr);
+    Pixel(Vector2Df position, Color color, int size, Window* window, Shader* shader = nullptr);
 
     // Destructor: cleans up GPU resources
     ~Pixel();
@@ -37,7 +37,7 @@ public:
     // ------- //
 
     // Updates pixel position and GPU buffer data
-    void SetPosition(Vector2D position);
+    void SetPosition(Vector2Df position);
 
     // Sets pixel color
     void SetColor(Color color) { m_color = color; }
@@ -49,8 +49,7 @@ public:
     // Getters //
     // ------- //
 
-    Vector2D GetPosition() { return m_position; }
+    Vector2Df GetPosition() { return m_position; }
     Color GetColor() { return m_color; }
     int GetSize() { return m_size; }
 };
-

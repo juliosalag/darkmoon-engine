@@ -12,6 +12,12 @@
 
 #include "resource_manager.hpp"
 
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <time.h>
+#endif
+
 enum struct WindowMode{
     Windowed,
     Borderless,
@@ -31,6 +37,9 @@ struct Window{
     // Destroy the window and close it
     void Close(){ 
         //m_resourceManager.unloadAllResources();
+        #ifdef _WIN32
+            timeEndPeriod(1);
+        #endif
         glfwSetWindowShouldClose(m_window, GLFW_TRUE);
         //if(m_window) glfwDestroyWindow(m_window); 
     };
@@ -138,6 +147,15 @@ struct Window{
            
     */
 
+    // ---------- //
+    // FPS & Time //
+    // ---------- //
+    void SetTargetFPS(int fps);
+    int GetTargetFPS() const { return m_targetFPS; };
+    int  GetFPS() const { return m_fps; }
+    float GetDeltaTime() const { return m_deltaTime; }
+    double GetTime() const { return glfwGetTime(); }
+
     // Gamepad mapping
     // Time input
     // Clipboard input and output
@@ -214,11 +232,19 @@ private:
     int m_exitKey { KEY_ESCAPE };
 
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
-    
+
     // Shaders
     std::map<std::string, Shader*> m_shaders;
 
     void LoadBasicShaders();
+
+    // FPS & Time
+    int    m_targetFPS    { 60 };
+    float  m_deltaTime    { 0.0f };
+    int    m_fps          { 0 };
+    double m_lastTime     { 0.0 };
+    double m_fpsTimer     { 0.0 };
+    int    m_fpsCounter   { 0 }; 
 
     // --------- //
     // Functions //

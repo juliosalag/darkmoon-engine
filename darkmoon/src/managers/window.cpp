@@ -8,7 +8,16 @@
 
 #pragma GCC diagnostic pop
 
+#ifdef _WIN32
+    #include <intrin.h>
+#else
+    #include <immintrin.h>
+#endif
+
 Window::Window(int width, int height, const char* title, Window* sharedContext){
+    #ifdef _WIN32
+        timeBeginPeriod(1);
+    #endif
     // ------------------ // 
     // Create window GLFW //
     // ------------------ // 
@@ -25,6 +34,7 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
         // return false;
     } 
     glfwMakeContextCurrent(m_window);
+    glfwSwapInterval(0);
     glfwSetWindowUserPointer(m_window, this);
 
     // Callbacks
@@ -63,6 +73,8 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
         LoadBasicShaders();
     else
         m_shaders = sharedContext->m_shaders;
+
+    m_lastTime = glfwGetTime();
 }
 
 // ------- //
@@ -84,6 +96,47 @@ void Window::BeginDrawing(Color color){
 }
 
 void Window::EndDrawing(){
+    // Calculate deltaTime
+    double currentTime = glfwGetTime();
+    m_deltaTime = static_cast<float>(currentTime - m_lastTime);
+
+    // FPS cap: busy-wait (as raylib)
+    if(m_targetFPS > 0){
+        double targetFrameTime = 1.0 / static_cast<double>(m_targetFPS);
+        double remaining = targetFrameTime - (glfwGetTime() - m_lastTime);
+
+        if(remaining > 0.002){
+            double sleepTime = remaining - 0.002;
+
+            #ifdef _WIN32
+                Sleep(static_cast<DWORD>(sleepTime * 1000.0));
+            #else
+                struct timespec ts;
+                ts.tv_sec  = static_cast<time_t>(sleepTime);
+                ts.tv_nsec = static_cast<long>((sleepTime - static_cast<double>(ts.tv_sec)) * 1e9);
+                nanosleep(&ts, nullptr);
+            #endif
+        }
+
+        while((glfwGetTime() - m_lastTime) < targetFrameTime) {}
+
+        currentTime = glfwGetTime();
+        m_deltaTime = static_cast<float>(currentTime - m_lastTime);
+    }
+
+    // Update fps counter
+    m_fpsCounter++;
+    m_fpsTimer += m_deltaTime;
+    if(m_fpsTimer >= 0.1){
+        m_fps        = static_cast<int>(m_fpsCounter / m_fpsTimer);
+        m_fpsCounter = 0;
+        m_fpsTimer  -= 0.1;
+    }
+
+    m_lastTime = currentTime;
+    m_fps = m_targetFPS;
+
+    // Swap and Events
     PollEvents();
     glfwSwapBuffers(m_window);
 }
@@ -154,6 +207,13 @@ void Window::SetCursorPositionY(int ypos){
 
 void Window::SetCursorPosition(Vector2D position){
     glfwSetCursorPos(m_window, static_cast<double>(position.x), static_cast<double>(position.y));
+}
+
+// ---------- //
+// FPS & Time //
+// ---------- //
+void Window::SetTargetFPS(int fps){
+    m_targetFPS = (fps > 0) ? fps : 0;
 }
 
 // ------- //
