@@ -45,11 +45,15 @@ public:
     // Sets pixel size
     void SetSize(int size) { m_size = size; }
 
+    // Sets shader
+    void SetShader(Shader* shader){ m_shader = shader; }
+
     // ------- //
     // Getters //
     // ------- //
 
     Vector2Df GetPosition() { return m_position; }
-    Color GetColor() { return m_color; }
-    int GetSize() { return m_size; }
+    Color     GetColor()    { return m_color; }
+    int       GetSize()     { return m_size; }
+    Shader*   GetShader()   { return m_shader; }
 };

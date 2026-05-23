@@ -12,11 +12,6 @@
 
 #include "resource_manager.hpp"
 
-#ifdef _WIN32
-    #include <windows.h>
-#else
-    #include <time.h>
-#endif
 
 enum struct WindowMode{
     Windowed,
@@ -35,14 +30,7 @@ struct Window{
     // --------------- //
 
     // Destroy the window and close it
-    void Close(){ 
-        //m_resourceManager.unloadAllResources();
-        #ifdef _WIN32
-            timeEndPeriod(1);
-        #endif
-        glfwSetWindowShouldClose(m_window, GLFW_TRUE);
-        //if(m_window) glfwDestroyWindow(m_window); 
-    };
+    void Close();
     // Return whether the window should close
     bool ShouldClose(){ return m_window && glfwWindowShouldClose(m_window); };
     // Iconify the window (minimize it)
@@ -55,8 +43,8 @@ struct Window{
     void Hide(){ glfwHideWindow(m_window); };
     // Show the window
     void Show(){ 
-        SetSize({m_windowedWidth, m_windowedHeight});
-        SetPosition({m_windowedX, m_windowedY});
+        SetSize({static_cast<float>(m_windowedWidth), static_cast<float>(m_windowedHeight)});
+        SetPosition({static_cast<float>(m_windowedX), static_cast<float>(m_windowedY)});
         glfwShowWindow(m_window); 
     };
     // Focus on the window (bring it to the front)
@@ -76,6 +64,7 @@ struct Window{
     void BeginDrawing(Color color);
     // Swaps the buffers to display the rendered content and processes any pending events
     void EndDrawing();
+    void EndDrawingNoPoll();
     // Clear background with color
     void ClearBackground(Color color);
 
@@ -121,11 +110,11 @@ struct Window{
 
     int GetCursorPositionX();
     int GetCursorPositionY();
-    Vector2D GetCursorPosition();
+    Vector2Df GetCursorPosition();
 
     void SetCursorPositionX(int xpos);
     void SetCursorPositionY(int ypos);
-    void SetCursorPosition(Vector2D position);
+    void SetCursorPosition(Vector2Df position);
     
     bool IsCursorHover(){ return glfwGetWindowAttrib(m_window, GLFW_HOVERED); };
 
@@ -176,11 +165,11 @@ struct Window{
     // Set the window size
     void SetSize(int width, int height);
     // Set the window size (vector)
-    void SetSize(Vector2D size);
+    void SetSize(Vector2Df size);
     // Set the window position on the screen
     void SetPosition(int x, int y);
     // Set the window position on the screen (vector)
-    void SetPosition(Vector2D position);
+    void SetPosition(Vector2Df position);
     // Set the window title
     void SetTitle(const char* title);
     // Set the window icon from the specified file path
@@ -197,11 +186,11 @@ struct Window{
 
     int GetWidth();
     int GetHeight();
-    Vector2D GetSize();
+    Vector2Df GetSize();
 
     int GetPositionX();
     int GetPositionY();
-    Vector2D GetPosition();
+    Vector2Df GetPosition();
 
     float GetOpacity(){ return glfwGetWindowOpacity(m_window); };
 

@@ -11,7 +11,7 @@
 struct Line {
 private:
     GLuint m_VAO {}, m_VBO {};
-    Vector2D m_startPosition {}, m_endPosition {};
+    Vector2Df m_startPosition {}, m_endPosition {};
     Color m_color { BLACK };
     int m_width { 1 };
     Shader* m_shader {};
@@ -21,7 +21,7 @@ public:
     Line() = default;
 
     // Constructor: initializes line data and OpenGL buffers
-    Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader = nullptr);
+    Line(Vector2Df startPosition, Vector2Df endPosition, Color color, int width, Window* window, Shader* shader = nullptr);
 
     // Destructor: cleans up GPU resources
     ~Line();
@@ -37,7 +37,7 @@ public:
     // ------- //
 
     // Updates both start and end positions and GPU buffer data
-    void SetPosition(Vector2D startPosition, Vector2D endPosition);
+    void SetPosition(Vector2Df startPosition, Vector2Df endPosition);
 
     // Sets line color
     void SetColor(Color color) { m_color = color; }
@@ -45,12 +45,17 @@ public:
     // Sets line width
     void SetWidth(int width) { m_width = width; }
 
+    // Sets shader
+    void SetShader(Shader* shader){ m_shader = shader; }
+
     // ------- //
     // Getters //
     // ------- //
 
-    Vector2D GetStartPosition() { return m_startPosition; }
-    Vector2D GetEndPosition() { return m_endPosition; }
-    Color GetColor() { return m_color; }
-    int GetWidth() { return m_width; }
+    Vector2Df GetStartPosition() { return m_startPosition; }
+    Vector2Df GetEndPosition()   { return m_endPosition; }
+    Color     GetColor()         { return m_color; }
+    int       GetWidth()         { return m_width; }
+    Shader*   GetShader()        { return m_shader; }
+
 };

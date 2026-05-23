@@ -14,3 +14,18 @@ struct Color {
 #define RED         Color { 255,   0,   0, 255 }
 #define GREEN       Color {   0, 255,   0, 255 }
 #define BLUE        Color {   0,   0, 255, 255 }
+
+// RED
+// rgba(189, 90, 99)
+
+// CREAM
+// rgba(237, 219, 196)
+
+// BLUE
+// rgba(0, 152, 219)
+
+// MID BLUE
+// rgba(37, 36, 70) 
+
+// DARK BLUE
+// rgba(32, 21, 51)

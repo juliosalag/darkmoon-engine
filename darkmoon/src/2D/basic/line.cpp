@@ -1,13 +1,13 @@
 #include <darkmoon/2D/basic/line.hpp>
 
-Line::Line(Vector2D startPosition, Vector2D endPosition, Color color, int width, Window* window, Shader* shader)
+Line::Line(Vector2Df startPosition, Vector2Df endPosition, Color color, int width, Window* window, Shader* shader)
     : m_startPosition(startPosition), m_endPosition(endPosition), m_color(color), m_width(width), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
 {
     float vertex[] = {
-        (static_cast<float>(m_startPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-        -((static_cast<float>(m_startPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-        (static_cast<float>(m_endPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-        -((static_cast<float>(m_endPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
+        (m_startPosition.x / static_cast<float>(m_window->GetWidth()))  * 2.0f - 1.0f,
+        -((m_startPosition.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f),
+        (m_endPosition.x / static_cast<float>(m_window->GetWidth()))    * 2.0f - 1.0f,
+        -((m_endPosition.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f)
     };
 
     glGenVertexArrays(1, &m_VAO);
@@ -15,8 +15,8 @@ Line::Line(Vector2D startPosition, Vector2D endPosition, Color color, int width,
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), (void*)0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 }
@@ -46,15 +46,15 @@ void Line::Draw() {
     glDisable(GL_BLEND);
 }
 
-void Line::SetPosition(Vector2D startPosition, Vector2D endPosition) {
+void Line::SetPosition(Vector2Df startPosition, Vector2Df endPosition) {
     m_startPosition = startPosition;
-    m_endPosition = endPosition;
+    m_endPosition   = endPosition;
 
     float vertex[] = {
-        (static_cast<float>(m_startPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-        -((static_cast<float>(m_startPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-        (static_cast<float>(m_endPosition.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-        -((static_cast<float>(m_endPosition.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1)
+        (m_startPosition.x / static_cast<float>(m_window->GetWidth()))  * 2.0f - 1.0f,
+        -((m_startPosition.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f),
+        (m_endPosition.x / static_cast<float>(m_window->GetWidth()))    * 2.0f - 1.0f,
+        -((m_endPosition.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f)
     };
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

@@ -1,0 +1,2 @@
+"editor.fontFamily": "Monocraft",
+"editor.fontSize": 14

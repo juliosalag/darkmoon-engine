@@ -10,8 +10,10 @@
 
 #ifdef _WIN32
     #include <intrin.h>
+    #include <windows.h>
 #else
     #include <immintrin.h>
+    #include <time.h>
 #endif
 
 Window::Window(int width, int height, const char* title, Window* sharedContext){
@@ -77,6 +79,15 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
     m_lastTime = glfwGetTime();
 }
 
+void Window::Close(){ 
+    //m_resourceManager.unloadAllResources();
+    #ifdef _WIN32
+        timeEndPeriod(1);
+    #endif
+    glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+    //if(m_window) glfwDestroyWindow(m_window); 
+};
+
 // ------- //
 // Drawing //
 // ------- //
@@ -141,6 +152,51 @@ void Window::EndDrawing(){
     glfwSwapBuffers(m_window);
 }
 
+void Window::EndDrawingNoPoll(){
+    // Calculate deltaTime
+    double currentTime = glfwGetTime();
+    m_deltaTime = static_cast<float>(currentTime - m_lastTime);
+
+    // FPS cap: busy-wait (as raylib)
+    if(m_targetFPS > 0){
+        double targetFrameTime = 1.0 / static_cast<double>(m_targetFPS);
+        double remaining = targetFrameTime - (glfwGetTime() - m_lastTime);
+
+        if(remaining > 0.002){
+            double sleepTime = remaining - 0.002;
+
+            #ifdef _WIN32
+                Sleep(static_cast<DWORD>(sleepTime * 1000.0));
+            #else
+                struct timespec ts;
+                ts.tv_sec  = static_cast<time_t>(sleepTime);
+                ts.tv_nsec = static_cast<long>((sleepTime - static_cast<double>(ts.tv_sec)) * 1e9);
+                nanosleep(&ts, nullptr);
+            #endif
+        }
+
+        while((glfwGetTime() - m_lastTime) < targetFrameTime) {}
+
+        currentTime = glfwGetTime();
+        m_deltaTime = static_cast<float>(currentTime - m_lastTime);
+    }
+
+    // Update fps counter
+    m_fpsCounter++;
+    m_fpsTimer += m_deltaTime;
+    if(m_fpsTimer >= 0.1){
+        m_fps        = static_cast<int>(m_fpsCounter / m_fpsTimer);
+        m_fpsCounter = 0;
+        m_fpsTimer  -= 0.1;
+    }
+
+    m_lastTime = currentTime;
+    m_fps = m_targetFPS;
+
+    // Swap and Events
+    glfwSwapBuffers(m_window);
+}
+
 void Window::ClearBackground(Color color){
     glClearColor(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,11 +246,11 @@ int Window::GetCursorPositionY(){
     return static_cast<int>(ypos);
 }
 
-Vector2D Window::GetCursorPosition(){
+Vector2Df Window::GetCursorPosition(){
     double xpos, ypos;
     glfwGetCursorPos(m_window, &xpos, &ypos);
 
-    return {static_cast<int>(xpos), static_cast<int>(ypos)};
+    return Vector2Df{static_cast<float>(xpos), static_cast<float>(ypos)};
 }
 
 void Window::SetCursorPositionX(int xpos){
@@ -205,7 +261,7 @@ void Window::SetCursorPositionY(int ypos){
     glfwSetCursorPos(m_window, GetCursorPositionX(), static_cast<double>(ypos));
 }
 
-void Window::SetCursorPosition(Vector2D position){
+void Window::SetCursorPosition(Vector2Df position){
     glfwSetCursorPos(m_window, static_cast<double>(position.x), static_cast<double>(position.y));
 }
 
@@ -283,8 +339,8 @@ void Window::SetSize(int width, int height){
     }
 }
 
-void Window::SetSize(Vector2D size){
-    SetSize(size.x, size.y);
+void Window::SetSize(Vector2Df size){
+    SetSize(static_cast<int>(size.x), static_cast<int>(size.y));
 }
 
 void Window::SetPosition(int x, int y){
@@ -295,8 +351,8 @@ void Window::SetPosition(int x, int y){
     }
 }
 
-void Window::SetPosition(Vector2D position){
-    SetPosition(position.x, position.y);
+void Window::SetPosition(Vector2Df position){
+    SetPosition(static_cast<int>(position.x), static_cast<int>(position.y));
 }
 
 void Window::SetTitle(const char* title){
@@ -335,11 +391,11 @@ int Window::GetHeight(){
     return height;
 }
 
-Vector2D Window::GetSize(){
+Vector2Df Window::GetSize(){
     int width, height;
     glfwGetWindowSize(m_window, &width, &height);
     
-    return Vector2D{width, height};
+    return Vector2Df{static_cast<float>(width), static_cast<float>(height)};
 }
 
 int Window::GetPositionX(){
@@ -356,11 +412,11 @@ int Window::GetPositionY(){
     return ypos;
 }
 
-Vector2D Window::GetPosition(){
+Vector2Df Window::GetPosition(){
     int xpos, ypos;
     glfwGetWindowPos(m_window, &xpos, &ypos);
 
-    return Vector2D{xpos, ypos};
+    return Vector2Df{static_cast<float>(xpos), static_cast<float>(ypos)};
 }
 
 // ------- //
