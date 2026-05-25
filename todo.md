@@ -14,6 +14,9 @@
 
 - Splines
 
+- Color.hpp
+- Camera2D (now only with rectangle)
+
 # Texture
 
 - Transform

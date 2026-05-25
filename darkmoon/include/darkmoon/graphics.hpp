@@ -1,6 +1,7 @@
 #pragma once
 
 #include "managers/window.hpp"
+#include "managers/camera.hpp"
 #include "managers/monitor.hpp"
 #include "managers/resource_manager.hpp"
 

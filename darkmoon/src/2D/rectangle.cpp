@@ -131,6 +131,48 @@ void Rectangle::Draw(){
     glDisable(GL_BLEND);
 }
 
+void Rectangle::Draw(const Camera2D& camera) {
+    float w = static_cast<float>(m_window->GetWidth());
+    float h = static_cast<float>(m_window->GetHeight());
+
+    auto [ax, ay] = ToNDC(camera.WorldToScreen(m_vertexA), w, h);
+    auto [bx, by] = ToNDC(camera.WorldToScreen(m_vertexB), w, h);
+    auto [cx, cy] = ToNDC(camera.WorldToScreen(m_vertexC), w, h);
+    auto [dx, dy] = ToNDC(camera.WorldToScreen(m_vertexD), w, h);
+
+    float vertex[] = { ax,ay, bx,by, cx,cy, dx,dy };
+    GLuint index[] = { 0,1,2, 1,2,3 };
+
+    // Temporal Upload
+    GLuint vao, vbo, ebo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(index), index, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
+
+    // Same blending/shader as Draw()
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glUseProgram(m_shader->getIDShader());
+    GLint colorUniform = glGetUniformLocation(m_shader->getIDShader(), "customColor");
+    glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r/255.f, m_color.g/255.f, m_color.b/255.f, m_color.a/255.f)));
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    glDisable(GL_BLEND);
+
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+}
+
 // ================================================================== //
 // RectangleLines                                                      //
 // ================================================================== //

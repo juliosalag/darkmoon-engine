@@ -2,6 +2,7 @@
 
 #include "../utils/color.hpp"
 #include "../resources/resource_shader.hpp"
+#include "../managers/camera.hpp"
 #include "./basic/line.hpp"
 #include <darkmoon/utils/math.hpp>
 
@@ -20,6 +21,11 @@ private:
     Window* m_window {};
 
     void Rebuild();
+
+    static std::array<float,2> ToNDC(Vector2Df p, float winW, float winH){
+        return { (p.x / winW) * 2.f - 1.f,
+                -((p.y / winH) * 2.f - 1.f) };
+    }
 
 public:
     Rectangle() = default;
@@ -74,6 +80,7 @@ public:
 
     void Delete();
     void Draw();
+    void Draw(const Camera2D& camera);
 };
 
 struct RectangleLines {
