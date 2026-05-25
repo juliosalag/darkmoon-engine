@@ -3,7 +3,6 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/game/src/**",
                 "${workspaceFolder}/darkmoon/include",
                 "${workspaceFolder}/darkmoon/libs/glad/include"
             ],

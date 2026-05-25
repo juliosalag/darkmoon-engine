@@ -5,7 +5,6 @@
 - Font // Embedded Font
 
 - Triangle
-- Rectangle
 - Circle
 - Ellipse
 - Ring
@@ -17,14 +16,11 @@
 
 # Texture
 
-- 
+- Transform
 
 # Input
 
-- Mouse
-- Joystick
 - Gamepad mappings
-- Time
 - Clipboard
 
 # Monitor - https://www.glfw.org/docs/latest/monitor_guide.html
@@ -38,4 +34,3 @@
 # Extra
 
 - Fmod
-- ECS
