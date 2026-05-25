@@ -10,7 +10,7 @@ struct Entity {
 int main(){
     DarkMoonEngine dm{};
 
-    Window win = Window(800, 600, "ABBA collisions");
+    Window win = Window(800, 600, "AABB collisions");
 
     win.SetTargetFPS(120);
     win.SetPosition({20, 50});
