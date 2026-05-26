@@ -1,32 +1,33 @@
 # TODO
 
-# 2D
+## Next
+
+### Extra
+- Color.hpp
+
+### Input
+- Joystick
+- Gamepad mappings
+
+### 2D
 
 - Font // Embedded Font
 
-- Ellipse
-- Ring
-
-- Splines
-
-- Color.hpp
-
-# Texture
+### Texture
 
 - Transform
 
-# Input
-
-- Gamepad mappings
-
-# Monitor - https://www.glfw.org/docs/latest/monitor_guide.html
+### Monitor - https://www.glfw.org/docs/latest/monitor_guide.html
 - Cambio de monitor
 - Funciones de monitor
 
-# Facade
+## Extra 2D
+- Ellipse
+- Ring
+- Splines
 
+## Facade
 - OpenGL / Vulkan / Web
 
-# Extra
-
+## Extra
 - Fmod
