@@ -18,7 +18,6 @@
 # Input
 
 - Gamepad mappings
-- Clipboard
 
 # Monitor - https://www.glfw.org/docs/latest/monitor_guide.html
 - Cambio de monitor

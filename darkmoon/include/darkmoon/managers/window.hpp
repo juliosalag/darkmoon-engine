@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
 #include <map>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -68,17 +69,17 @@ struct Window{
     // Clear background with color
     void ClearBackground(Color color);
 
-    // Instant Draw // TODO
-
     // ------- //
     // Shaders //
     // ------- //
 
     Shader* CreateShader(const char* vertexPath = "", const char* fragmentPath = "", const char* geometryPath = ""){
+        Current();
         return m_resourceManager.loadResource<Shader>(vertexPath, fragmentPath, geometryPath);
     }
 
     Shader* CreateShader(const std::string& vertexCode = "", const std::string& fragmentCode  = "", const std::string& geometryCode = ""){
+        Current();
         return m_resourceManager.loadResource<Shader>((vertexCode + fragmentCode + geometryCode).c_str(), vertexCode, fragmentCode, geometryCode);
     }
 
@@ -145,10 +146,21 @@ struct Window{
     float GetDeltaTime() const { return m_deltaTime; }
     double GetTime() const { return glfwGetTime(); }
 
-    // Gamepad mapping
-    // Time input
-    // Clipboard input and output
-    // Path drop input
+    // --------- //
+    // Clipboard //
+    // --------- //
+
+    const char* GetClipboardString(){ return glfwGetClipboardString(m_window); };
+    void SetClipboardString(const char* text){ glfwSetClipboardString(m_window, text); }
+
+    // --------- //
+    // Path drop //
+    // --------- //
+
+    void SetDropCallback(std::function<void(int, const char**)> callback){ m_dropCallback = callback; };
+    const std::string& GetLastDroppedPath(){ return m_lastDroppedPath; };
+    bool IsFileDropped(){ return !m_lastDroppedPath.empty(); };
+    void ClearDroppedPath(){ m_lastDroppedPath = ""; };
 
     // ------- //
     // Setters //
@@ -221,6 +233,10 @@ private:
     int m_exitKey { KEY_ESCAPE };
 
     ResourceManager& m_resourceManager = ResourceManager::getInstance();
+
+    // Path drop
+    std::function<void(int, const char**)> m_dropCallback {};
+    std::string m_lastDroppedPath {};
 
     // Shaders
     std::map<std::string, Shader*> m_shaders;
@@ -308,4 +324,12 @@ private:
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
         win->m_resourceManager.unloadAllResources();
     }
+
+    static void drop_callback(GLFWwindow* window, int count, const char** paths){
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        if(count > 0)
+            win->m_lastDroppedPath = paths[count - 1]; // save the last
+        if(win->m_dropCallback)
+            win->m_dropCallback(count, paths);
+        }
 };
