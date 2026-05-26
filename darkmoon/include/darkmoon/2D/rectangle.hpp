@@ -144,6 +144,7 @@ public:
 
     void Delete();
     void Draw();
+    void Draw(const Camera2D& camera);
 
     Line* GetEdgeAB(){ return &m_edgeAB; };
     Line* GetEdgeBD(){ return &m_edgeBD; };

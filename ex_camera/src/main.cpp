@@ -35,14 +35,19 @@ int main() {
 
         win.BeginDrawing(BLACK);
 
+        // with camera - world coordinates
+        Rectangle(positionPlayer, 20, 20, GREEN, &win).Draw(cam); // player
+        Text({positionPlayer.x - 20, positionPlayer.y - 20}, "Player", "./assets/roboto.ttf", &win).Draw(cam);
+        Rectangle({300, 100}, 100, 50, WHITE, &win).Draw(cam);    // wall
+        Rectangle({350, 350}, 20, 2000, WHITE, &win).Draw(cam);   // wall
+
+        RegularPolygon(positionPlayer + Vector2Df{50, 50}, 40, 9, GREEN, &win).Draw(cam);
+        RegularPolygonLines(positionPlayer + Vector2Df{50, 50}, 40, 9, WHITE, &win).Draw(cam);
+
         // without camera - screen coordinates (HUD)
         Rectangle({10, 10}, 160, 50, RED, &win).Draw();
         Text({20, 20}, std::to_string(cam.ScreenToWorld(win.GetCursorPosition()).x + cam.ScreenToWorld(win.GetCursorPosition()).y), "./assets/roboto.ttf", &win).Draw();
-        
-        // with camera - world coordinates
-        Rectangle(positionPlayer, 20, 20, GREEN, &win).Draw(cam); // player
-        Rectangle({300, 100}, 100, 50, WHITE, &win).Draw(cam);    // wall
-        Rectangle({350, 350}, 20, 2000, WHITE, &win).Draw(cam);   // wall
+        Circle({500, 50}, 20, RED, &win).Draw();
 
         win.EndDrawing();
     }

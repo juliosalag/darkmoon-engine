@@ -8,7 +8,7 @@ static int nextCodepoint(const char*& s) {
                    { int cp = (c & 0x07) << 18; cp |= (*s++ & 0x3F) << 12; cp |= (*s++ & 0x3F) << 6; cp |= (*s++ & 0x3F); return cp; }
 }
 
-Text::Text(Vector2D position, const std::string& text, const char* fontPath, Window* window, float pixelHeight, Shader* shader)
+Text::Text(Vector2Df position, const std::string& text, const char* fontPath, Window* window, float pixelHeight, Shader* shader)
     : m_position(position), m_text(text), m_pixelHeight(pixelHeight), m_window(window), m_shader(shader == nullptr ? window->GetBasicFontShader2D() : shader)
 {
     ResourceManager& RM = ResourceManager::getInstance();
@@ -58,8 +58,8 @@ void Text::Draw() {
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-    float cursorX = static_cast<float>(m_position.x);
-    float cursorY = static_cast<float>(m_position.y) + m_resourceFont->ascent * m_scale;
+    float cursorX = m_position.x;
+    float cursorY = m_position.y + m_resourceFont->ascent * m_scale;
 
     const char* ptr = m_text.c_str();
     while (*ptr) {
@@ -101,6 +101,15 @@ void Text::Draw() {
     glBindTexture(GL_TEXTURE_2D, 0);
     glUseProgram(0);
     glDisable(GL_BLEND);
+}
+
+void Text::Draw(const Camera2D& camera) {
+    Vector2Df screen = camera.WorldToScreen(m_position);
+
+    Vector2Df saved = m_position;
+    m_position = screen;
+    Draw();
+    m_position = saved;
 }
 
 float Text::MeasureText() const {

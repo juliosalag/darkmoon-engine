@@ -258,3 +258,10 @@ void RectangleLines::Draw(){
     m_edgeCD.Draw();
     m_edgeCA.Draw();
 }
+
+void RectangleLines::Draw(const Camera2D& camera){
+    m_edgeAB.Draw(camera);
+    m_edgeBD.Draw(camera);
+    m_edgeCD.Draw(camera);
+    m_edgeCA.Draw(camera);
+}

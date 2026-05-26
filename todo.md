@@ -4,18 +4,12 @@
 
 - Font // Embedded Font
 
-- Triangle
-- Circle
 - Ellipse
 - Ring
-- Regular Polygon
-
-- Poly Lines
 
 - Splines
 
 - Color.hpp
-- Camera2D (now only with rectangle)
 
 # Texture
 

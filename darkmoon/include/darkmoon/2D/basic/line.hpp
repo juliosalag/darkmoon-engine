@@ -7,6 +7,7 @@
 #include "../../utils/color.hpp"
 #include "../../resources/resource_shader.hpp"
 #include "../../managers/window.hpp"
+#include "../../managers/camera.hpp"
 
 struct Line {
 private:
@@ -31,6 +32,7 @@ public:
 
     // Renders the line on screen
     void Draw();
+    void Draw(const Camera2D& camera);
 
     // ------- //
     // Setters //

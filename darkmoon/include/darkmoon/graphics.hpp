@@ -7,9 +7,11 @@
 
 #include "2D/basic/line.hpp"
 #include "2D/basic/pixel.hpp"
+#include "2D/regular_polygon.hpp"
 #include "2D/rectangle.hpp"
 #include "2D/triangle.hpp"
 #include "2D/texture.hpp"
+#include "2D/circle.hpp"
 #include "2D/text.hpp"
 
 #include "resources/resource.hpp"

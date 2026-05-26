@@ -10,7 +10,8 @@ obj/2D/basic/pixel.o: src/2D/basic/pixel.cpp \
  include/darkmoon/utils/keys.hpp \
  include/darkmoon/2D/basic/../../managers/resource_manager.hpp \
  include/darkmoon/2D/basic/../../managers/../resources/resource_texture.hpp \
- include/darkmoon/2D/basic/../../managers/../resources/resource_font.hpp
+ include/darkmoon/2D/basic/../../managers/../resources/resource_font.hpp \
+ include/darkmoon/2D/basic/../../managers/camera.hpp
 include/darkmoon/2D/basic/pixel.hpp:
 include/darkmoon/2D/basic/../../utils/math.hpp:
 include/darkmoon/2D/basic/../../utils/color.hpp:
@@ -24,3 +25,4 @@ include/darkmoon/utils/keys.hpp:
 include/darkmoon/2D/basic/../../managers/resource_manager.hpp:
 include/darkmoon/2D/basic/../../managers/../resources/resource_texture.hpp:
 include/darkmoon/2D/basic/../../managers/../resources/resource_font.hpp:
+include/darkmoon/2D/basic/../../managers/camera.hpp:

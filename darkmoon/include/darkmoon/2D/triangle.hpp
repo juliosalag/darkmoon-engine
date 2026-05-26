@@ -2,101 +2,114 @@
 
 #include "../utils/color.hpp"
 #include "../resources/resource_shader.hpp"
+#include "../managers/camera.hpp"
 #include "./basic/line.hpp"
 #include <darkmoon/utils/math.hpp>
 
+// -------- //
+// Triangle //
+// -------- //
+
 struct Triangle {
 private:
-    GLuint m_VAO {}, m_VBO {}, m_EBO {};
-    Vector2D m_vertexA {}, m_vertexB {},m_vertexC {};
-    Color m_color { BLACK };
-    Shader* m_shader {};
-    Window* m_window {};
+    GLuint    m_VAO {}, m_VBO {}, m_EBO {};
+    Vector2Df  m_vertexA {}, m_vertexB {}, m_vertexC {};
+    Color     m_color  { BLACK };
+    Shader*   m_shader {};
+    Window*   m_window {};
+
+    void Rebuild();
+
+    static std::array<float, 2> ToNDC(Vector2Df p, float winW, float winH) {
+        return { (static_cast<float>(p.x) / winW) * 2.f - 1.f,
+                -((static_cast<float>(p.y) / winH) * 2.f - 1.f) };
+    }
 
 public:
-    Triangle(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, Window* window, Shader* shader = nullptr)
-        : m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC), m_color(color), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window) 
-    {
-        float vertex[] = {
-            (static_cast<float>(m_vertexA.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_vertexA.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-            (static_cast<float>(m_vertexB.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_vertexB.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-            (static_cast<float>(m_vertexC.x) / static_cast<float>(m_window->GetWidth())) * 2 - 1,
-            -((static_cast<float>(m_vertexC.y) / static_cast<float>(m_window->GetHeight())) * 2 - 1),
-        };
-        GLuint index[] = { 0, 1, 2 };
-        
-        glGenVertexArrays(1, &m_VAO);
-        glGenBuffers(1, &m_VBO);
-        glGenBuffers(1, &m_EBO);
+    Triangle(Vector2Df vertexA, Vector2Df vertexB, Vector2Df vertexC,
+             Color color, Window* window, Shader* shader = nullptr);
 
-        glBindVertexArray(m_VAO);
+    ~Triangle() { Delete(); }
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+    // ------- //
+    // Getters //
+    // ------- //
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(index), index, GL_STATIC_DRAW);
+    Vector2Df GetVertexA() const { return m_vertexA; }
+    Vector2Df GetVertexB() const { return m_vertexB; }
+    Vector2Df GetVertexC() const { return m_vertexC; }
+    Color    GetColor()   const { return m_color;   }
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
+    // ------- //
+    // Setters //
+    // ------- //
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    };
+    // Desplaza los tres vértices manteniendo la forma, usando A como origen
+    void SetPosition(Vector2Df position);
+    void SetVertexA(Vector2Df v);
+    void SetVertexB(Vector2Df v);
+    void SetVertexC(Vector2Df v);
+    void SetColor(Color color) { m_color = color; }
 
-    ~Triangle(){ Delete(); };
+    // -------- //
+    // Commands //
+    // -------- //
 
-    void Delete(){
-        glDeleteVertexArrays(1, &m_VAO);
-        glDeleteBuffers(1, &m_VBO);
-        glDeleteBuffers(1, &m_EBO);
-    };
-
-    void Draw(){
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glUseProgram(m_shader->getIDShader());
-
-        GLint colorUniform = glGetUniformLocation(m_shader->getIDShader(), "customColor");
-        glUniform4fv(colorUniform, 1, glm::value_ptr(glm::vec4(m_color.r/255.f, m_color.g/255.f, m_color.b/255.f, m_color.a/255.f)));
-
-        glBindVertexArray(m_VAO);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-
-        glDisable(GL_BLEND);
-    }
+    void Draw();
+    void Draw(const Camera2D& camera);
+    void Delete();
 };
+
+// ------------- //
+// TriangleLines //
+// ------------- //
 
 struct TriangleLines {
 private:
-    Line m_edgeAB, m_edgeBC, m_edgeCA; 
+    Vector2Df  m_vertexA {}, m_vertexB {}, m_vertexC {};
+    Color     m_color  { BLACK };
+    int       m_lineWidth {};
+    Window*   m_window {};
+    Shader*   m_shader {};
 
-public: 
+    Line m_edgeAB, m_edgeBC, m_edgeCA;
 
-    TriangleLines(Vector2D vertexA, Vector2D vertexB, Vector2D vertexC, Color color, int width, Window* window, Shader* shader = nullptr)
-        : m_edgeAB(vertexA, vertexB, color, width, window, shader), 
-          m_edgeBC(vertexB, vertexC, color, width, window, shader), 
-          m_edgeCA(vertexC, vertexA, color, width, window, shader) { };
+    void Rebuild();
 
-    ~TriangleLines(){ Delete(); };
+public:
+    TriangleLines(Vector2Df vertexA, Vector2Df vertexB, Vector2Df vertexC,
+                  Color color, int width, Window* window, Shader* shader = nullptr);
 
-    void Delete(){
-        m_edgeAB.Delete();
-        m_edgeBC.Delete();
-        m_edgeCA.Delete();
-    }
+    ~TriangleLines() { Delete(); }
 
-    void Draw(){
-        m_edgeAB.Draw();
-        m_edgeBC.Draw();
-        m_edgeCA.Draw();
-    }
+    // ------- //
+    // Getters //
+    // ------- //
 
-    Line* GetEdgeAB(){ return &m_edgeAB; };
-    Line* GetEdgeBC(){ return &m_edgeBC; };
-    Line* GetEdgeCA(){ return &m_edgeCA; };
+    Vector2Df GetVertexA() const { return m_vertexA; }
+    Vector2Df GetVertexB() const { return m_vertexB; }
+    Vector2Df GetVertexC() const { return m_vertexC; }
+    Color    GetColor()   const { return m_color;   }
+
+    Line* GetEdgeAB() { return &m_edgeAB; }
+    Line* GetEdgeBC() { return &m_edgeBC; }
+    Line* GetEdgeCA() { return &m_edgeCA; }
+
+    // ------- //
+    // Setters //
+    // ------- //
+
+    void SetPosition(Vector2Df position);
+    void SetVertexA(Vector2Df v);
+    void SetVertexB(Vector2Df v);
+    void SetVertexC(Vector2Df v);
+    void SetColor(Color color) { m_color = color; Rebuild(); }
+
+    // -------- //
+    // Commands //
+    // -------- //
+
+    void Draw();
+    void Draw(const Camera2D& camera);
+    void Delete();
 };
