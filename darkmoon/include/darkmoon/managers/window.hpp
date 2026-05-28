@@ -186,6 +186,7 @@ struct Window{
     void SetTitle(const char* title);
     // Set the window icon from the specified file path
     void SetIcon(const char* iconPath);
+    void SetIconDefault();
     // Set the window opacity (0.0 to 1.0)
     void SetOpacity(float opacity);
 

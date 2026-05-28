@@ -1,5 +1,7 @@
 #pragma once
 
+#include "engine.hpp"
+
 #include "managers/window.hpp"
 #include "managers/camera.hpp"
 #include "managers/monitor.hpp"

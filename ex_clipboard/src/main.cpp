@@ -1,4 +1,4 @@
-#include <darkmoon/darkmoon.hpp>
+#include <darkmoon/graphics.hpp>
 
 int main() {
     DarkMoonEngine dm{};
@@ -11,7 +11,7 @@ int main() {
 
         // Copy to cliboard
         if(win.IsKeyPressed(KEY_C))
-            win.SetClipboardString("Hola desde DarkMoon!");
+            win.SetClipboardString("Hello from DarkMoon!");
 
         // Read the cliboard
         if(win.IsKeyPressed(KEY_V)){
@@ -20,6 +20,7 @@ int main() {
                 std::cout << "Clipboard: " << text << "\n";
         }
 
+        // Read the path from dropped file
         if(win.IsFileDropped()){
             std::cout << win.GetLastDroppedPath() << "\n";
             if(win.GetLastDroppedPath().ends_with(".png")){
@@ -30,6 +31,7 @@ int main() {
 
         win.BeginDrawing(BLACK);
 
+        // Load texture from path
         if(!pathTexture.empty())
             Texture({win.GetWidth() / 2, win.GetHeight() / 2}, {10, 10}, 0, pathTexture.c_str(), &win).Draw();
 
