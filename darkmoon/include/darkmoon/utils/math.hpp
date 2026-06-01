@@ -34,6 +34,7 @@ struct Vector2D {
     // Compound assignment operators
     constexpr Vector2D& operator+=(const Vector2D& o) noexcept { x += o.x; y += o.y; return *this; }
     constexpr Vector2D& operator-=(const Vector2D& o) noexcept { x -= o.x; y -= o.y; return *this; }
+    constexpr Vector2D& operator*=(const Vector2D& o) noexcept { x *= o.x; y *= o.y; return *this; }
     constexpr Vector2D& operator*=(int scalar)        noexcept { x *= scalar; y *= scalar; return *this; }
     constexpr Vector2D& operator/=(int scalar)        noexcept { x /= scalar; y /= scalar; return *this; }
 
@@ -55,7 +56,6 @@ struct Vector2D {
 
 [[nodiscard]] constexpr inline Vector2D operator*(int scalar, const Vector2D& v) noexcept { return v * scalar; }
 
-
 struct Vector2Df {
     float x, y;
 
@@ -76,6 +76,7 @@ struct Vector2Df {
     // Compound assignment operators
     constexpr Vector2Df& operator+=(const Vector2Df& o) noexcept { x += o.x; y += o.y; return *this; }
     constexpr Vector2Df& operator-=(const Vector2Df& o) noexcept { x -= o.x; y -= o.y; return *this; }
+    constexpr Vector2Df& operator*=(const Vector2Df& o) noexcept { x *= o.x; y *= o.y; return *this; }
     constexpr Vector2Df& operator*=(float scalar)       noexcept { x *= scalar; y *= scalar; return *this; }
     constexpr Vector2Df& operator/=(float scalar)       noexcept { x /= scalar; y /= scalar; return *this; }
 
@@ -106,6 +107,4 @@ struct Vector2Df {
 };
 
 [[nodiscard]] constexpr inline Vector2Df operator*(float scalar, const Vector2Df& v) noexcept { return v * scalar; }
-
-// Deferred definition of toFloat() (Vector2Df is complete at this point)
 [[nodiscard]] constexpr Vector2Df Vector2D::toFloat() const noexcept { return {static_cast<float>(x), static_cast<float>(y)}; }

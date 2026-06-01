@@ -79,14 +79,14 @@ STB_INC     := $(LIBS_DIR)/stb
 CXX         := g++
 CC          := gcc
 
-CXXFLAGS    := -std=c++2b -O2 -fPIC -Wall -Wextra #-static-libgcc -static-libstdc++
+CXXFLAGS    := -std=c++2b -O2 -fPIC -Wall -Wextra
 CFLAGS      := -O2 -fPIC
 
 INCLUDES    := -I$(INC_DIR) -I$(GLAD_INC) -I$(STB_INC) -I$(LIBS_DIR)/glfw
 
 # Platform-specific linker flags
 ifeq ($(PLATFORM),windows)
-    LDFLAGS := -L$(LIBS_DIR)/glfw/lib -lglfw3 -lopengl32 -lgdi32 -lwinmm
+    LDFLAGS := -L$(LIBS_DIR)/glfw/lib -lglfw3 -lopengl32 -lgdi32 -lwinmm -static-libgcc -static-libstdc++ -static
 else ifeq ($(PLATFORM),macos)
     LDFLAGS := -lglfw -framework OpenGL
 else
@@ -128,7 +128,6 @@ $(TARGET): $(TARGET_REAL)
 	ln -sf $(TARGET_REAL) $(TARGET_SO)
 	ln -sf $(TARGET_SO)   $(TARGET)
 
-	@echo ""
 	@echo "  Library generated:"
 	@echo "    $(TARGET_REAL)  ← real binary"
 	@echo "    $(TARGET_SO)    ← SONAME symlink"

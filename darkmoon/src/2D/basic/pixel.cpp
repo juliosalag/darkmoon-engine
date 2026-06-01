@@ -4,7 +4,7 @@ Pixel::Pixel(Vector2Df position, Color color, int size, Window* window, Shader* 
     : m_position(position), m_color(color), m_size(size), m_shader(shader == nullptr ? window->GetBasicShader2D() : shader), m_window(window)
 {
     float vertex[] = {
-        (m_position.x / static_cast<float>(m_window->GetWidth()))  * 2.0f - 1.0f,
+        (m_position.x / static_cast<float>(m_window->GetWidth())) * 2.0f - 1.0f,
         -((m_position.y / static_cast<float>(m_window->GetHeight())) * 2.0f - 1.0f)
     };
 

@@ -13,7 +13,6 @@
 
 #include "resource_manager.hpp"
 
-
 enum struct WindowMode{
     Windowed,
     Borderless,
@@ -54,6 +53,10 @@ struct Window{
     };
     void Current(){
         glfwMakeContextCurrent(m_window);
+    }
+    // Return if the window was resized
+    bool WasResized(){
+        return m_resized;
     }
 
     // ------- //
@@ -131,11 +134,89 @@ struct Window{
     int GetXoffsetScroll(){ return m_input.xoffset; };
     int GetYoffsetScroll(){ return m_input.yoffset; };
 
-    // Joystick input
-    /*
-        glfwSetJoystickCallback();
-           
-    */
+    // Gamepad / Joystick input
+
+    // Is the gamepad connected? (id 0..15)
+    bool IsGamepadAvailable(int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        return m_input.gamepads[id].connected;
+    }
+
+    // Name of the gamepad (may be nullptr if not connected)
+    const char* GetGamepadName(int id = 0) const {
+        return glfwGetGamepadName(id);
+    }
+
+    // Pressed  = was released, now pressed (rising edge)
+    bool IsGamepadButtonPressed(int button, int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        if(!m_input.gamepads[id].connected) return false;
+        return !m_input.gamepads[id].buttonsLast[button] &&
+                m_input.gamepads[id].buttons[button];
+    }
+    // Released = was pressed, now released (falling edge)
+    bool IsGamepadButtonReleased(int button, int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        if(!m_input.gamepads[id].connected) return false;
+        return  m_input.gamepads[id].buttonsLast[button] &&
+               !m_input.gamepads[id].buttons[button];
+    }
+    // Down = was and still is pressed
+    bool IsGamepadButtonDown(int button, int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        if(!m_input.gamepads[id].connected) return false;
+        return m_input.gamepads[id].buttonsLast[button] &&
+               m_input.gamepads[id].buttons[button];
+    }
+    // Up = was and still is released
+    bool IsGamepadButtonUp(int button, int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        if(!m_input.gamepads[id].connected) return false;
+        return !m_input.gamepads[id].buttonsLast[button] &&
+               !m_input.gamepads[id].buttons[button];
+    }
+
+    // Raw axis value in [-1.0, 1.0]
+    // Axes: GLFW_GAMEPAD_AXIS_LEFT_X/Y, RIGHT_X/Y,
+    //       GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER
+    float GetGamepadAxis(int axis, int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return 0.0f;
+        if(!m_input.gamepads[id].connected) return 0.0f;
+        return m_input.gamepads[id].axes[axis];
+    }
+
+    // Axis delta relative to previous frame
+    float GetGamepadAxisDelta(int axis, int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return 0.0f;
+        if(!m_input.gamepads[id].connected) return 0.0f;
+        return m_input.gamepads[id].axes[axis] -
+               m_input.gamepads[id].axesLast[axis];
+    }
+
+    // Axis value with deadzone applied (returns 0.0 if within deadzone)
+    float GetGamepadAxisDeadzone(int axis, float deadzone = 0.1f, int id = 0) const {
+        float v = GetGamepadAxis(axis, id);
+        return (v > deadzone || v < -deadzone) ? v : 0.0f;
+    }
+
+    // Left stick as Vector2Df with deadzone
+    Vector2Df GetGamepadLeftStick(float deadzone = 0.1f, int id = 0) const {
+        return { GetGamepadAxisDeadzone(GLFW_GAMEPAD_AXIS_LEFT_X,  deadzone, id),
+                 GetGamepadAxisDeadzone(GLFW_GAMEPAD_AXIS_LEFT_Y,  deadzone, id) };
+    }
+    // Right stick as Vector2Df with deadzone
+    Vector2Df GetGamepadRightStick(float deadzone = 0.1f, int id = 0) const {
+        return { GetGamepadAxisDeadzone(GLFW_GAMEPAD_AXIS_RIGHT_X, deadzone, id),
+                 GetGamepadAxisDeadzone(GLFW_GAMEPAD_AXIS_RIGHT_Y, deadzone, id) };
+    }
+    // Left trigger normalized to [0.0, 1.0] (GLFW returns [-1, 1])
+    float GetGamepadLeftTrigger(float deadzone = 0.05f, int id = 0) const {
+        return std::max(0.0f, (GetGamepadAxis(GLFW_GAMEPAD_AXIS_LEFT_TRIGGER,  id) + 1.0f) * 0.5f - deadzone);
+    }
+    // Right trigger normalized to [0.0, 1.0]
+    float GetGamepadRightTrigger(float deadzone = 0.05f, int id = 0) const {
+        return std::max(0.0f, (GetGamepadAxis(GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, id) + 1.0f) * 0.5f - deadzone);
+    }
 
     // ---------- //
     // FPS & Time //
@@ -215,6 +296,14 @@ private:
     // Properties //
     // ---------- //
 
+    struct GamepadState {
+        bool  buttons    [GLFW_GAMEPAD_BUTTON_LAST + 1] { false };
+        bool  buttonsLast[GLFW_GAMEPAD_BUTTON_LAST + 1] { false };
+        float axes       [GLFW_GAMEPAD_AXIS_LAST   + 1] { 0.0f  };
+        float axesLast   [GLFW_GAMEPAD_AXIS_LAST   + 1] { 0.0f  };
+        bool  connected  { false };
+    };
+
     struct Input{
         // Keyboard
         bool keys[GLFW_KEY_LAST] { false };
@@ -225,6 +314,9 @@ private:
         bool mouseButtons[GLFW_MOUSE_BUTTON_LAST] {false};
         bool mouseButtonsLast[GLFW_MOUSE_BUTTON_LAST] {false};
         int xoffset {}, yoffset {};
+
+        // Gamepad / Joystick
+        GamepadState gamepads[GLFW_JOYSTICK_LAST + 1] {};
     };
 
     Input m_input {};
@@ -241,6 +333,9 @@ private:
 
     // Shaders
     std::map<std::string, Shader*> m_shaders;
+
+    // Resize
+    bool m_resized = { false };
 
     void LoadBasicShaders();
 
@@ -265,6 +360,32 @@ private:
 
         m_input.xoffset = 0;
         m_input.yoffset = 0;
+
+        // Gamepads
+        for(int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid){
+            auto& gp = m_input.gamepads[jid];
+
+            gp.connected = (glfwJoystickIsGamepad(jid) == GLFW_TRUE);
+
+            if(!gp.connected){
+                std::fill(std::begin(gp.buttons),      std::end(gp.buttons),      false);
+                std::fill(std::begin(gp.buttonsLast),  std::end(gp.buttonsLast),  false);
+                std::fill(std::begin(gp.axes),         std::end(gp.axes),         0.0f);
+                std::fill(std::begin(gp.axesLast),     std::end(gp.axesLast),     0.0f);
+                continue;
+            }
+
+            std::copy(std::begin(gp.buttons), std::end(gp.buttons), std::begin(gp.buttonsLast));
+            std::copy(std::begin(gp.axes),    std::end(gp.axes),    std::begin(gp.axesLast));
+
+            GLFWgamepadstate state;
+            if(glfwGetGamepadState(jid, &state) == GLFW_TRUE){
+                for(int b = 0; b <= GLFW_GAMEPAD_BUTTON_LAST; ++b)
+                    gp.buttons[b] = (state.buttons[b] == GLFW_PRESS);
+                for(int a = 0; a <= GLFW_GAMEPAD_AXIS_LAST; ++a)
+                    gp.axes[a] = state.axes[a];
+            }
+        }
     };
 
     // --------- //
@@ -277,8 +398,10 @@ private:
 
         //std::cout << width << " - " << height << "\n";
         
-        if(win)
+        if(win){
             glViewport(0, 0, width, height);
+            win->m_resized = true;
+        }
     }
 
     static void key_callback(GLFWwindow* window, int key, int, int action, int) {
@@ -332,5 +455,13 @@ private:
             win->m_lastDroppedPath = paths[count - 1]; // save the last
         if(win->m_dropCallback)
             win->m_dropCallback(count, paths);
-        }
+    }
+
+    static void joystick_callback(int jid, int event){
+        if(event == GLFW_CONNECTED)
+            std::cout << "[OK] Gamepad " << jid << " connected: "
+                      << (glfwGetGamepadName(jid) ? glfwGetGamepadName(jid) : "unknown") << "\n";
+        else if(event == GLFW_DISCONNECTED)
+            std::cout << "[INFO] Gamepad " << jid << " disconnected\n";
+    }
 };

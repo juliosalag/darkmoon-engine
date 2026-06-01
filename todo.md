@@ -6,7 +6,6 @@
 - Color.hpp
 
 ### Input
-- Joystick
 - Gamepad mappings
 
 ### 2D
@@ -20,6 +19,8 @@
 ### Monitor - https://www.glfw.org/docs/latest/monitor_guide.html
 - Cambio de monitor
 - Funciones de monitor
+
+## Math Library
 
 ## Extra 2D
 - Ellipse

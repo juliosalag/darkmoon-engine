@@ -47,6 +47,7 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
     glfwSetScrollCallback(m_window, scroll_callback);
     glfwSetWindowCloseCallback(m_window, window_close_callback);
     glfwSetDropCallback(m_window, drop_callback);
+    glfwSetJoystickCallback(joystick_callback);
 
     glfwGetWindowPos(m_window, &m_windowedX, &m_windowedY);
     glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
@@ -78,6 +79,16 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
         m_shaders = sharedContext->m_shaders;
 
     m_lastTime = glfwGetTime();
+
+    // --------------------------------- //
+    // Scan already-connected gamepads   //
+    // --------------------------------- //
+    for(int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid){
+        m_input.gamepads[jid].connected = (glfwJoystickIsGamepad(jid) == GLFW_TRUE);
+        if(m_input.gamepads[jid].connected)
+            std::cout << "[OK] Gamepad " << jid << " found at startup: "
+                      << (glfwGetGamepadName(jid) ? glfwGetGamepadName(jid) : "unknown") << "\n";
+    }
 
     SetIconDefault();
 }
@@ -210,6 +221,7 @@ void Window::ClearBackground(Color color){
 // --------------- //
 
 void Window::PollEvents(){
+    m_resized = false;
     UpdateInput();
     glfwPollEvents();
 }
