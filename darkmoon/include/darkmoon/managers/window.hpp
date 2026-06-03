@@ -248,13 +248,13 @@ struct Window{
     // ------- //
 
     // Set the window to fullscreen mode
-    void SetFullscreen(Monitor monitor = glfwGetPrimaryMonitor());
+    void SetFullscreen(Monitor monitor = Monitor::getPrimary());
     // Set the window to borderless mode
-    void SetBorderless(Monitor monitor = glfwGetPrimaryMonitor());
+    void SetBorderless(Monitor monitor = Monitor::getPrimary());
     // Set the window to windowed mode
     void SetWindowed();
     // Set the window mode (Fullscreen, Borderless and Windowed)
-    void SetWindowMode(WindowMode mode, Monitor monitor = glfwGetPrimaryMonitor());
+    void SetWindowMode(WindowMode mode, Monitor monitor = Monitor::getPrimary());
     // Set the window size
     void SetSize(int width, int height);
     // Set the window size (vector)

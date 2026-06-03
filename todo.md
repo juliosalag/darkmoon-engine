@@ -4,31 +4,34 @@
 
 ### Extra
 - Color.hpp
-
-### Input
-- Gamepad mappings
-
-### 2D
-
 - Font // Embedded Font
 
-### Texture
-
-- Transform
-
-### Monitor - https://www.glfw.org/docs/latest/monitor_guide.html
-- Cambio de monitor
-- Funciones de monitor
+### 2D
+- AnimatedTextures / Gifs
 
 ## Math Library
 
+## UI
+- TextBox / Aligned
+- Button
+- Checkbox
+- Slider
+- OptionSlider
+- Interactive TextBox 
+
 ## Extra 2D
+- Trans Matrix (Traslate, Rotate and Scale)
+- Rectangle Rounded
+- Circle Sector
 - Ellipse
 - Ring
 - Splines
+- Bezier
 
 ## Facade
 - OpenGL / Vulkan / Web
 
 ## Extra
 - Fmod
+- To linux
+- To Web

@@ -17,4 +17,6 @@ DarkMoonEngine::DarkMoonEngine(){
     }
     
     std::cout << "[OK] GLFW initialization successful\n";
+
+    Monitor::initCallback();
 }
