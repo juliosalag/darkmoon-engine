@@ -7,3 +7,4 @@
 #include "rectangle.hpp"
 #include "texture.hpp"
 #include "text.hpp"
+#include "tileset.hpp"
