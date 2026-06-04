@@ -1,37 +1,77 @@
 # DarkMoon Engine
-Custom graphics engine made from scratch in **C++** and **OpenGL**, specifically tailored for [Two Wonders](https://kaiwagames.itch.io/two-wonders), designed to meet the technical and graphical needs of the project. The engine was created with the goal of handling complex scenes and optimizing the game's performance.
 
-## Current Status
+Custom graphics engine made from scratch in **C++23** and **OpenGL**, specifically tailored for game development projects such as [Two Wonders](https://kaiwagames.itch.io/two-wonders). Version 2.0 is a complete rebuild focused on clean architecture, modularity, and ease of use.
 
-DarkMoon Engine is a graphics engine is currently in an unstable version, as my intention is to reorganize and rebuild it from scratch to improve its architecture and functionality.
+```cpp
+#include <darkmoon/graphics.hpp>
 
-This repository contains the code I developed while learning OpenGL and improving my knowledge of C++. While the engine meets the initial goals of supporting projects like **Two Wonders**, I acknowledge that there is room to optimize its design and address certain technical limitations.
+int main() {
+    DarkMoonEngine dm{};
 
-My goal with this project is to share my learning, demonstrate progress in graphics engine development, and, above all, build a more robust and efficient version of the engine.
+    Window win = Window(800, 600, "Hello World");
 
-## Plans for version 2.0 (2D)
-
-I am working on a version 2.0 that I plan to release in the coming weeks. This new version will focus on delivering a fully **functional 2D graphics engine**, with an improved architecture and a modular approach to make it easier to use in game development projects.
-
-Some features included in version 2.0:
-- Optimized rendering system for **sprites**, **textures**, and **2D visual effects**.
-- More efficient **resource management**, with extended support for multiple texture and font formats.
-- **Real-time lighting** with different types of lights: point, directional, and spotlights (possibly including shadows).
-- Support for **2D animations** such as spritesheets and advanced particle effects.
-- **Better documentation and detailed guides** for developers interested in using or contributing to the engine.
-
-## Platform Suport
-
-The goal for DarkMoon Engine is to be **multiplatform**, supporting operating systems such as **Windows** and **Linux**. Currently, the engine is only functional on **Linux** due to some platform-specific optimizations and dependencies.
-
-## Installation and development
-
-Clone the repository.
-```sh
-git clone https://github.com/juliosalag/darkmoon-engine.git
+    while (!win.ShouldClose()) {
+        win.BeginDrawing(BLACK);
+        win.EndDrawing();
+    }
+}
 ```
 
-Run makefile.
-```sh
-make
-```
+## Platform Support
+
+| Platform | Status |
+|----------|--------|
+| Windows  | Supported |
+| Linux    | Supported |
+| Web      | In progress |
+
+## Features
+
+### Window & Input
+Full window lifecycle management built on GLFW, with support for windowed, borderless, and exclusive fullscreen modes. The `Window` class handles OpenGL context creation, shader loading, FPS capping, delta time, and event polling out of the box. Multiple windows with shared contexts are supported.
+
+Input covers keyboard, mouse, and gamepad, with pressed/released/down/up states for all of them. Additional utilities include clipboard access, custom cursor support, file drag-and-drop, and scroll events.
+
+### 2D Rendering
+Primitives: pixel, line, triangle, rectangle, circle, and regular polygons.
+
+Texture and asset support: static textures, animated textures (spritesheets), tilesets, and TrueType font rendering. All resources are managed through a centralized `ResourceManager` with support for multiple texture and font formats.
+
+### Camera2D
+2D camera system with offset, target tracking, zoom, and rotation.
+
+### Custom Shaders
+Create shaders from file paths or inline GLSL source strings. Built-in shaders cover basic 2D geometry, textured quads, and font rendering.
+
+### Entity Component System (ECS)
+Header-only, C++23 ECS built around a `SlotMap`-backed component storage and compile-time bitmask filtering. Define your component and tag lists in a `types.hpp` file and get zero-overhead iteration via `forEach` and `forEachAny`.
+
+Key characteristics:
+- Components stored in packed `SlotMap` arrays no gaps, O(1) insert/erase/access
+- Bitmask queries resolved entirely at compile time using template metaprogramming
+- Safe entity destruction during iteration via a `deathSet` pattern
+- Tags are zero-size flags with no storage cost
+
+### Audio
+> In progress.
+
+### Utilities
+Built-in math types (`Vector2Df`, GLM integration), color constants, key/button enums, and memory utilities.
+
+## Dependencies
+
+| Library | Purpose |
+|---------|---------|
+| [GLFW](https://www.glfw.org/) | Window creation and input |
+| [GLAD](https://glad.dav1d.de/) | OpenGL loader |
+| [GLM](https://github.com/g-truc/glm) | Math |
+| [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h) | Image loading |
+| [stb_truetype](https://github.com/nothings/stb/blob/master/stb_truetype.h) | Font rendering |
+
+## Installation
+
+> Installation instructions coming soon.
+
+## Usage
+
+> Usage guide and examples coming soon. In the meantime, refer to the [full documentation](https://juliosalag.github.io/darkmoon/index.html).
