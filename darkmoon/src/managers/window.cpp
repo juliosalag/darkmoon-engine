@@ -84,10 +84,8 @@ Window::Window(int width, int height, const char* title, Window* sharedContext){
     // Scan already-connected gamepads   //
     // --------------------------------- //
     for(int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid){
+        glfwSetJoystickUserPointer(jid, this);
         m_input.gamepads[jid].connected = (glfwJoystickIsGamepad(jid) == GLFW_TRUE);
-        if(m_input.gamepads[jid].connected)
-            std::cout << "[OK] Gamepad " << jid << " found at startup: "
-                      << (glfwGetGamepadName(jid) ? glfwGetGamepadName(jid) : "unknown") << "\n";
     }
 
     SetIconDefault();

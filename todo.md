@@ -4,10 +4,6 @@
 
 ### Extra
 - Color.hpp
-- Font // Embedded Font
-
-### 2D
-- AnimatedTextures / Gifs
 
 ## Math Library
 
@@ -32,6 +28,5 @@
 - OpenGL / Vulkan / Web
 
 ## Extra
-- Fmod
 - To linux
 - To Web

@@ -6,9 +6,9 @@
 
 class Audio {
 public:
-    explicit Audio(const char* filePath) {
+    explicit Audio(const char* filePath, std::size_t poolSize = 4) {
         void* engine = AudioManager::getInstance().get();
-        m_resource = ResourceManager::getInstance().loadResource<ResourceAudio>(filePath, engine);
+        m_resource = ResourceManager::getInstance().loadResource<ResourceAudio>(filePath, engine, poolSize);
     }
 
     void play()                { if (m_resource) m_resource->play();           }

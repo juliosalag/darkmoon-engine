@@ -218,6 +218,17 @@ struct Window{
         return std::max(0.0f, (GetGamepadAxis(GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, id) + 1.0f) * 0.5f - deadzone);
     }
 
+    // Pressed-style: true solo el frame en que se conectó
+    bool IsGamepadConnected(int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        return m_input.gamepadConnected[id];
+    }
+    // Pressed-style: true solo el frame en que se desconectó
+    bool IsGamepadDisconnected(int id = 0) const {
+        if(id < 0 || id > GLFW_JOYSTICK_LAST) return false;
+        return m_input.gamepadDisconnected[id];
+    }
+
     // ---------- //
     // FPS & Time //
     // ---------- //
@@ -317,6 +328,10 @@ private:
 
         // Gamepad / Joystick
         GamepadState gamepads[GLFW_JOYSTICK_LAST + 1] {};
+
+        // Gamepad connect/disconnect events
+        bool gamepadConnected   [GLFW_JOYSTICK_LAST + 1] { false };
+        bool gamepadDisconnected[GLFW_JOYSTICK_LAST + 1] { false };
     };
 
     Input m_input {};
@@ -363,8 +378,10 @@ private:
 
         // Gamepads
         for(int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid){
+            m_input.gamepadConnected   [jid] = false;
+            m_input.gamepadDisconnected[jid] = false;
+            
             auto& gp = m_input.gamepads[jid];
-
             gp.connected = (glfwJoystickIsGamepad(jid) == GLFW_TRUE);
 
             if(!gp.connected){
@@ -395,8 +412,6 @@ private:
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height) { 
         glfwMakeContextCurrent(window);
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
-
-        //std::cout << width << " - " << height << "\n";
         
         if(win){
             glViewport(0, 0, width, height);
@@ -458,10 +473,15 @@ private:
     }
 
     static void joystick_callback(int jid, int event){
-        if(event == GLFW_CONNECTED)
-            std::cout << "[OK] Gamepad " << jid << " connected: "
-                      << (glfwGetGamepadName(jid) ? glfwGetGamepadName(jid) : "unknown") << "\n";
-        else if(event == GLFW_DISCONNECTED)
-            std::cout << "[INFO] Gamepad " << jid << " disconnected\n";
+        Window* win = static_cast<Window*>(glfwGetJoystickUserPointer(jid));
+        if(!win) return;
+
+        if(event == GLFW_CONNECTED){
+            win->m_input.gamepads[jid].connected    = true;
+            win->m_input.gamepadConnected[jid]      = true;
+        } else if(event == GLFW_DISCONNECTED){
+            win->m_input.gamepads[jid].connected    = false;
+            win->m_input.gamepadDisconnected[jid]   = true;
+        }
     }
 };

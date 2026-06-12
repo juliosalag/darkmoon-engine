@@ -7,7 +7,9 @@ private:
     void setup() override;
 
 public:
-    ResourceAudio(std::size_t idResource, std::size_t fileType,const char* filePath, void* engine);
+    ResourceAudio(std::size_t idResource, std::size_t fileType,
+                  const char* filePath, void* engine,
+                  std::size_t poolSize = 4); // <-- nuevo parámetro
 
     ~ResourceAudio() override;
 
