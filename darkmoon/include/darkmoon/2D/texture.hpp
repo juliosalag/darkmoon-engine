@@ -73,7 +73,10 @@ public:
 
     // -------- //
     // Commands //
-    // -------- //
+    // -------- //  
+
+    void  SetOpacity(float opacity);
+    float GetOpacity() const { return m_color.a / 255.f; }
 
     void Delete();
     void Draw();

@@ -216,3 +216,8 @@ void Texture::Draw(const Camera2D& camera) {
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
 }
+
+void Texture::SetOpacity(float opacity) {
+    opacity = std::clamp(opacity, 0.0f, 1.0f);
+    m_color.a = static_cast<unsigned char>(opacity * 255.f);
+}
