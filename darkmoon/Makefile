@@ -71,6 +71,8 @@ GLAD_INC    := $(LIBS_DIR)/glad/include
 GLAD_SRC    := $(LIBS_DIR)/glad/src/glad.c
 GLAD_OBJ    := $(OBJ_DIR)/libs/glad.o
 
+MINIAUDIO_INC := $(LIBS_DIR)/miniaudio
+
 STB_INC     := $(LIBS_DIR)/stb
 
 # ------------------ #
@@ -82,11 +84,11 @@ CC          := gcc
 CXXFLAGS    := -std=c++2b -O2 -fPIC -Wall -Wextra
 CFLAGS      := -O2 -fPIC
 
-INCLUDES    := -I$(INC_DIR) -I$(GLAD_INC) -I$(STB_INC) -I$(LIBS_DIR)/glfw
+INCLUDES    := -I$(INC_DIR) -I$(GLAD_INC) -I$(STB_INC) -I$(LIBS_DIR)/glfw -I$(MINIAUDIO_INC)
 
 # Platform-specific linker flags
 ifeq ($(PLATFORM),windows)
-    LDFLAGS := -L$(LIBS_DIR)/glfw/lib -lglfw3 -lopengl32 -lgdi32 -lwinmm -static-libgcc -static-libstdc++ -static
+    LDFLAGS := -L$(LIBS_DIR)/glfw/lib -lglfw3 -lopengl32 -lgdi32 -lwinmm -Wl,--export-all-symbols -static-libgcc -static-libstdc++ -static
 else ifeq ($(PLATFORM),macos)
     LDFLAGS := -lglfw -framework OpenGL
 else
