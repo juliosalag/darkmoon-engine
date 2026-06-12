@@ -113,12 +113,12 @@ ResourceFont::ResourceFont(std::size_t idResource, std::size_t fileType, const c
     }
 
     m_isLoaded = true;
-    std::cout << "[LOAD] ResourceFont: \"" << filePath << " | ID: " << atlasID << "\n";
+    std::cout << "[LOAD] Font ID: " << atlasID << " (" << filePath << ")\n";
 }
 
 void ResourceFont::unload() {
     if (atlasID) {
-        std::cout << "[UNLOAD] ResourceFont: \"" << getFilePath() << "\" | ID " << atlasID << "\n";
+        std::cout << "[UNLOAD] Font ID: " << atlasID << " (" << getFilePath() << ")\n";
         glDeleteTextures(1, &atlasID);
         atlasID = 0;
     }
