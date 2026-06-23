@@ -298,9 +298,8 @@ void Window::SetFullscreen(Monitor monitor){
 
     const GLFWvidmode* mode = glfwGetVideoMode(monitor.handle());
 
-    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     glfwSetWindowMonitor(m_window, monitor.handle(), 0, 0, mode->width, mode->height, mode->refreshRate);
-    
+
     m_mode = WindowMode::Fullscreen;
 }
 
@@ -311,17 +310,20 @@ void Window::SetBorderless(Monitor monitor){
         glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
     }
 
+    int monitorX, monitorY;
+    glfwGetMonitorPos(monitor.handle(), &monitorX, &monitorY);
+
     const GLFWvidmode* mode = glfwGetVideoMode(monitor.handle());
 
-    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-    glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
-    glfwSetWindowMonitor(m_window, monitor.handle(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+    glfwSetWindowAttrib(m_window, GLFW_DECORATED, GLFW_FALSE);
+    glfwSetWindowAttrib(m_window, GLFW_AUTO_ICONIFY, GLFW_FALSE);
+    glfwSetWindowMonitor(m_window, NULL, monitorX, monitorY, mode->width, mode->height, 0);
 
     m_mode = WindowMode::Borderless;
 }
 
 void Window::SetWindowed(){
-    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+    glfwSetWindowAttrib(m_window, GLFW_DECORATED, GLFW_TRUE);
     glfwSetWindowMonitor(m_window, NULL, m_windowedX, m_windowedY, m_windowedWidth, m_windowedHeight, 0);
 
     m_mode = WindowMode::Windowed;
