@@ -52,4 +52,12 @@ public:
 
     float MeasureText() const;
     float GetTextHeight() const;
+
+    float MeasureText(const Camera2D& camera) const {
+        return MeasureText() * camera.zoom;
+    }
+
+    float GetTextHeight(const Camera2D& camera) const {
+        return GetTextHeight() * camera.zoom;
+    }
 };

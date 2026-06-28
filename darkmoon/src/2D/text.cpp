@@ -106,10 +106,16 @@ void Text::Draw() {
 void Text::Draw(const Camera2D& camera) {
     Vector2Df screen = camera.WorldToScreen(m_position);
 
-    Vector2Df saved = m_position;
+    Vector2Df savedPos   = m_position;
+    float     savedScale = m_scale;
+
     m_position = screen;
+    m_scale   *= camera.zoom;
+
     Draw();
-    m_position = saved;
+
+    m_position = savedPos;
+    m_scale    = savedScale;
 }
 
 float Text::MeasureText() const {
