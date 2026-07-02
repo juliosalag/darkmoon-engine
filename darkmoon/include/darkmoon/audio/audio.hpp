@@ -14,9 +14,11 @@ public:
     void play()                { if (m_resource) m_resource->play();           }
     void stop()                { if (m_resource) m_resource->stop();           }
     void pause()               { if (m_resource) m_resource->pause();          }
+    void resume()              { if (m_resource) m_resource->resume();         }
     void setVolume(float vol)  { if (m_resource) m_resource->setVolume(vol);   }
     void setLooping(bool loop) { if (m_resource) m_resource->setLooping(loop); }
     bool isPlaying()     const { return m_resource && m_resource->isPlaying(); }
+    bool isPaused()      const { return m_resource && m_resource->isPaused();  }
     bool isLoaded()      const { return m_resource && m_resource->isLoaded();  }
 
 private:

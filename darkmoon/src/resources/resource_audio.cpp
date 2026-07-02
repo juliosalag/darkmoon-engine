@@ -4,13 +4,19 @@
 #include <vector>
 
 struct ResourceAudio::Impl {
-    ma_engine*              engine      { nullptr };
-    std::vector<ma_sound>   pool        {};
-    std::size_t             poolSize    { 4 };
-    std::size_t             nextVoice   { 0 };
-    bool                    initialized { false };
-    float                   volume      { 1.0f };
-    bool                    looping     { false };
+    ma_engine*              engine       { nullptr };
+    std::vector<ma_sound>   pool         {};
+    std::size_t             poolSize     { 4 };
+    std::size_t             nextVoice    { 0 };
+    bool                    initialized  { false };
+    float                   volume       { 1.0f };
+    bool                    looping      { false };
+
+    // Voices that were playing at the moment pause() was called.
+    // miniaudio keeps a sound's playback cursor when you call
+    // ma_sound_stop() on it, so we just remember WHICH voices to
+    // restart later, without ever seeking them back to frame 0.
+    std::vector<std::size_t> pausedVoices {};
 
     std::size_t pickVoice() {
         for (std::size_t i = 0; i < poolSize; ++i) {
@@ -73,12 +79,18 @@ void ResourceAudio::unload() {
 
         m_impl->initialized = false;
         m_isLoaded          = false;
+        m_impl->pausedVoices.clear();
         std::cout << "[UNLOAD] Audio ID: " << m_idResource << " (" << m_filePath << ")\n";
     }
 }
 
 void ResourceAudio::play() {
     if (!m_impl->initialized) return;
+
+    if (!m_impl->pausedVoices.empty()) {
+        resume();
+        return;
+    }
 
     std::size_t idx = m_impl->pickVoice();
     m_impl->nextVoice = (idx + 1) % m_impl->poolSize;
@@ -93,14 +105,30 @@ void ResourceAudio::play() {
 
 void ResourceAudio::stop() {
     if (!m_impl->initialized) return;
-    for (std::size_t i = 0; i < m_impl->poolSize; ++i)
+    for (std::size_t i = 0; i < m_impl->poolSize; ++i) {
         ma_sound_stop(&m_impl->pool[i]);
+        ma_sound_seek_to_pcm_frame(&m_impl->pool[i], 0);
+    }
+    m_impl->pausedVoices.clear();
 }
 
 void ResourceAudio::pause() {
     if (!m_impl->initialized) return;
-    for (std::size_t i = 0; i < m_impl->poolSize; ++i)
-        ma_sound_stop(&m_impl->pool[i]);
+
+    m_impl->pausedVoices.clear();
+    for (std::size_t i = 0; i < m_impl->poolSize; ++i) {
+        if (ma_sound_is_playing(&m_impl->pool[i])) {
+            ma_sound_stop(&m_impl->pool[i]);
+            m_impl->pausedVoices.push_back(i);
+        }
+    }
+}
+
+void ResourceAudio::resume() {
+    if (!m_impl->initialized) return;
+    for (std::size_t idx : m_impl->pausedVoices)
+        ma_sound_start(&m_impl->pool[idx]);
+    m_impl->pausedVoices.clear();
 }
 
 void ResourceAudio::setVolume(float v) {
@@ -122,4 +150,8 @@ bool ResourceAudio::isPlaying() const {
     for (std::size_t i = 0; i < m_impl->poolSize; ++i)
         if (ma_sound_is_playing(&m_impl->pool[i])) return true;
     return false;
+}
+
+bool ResourceAudio::isPaused() const {
+    return !m_impl->pausedVoices.empty();
 }
