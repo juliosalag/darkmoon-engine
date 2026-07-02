@@ -157,7 +157,6 @@ void Window::EndDrawing(){
     }
 
     m_lastTime = currentTime;
-    m_fps = m_targetFPS;
 
     // Swap and Events
     PollEvents();
@@ -203,7 +202,6 @@ void Window::EndDrawingNoPoll(){
     }
 
     m_lastTime = currentTime;
-    m_fps = m_targetFPS;
 
     // Swap and Events
     glfwSwapBuffers(m_window);
@@ -378,7 +376,7 @@ void Window::SetIcon(const char* iconPath){
     GLFWimage images[1];
     images[0].pixels = stbi_load(iconPath, &images[0].width, &images[0].height, 0, 4);
 
-    glfwSetWindowIcon(m_window, 1, images),
+    glfwSetWindowIcon(m_window, 1, images);
 
     stbi_image_free(images[0].pixels); 
 }
